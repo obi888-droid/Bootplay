@@ -31,7 +31,8 @@ body {
 
     padding: 0 25px;
 
-    background: rgba(8, 9, 13, 0.96);
+    background: rgba(8, 9, 13, 0.97);
+
     border-bottom: 1px solid #252733;
 }
 
@@ -61,6 +62,7 @@ body {
 
     font-size: 24px;
     font-weight: 900;
+
     letter-spacing: 2px;
 }
 
@@ -124,8 +126,9 @@ body {
 }
 
 .sidebar-title h2 {
-    font-size: 16px;
     color: #8b5cf6;
+
+    font-size: 16px;
 }
 
 .category-btn {
@@ -155,6 +158,34 @@ body {
     background: #7c3cff;
 }
 
+.sidebar-divider {
+    height: 1px;
+
+    margin: 25px 0;
+
+    background: #292c39;
+}
+
+.admin-link {
+    display: block;
+
+    padding: 14px;
+
+    border-radius: 8px;
+
+    background: #151721;
+
+    color: #ffffff;
+
+    text-decoration: none;
+
+    transition: 0.3s;
+}
+
+.admin-link:hover {
+    background: #7c3cff;
+}
+
 .overlay {
     position: fixed;
 
@@ -162,7 +193,7 @@ body {
 
     z-index: 1500;
 
-    background: rgba(0, 0, 0, 0.65);
+    background: rgba(0, 0, 0, 0.7);
 
     opacity: 0;
     visibility: hidden;
@@ -254,13 +285,14 @@ body {
 }
 
 .explore-btn:hover {
-    transform: translateY(-2px);
     background: #955cff;
+
+    transform: translateY(-2px);
 }
 
 
 /* =========================
-   SECTIONS
+   SECTION
 ========================= */
 
 .section {
@@ -334,11 +366,6 @@ body {
    LETRAS
 ========================= */
 
-/*
-   IMPORTANTE:
-   A seção fica escondida inicialmente.
-*/
-
 .letters-section {
     display: none;
 }
@@ -351,6 +378,7 @@ body {
     color: #8e919e;
 
     margin-top: -15px;
+
     margin-bottom: 20px;
 }
 
@@ -562,6 +590,154 @@ body {
 }
 
 .no-results p {
+    color: #8e919e;
+}
+
+
+/* =========================
+   MODAL
+========================= */
+
+.game-modal {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 5000;
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background: rgba(0, 0, 0, 0.85);
+}
+
+.game-modal.show {
+    display: flex;
+}
+
+.game-modal-content {
+    position: relative;
+
+    width: 100%;
+    max-width: 700px;
+    max-height: 90vh;
+
+    overflow-y: auto;
+
+    border: 1px solid #333645;
+    border-radius: 15px;
+
+    background: #11131b;
+}
+
+.close-modal {
+    position: absolute;
+
+    top: 15px;
+    right: 15px;
+
+    z-index: 5;
+
+    width: 40px;
+    height: 40px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: rgba(0, 0, 0, 0.7);
+    color: #ffffff;
+
+    font-size: 25px;
+
+    cursor: pointer;
+}
+
+.game-modal-content > img {
+    width: 100%;
+    height: 300px;
+
+    object-fit: cover;
+}
+
+.modal-body {
+    padding: 25px;
+}
+
+.modal-platform {
+    display: inline-block;
+
+    padding: 6px 10px;
+
+    margin-bottom: 10px;
+
+    border-radius: 5px;
+
+    background: #7c3cff;
+
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.modal-body h2 {
+    margin-bottom: 8px;
+}
+
+.modal-genre {
+    color: #8e919e;
+
+    margin-bottom: 25px;
+}
+
+.modal-body h3 {
+    margin: 20px 0 10px;
+
+    color: #8b5cf6;
+
+    font-size: 15px;
+}
+
+.modal-description {
+    color: #c7c9d2;
+
+    line-height: 1.7;
+}
+
+.modal-parts {
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 10px;
+}
+
+.part-link {
+    display: inline-block;
+
+    padding: 12px 18px;
+
+    border-radius: 7px;
+
+    background: #7c3cff;
+
+    color: #ffffff;
+
+    text-decoration: none;
+
+    font-weight: bold;
+
+    transition: 0.3s;
+}
+
+.part-link:hover {
+    background: #955cff;
+
+    transform: translateY(-2px);
+}
+
+.no-parts {
     color: #8e919e;
 }
 
