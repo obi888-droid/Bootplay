@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bootplay - Portal Gamer</title>
+
+    <title>Bootplay - Jogos</title>
+
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -12,9 +14,7 @@
     <!-- CABEÇALHO -->
     <header class="header">
 
-        <button class="menu-btn" id="menuBtn">
-            ☰
-        </button>
+        <button id="menuBtn" class="menu-btn">☰</button>
 
         <div class="logo">
             <span>BOOT</span>PLAY
@@ -24,43 +24,42 @@
             <input
                 type="text"
                 id="searchInput"
-                placeholder="Pesquisar jogos..."
+                placeholder="Pesquisar jogo..."
             >
-            <button>🔍</button>
         </div>
 
     </header>
 
 
     <!-- MENU LATERAL -->
-    <aside class="sidebar" id="sidebar">
+    <aside id="sidebar" class="sidebar">
 
         <div class="sidebar-title">
-            PLATAFORMAS
+            <h2>PLATAFORMAS</h2>
         </div>
 
-        <button class="category-btn" data-category="Todos">
+        <button class="category-btn active" data-category="Todos">
             🎮 Todos
         </button>
 
         <button class="category-btn" data-category="PS1">
-            🕹️ PS1
+            🎮 PS1
         </button>
 
         <button class="category-btn" data-category="PS2">
-            🕹️ PS2
+            🎮 PS2
         </button>
 
         <button class="category-btn" data-category="PS3">
-            🕹️ PS3
+            🎮 PS3
         </button>
 
         <button class="category-btn" data-category="PS4">
-            🕹️ PS4
+            🎮 PS4
         </button>
 
         <button class="category-btn" data-category="PS5">
-            🕹️ PS5
+            🎮 PS5
         </button>
 
         <button class="category-btn" data-category="PC">
@@ -73,31 +72,33 @@
 
     </aside>
 
-
-    <!-- FUNDO PARA FECHAR MENU -->
-    <div class="overlay" id="overlay"></div>
+    <div id="overlay" class="overlay"></div>
 
 
-    <!-- CONTEÚDO -->
-    <main class="content">
+    <!-- PRINCIPAL -->
+    <main>
 
+        <!-- HERO -->
         <section class="hero">
 
-            <div class="hero-text">
-                <p class="small-title">BEM-VINDO AO</p>
+            <div class="hero-content">
+
+                <p class="hero-small">
+                    BEM-VINDO AO
+                </p>
 
                 <h1>
                     BOOT<span>PLAY</span>
                 </h1>
 
                 <p>
-                    Seu portal gamer para encontrar jogos
-                    de diferentes plataformas.
+                    Seu portal gamer para encontrar seus jogos favoritos.
                 </p>
 
-                <button class="hero-btn">
+                <button id="exploreBtn" class="explore-btn">
                     EXPLORAR JOGOS
                 </button>
+
             </div>
 
         </section>
@@ -106,43 +107,43 @@
         <!-- PLATAFORMAS -->
         <section class="section">
 
-            <h2>PLATAFORMAS</h2>
+            <h2>ESCOLHA UMA PLATAFORMA</h2>
 
-            <div class="platforms">
+            <div class="platform-grid">
 
                 <button class="platform" data-category="PS1">
                     <strong>PS1</strong>
-                    <small>PlayStation</small>
+                    <span>PlayStation 1</span>
                 </button>
 
                 <button class="platform" data-category="PS2">
                     <strong>PS2</strong>
-                    <small>PlayStation</small>
+                    <span>PlayStation 2</span>
                 </button>
 
                 <button class="platform" data-category="PS3">
                     <strong>PS3</strong>
-                    <small>PlayStation</small>
+                    <span>PlayStation 3</span>
                 </button>
 
                 <button class="platform" data-category="PS4">
                     <strong>PS4</strong>
-                    <small>PlayStation</small>
+                    <span>PlayStation 4</span>
                 </button>
 
                 <button class="platform" data-category="PS5">
                     <strong>PS5</strong>
-                    <small>PlayStation</small>
+                    <span>PlayStation 5</span>
                 </button>
 
                 <button class="platform" data-category="PC">
                     <strong>PC</strong>
-                    <small>Computador</small>
+                    <span>Computador</span>
                 </button>
 
                 <button class="platform" data-category="Mobile">
-                    <strong>Mobile</strong>
-                    <small>Android / iOS</small>
+                    <strong>MOBILE</strong>
+                    <span>Android / iOS</span>
                 </button>
 
             </div>
@@ -151,9 +152,19 @@
 
 
         <!-- LETRAS -->
-        <section class="section">
+        <section id="lettersSection" class="section letters-section">
 
-            <h2>JOGOS POR LETRA</h2>
+            <div class="letters-title">
+
+                <h2 id="lettersTitle">
+                    JOGOS POR LETRA
+                </h2>
+
+                <p id="lettersDescription">
+                    Escolha uma letra para encontrar os jogos.
+                </p>
+
+            </div>
 
             <div class="letters">
 
@@ -190,23 +201,28 @@
 
 
         <!-- JOGOS -->
-        <section class="section">
+        <section id="gamesSection" class="section">
 
-            <div class="section-heading">
+            <div class="games-header">
 
                 <div>
-                    <p class="small-title">CATÁLOGO</p>
-                    <h2>JOGOS</h2>
+                    <h2 id="gamesTitle">
+                        JOGOS EM DESTAQUE
+                    </h2>
+
+                    <p id="gamesSubtitle">
+                        Confira alguns jogos disponíveis.
+                    </p>
                 </div>
 
-                <button id="clearFilters" class="clear-btn">
+                <button id="clearBtn" class="clear-btn">
                     LIMPAR FILTROS
                 </button>
 
             </div>
 
 
-            <div class="games-grid" id="gamesGrid">
+            <div id="gamesGrid" class="games-grid">
 
 
                 <!-- JOGO 1 -->
@@ -217,23 +233,23 @@
                 >
 
                     <div class="game-image">
+
                         <img
-                            src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600"
+                            src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80"
                             alt="God of War"
                         >
 
                         <span class="game-platform">
                             PS2
                         </span>
+
                     </div>
 
                     <div class="game-info">
 
                         <h3>God of War</h3>
 
-                        <p>
-                            Aventura • Ação
-                        </p>
+                        <p>PlayStation 2</p>
 
                         <button class="details-btn">
                             VER JOGO
@@ -254,7 +270,7 @@
                     <div class="game-image">
 
                         <img
-                            src="https://images.unsplash.com/photo-1607513746994-51f730a44832?w=600"
+                            src="https://images.unsplash.com/photo-1605897597464-06b14f2f7e39?auto=format&fit=crop&w=800&q=80"
                             alt="Minecraft"
                         >
 
@@ -268,9 +284,7 @@
 
                         <h3>Minecraft</h3>
 
-                        <p>
-                            Aventura • Sandbox
-                        </p>
+                        <p>PC</p>
 
                         <button class="details-btn">
                             VER JOGO
@@ -291,7 +305,7 @@
                     <div class="game-image">
 
                         <img
-                            src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600"
+                            src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80"
                             alt="Grand Theft Auto V"
                         >
 
@@ -305,9 +319,7 @@
 
                         <h3>Grand Theft Auto V</h3>
 
-                        <p>
-                            Ação • Mundo Aberto
-                        </p>
+                        <p>PlayStation 4</p>
 
                         <button class="details-btn">
                             VER JOGO
@@ -328,7 +340,7 @@
                     <div class="game-image">
 
                         <img
-                            src="https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600"
+                            src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80"
                             alt="Resident Evil"
                         >
 
@@ -342,9 +354,7 @@
 
                         <h3>Resident Evil</h3>
 
-                        <p>
-                            Terror • Sobrevivência
-                        </p>
+                        <p>PlayStation 1</p>
 
                         <button class="details-btn">
                             VER JOGO
@@ -354,16 +364,19 @@
 
                 </article>
 
+
             </div>
 
 
             <!-- SEM RESULTADOS -->
             <div id="noResults" class="no-results">
 
+                <div>🎮</div>
+
                 <h3>NENHUM JOGO ENCONTRADO</h3>
 
                 <p>
-                    Tente pesquisar outro nome ou selecionar outra categoria.
+                    Ainda não existem jogos nessa categoria ou letra.
                 </p>
 
             </div>
@@ -374,10 +387,10 @@
 
 
     <!-- RODAPÉ -->
-    <footer>
+    <footer class="footer">
 
-        <div class="footer-logo">
-            BOOT<span>PLAY</span>
+        <div class="logo">
+            <span>BOOT</span>PLAY
         </div>
 
         <p>
