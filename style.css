@@ -1,0 +1,785 @@
+/* ================================
+   BOOTPLAY - ESTILO GAMER
+   ================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #08090d;
+    color: #ffffff;
+    min-height: 100vh;
+}
+
+/* ================================
+   CABEÇALHO
+   ================================ */
+
+.header {
+    height: 75px;
+    width: 100%;
+    background: #0d0f15;
+    border-bottom: 1px solid #20232d;
+
+    display: flex;
+    align-items: center;
+    gap: 25px;
+
+    padding: 0 30px;
+
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.menu-btn {
+    width: 45px;
+    height: 45px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: #151821;
+    color: #ffffff;
+
+    font-size: 25px;
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+.menu-btn:hover {
+    background: #7c3cff;
+    transform: scale(1.05);
+}
+
+/* LOGO */
+
+.logo {
+    font-size: 25px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    white-space: nowrap;
+}
+
+.logo span {
+    color: #7c3cff;
+}
+
+/* PESQUISA */
+
+.search-box {
+    margin-left: auto;
+
+    width: min(400px, 45%);
+
+    display: flex;
+
+    background: #151821;
+
+    border: 1px solid #272b38;
+
+    border-radius: 8px;
+
+    overflow: hidden;
+}
+
+.search-box input {
+    width: 100%;
+
+    padding: 13px 16px;
+
+    border: none;
+    outline: none;
+
+    background: transparent;
+
+    color: white;
+
+    font-size: 14px;
+}
+
+.search-box input::placeholder {
+    color: #777b87;
+}
+
+.search-box button {
+    width: 50px;
+
+    border: none;
+
+    background: transparent;
+
+    color: white;
+
+    cursor: pointer;
+
+    font-size: 18px;
+}
+
+/* ================================
+   MENU LATERAL
+   ================================ */
+
+.sidebar {
+    position: fixed;
+
+    top: 0;
+    left: -280px;
+
+    width: 280px;
+    height: 100vh;
+
+    background: #0d0f15;
+
+    border-right: 1px solid #272b38;
+
+    padding: 100px 20px 30px;
+
+    z-index: 1100;
+
+    transition: left 0.3s ease;
+
+    overflow-y: auto;
+}
+
+.sidebar.active {
+    left: 0;
+}
+
+.sidebar-title {
+    color: #7c3cff;
+
+    font-size: 12px;
+    font-weight: bold;
+
+    letter-spacing: 2px;
+
+    margin-bottom: 15px;
+}
+
+.category-btn {
+    width: 100%;
+
+    padding: 14px 15px;
+
+    margin-bottom: 8px;
+
+    border: none;
+    border-radius: 7px;
+
+    background: #151821;
+
+    color: #c7c9d1;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    font-size: 15px;
+
+    transition: 0.25s;
+}
+
+.category-btn:hover {
+    background: #7c3cff;
+    color: white;
+
+    transform: translateX(5px);
+}
+
+/* FUNDO DO MENU */
+
+.overlay {
+    position: fixed;
+
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.7);
+
+    opacity: 0;
+    visibility: hidden;
+
+    z-index: 1050;
+
+    transition: 0.3s;
+}
+
+.overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* ================================
+   CONTEÚDO
+   ================================ */
+
+.content {
+    width: 100%;
+    max-width: 1400px;
+
+    margin: auto;
+
+    padding: 0 30px;
+}
+
+/* ================================
+   HERO
+   ================================ */
+
+.hero {
+    min-height: 430px;
+
+    margin-top: 25px;
+
+    border-radius: 15px;
+
+    position: relative;
+
+    overflow: hidden;
+
+    display: flex;
+    align-items: center;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(8, 9, 13, 0.98) 0%,
+            rgba(8, 9, 13, 0.85) 45%,
+            rgba(8, 9, 13, 0.25) 100%
+        ),
+        url("https://images.unsplash.com/photo-1511512578047-dfb367046420?w=1600")
+        center / cover;
+}
+
+.hero-text {
+    padding: 50px;
+    max-width: 650px;
+}
+
+.small-title {
+    color: #7c3cff;
+
+    font-size: 12px;
+
+    font-weight: bold;
+
+    letter-spacing: 3px;
+
+    margin-bottom: 10px;
+}
+
+.hero h1 {
+    font-size: clamp(45px, 8vw, 85px);
+
+    font-weight: 900;
+
+    letter-spacing: 4px;
+
+    margin-bottom: 15px;
+}
+
+.hero h1 span {
+    color: #7c3cff;
+}
+
+.hero p:not(.small-title) {
+    color: #c3c5cd;
+
+    font-size: 17px;
+
+    line-height: 1.7;
+
+    margin-bottom: 25px;
+}
+
+.hero-btn {
+    padding: 13px 25px;
+
+    border: none;
+
+    border-radius: 7px;
+
+    background: #7c3cff;
+
+    color: white;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+.hero-btn:hover {
+    background: #935cff;
+
+    transform: translateY(-3px);
+
+    box-shadow: 0 10px 30px rgba(124, 60, 255, 0.3);
+}
+
+/* ================================
+   SEÇÕES
+   ================================ */
+
+.section {
+    padding: 55px 0 10px;
+}
+
+.section h2 {
+    font-size: 25px;
+
+    letter-spacing: 1px;
+
+    margin-bottom: 25px;
+}
+
+.section-heading {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 25px;
+}
+
+.section-heading h2 {
+    margin: 0;
+}
+
+.clear-btn {
+    background: transparent;
+
+    border: 1px solid #353947;
+
+    color: #aaa;
+
+    padding: 10px 15px;
+
+    border-radius: 6px;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+.clear-btn:hover {
+    border-color: #7c3cff;
+
+    color: white;
+}
+
+/* ================================
+   PLATAFORMAS
+   ================================ */
+
+.platforms {
+    display: grid;
+
+    grid-template-columns: repeat(7, 1fr);
+
+    gap: 12px;
+}
+
+.platform {
+    min-height: 100px;
+
+    border: 1px solid #252934;
+
+    border-radius: 10px;
+
+    background: #101219;
+
+    color: white;
+
+    cursor: pointer;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 8px;
+
+    transition: 0.3s;
+}
+
+.platform strong {
+    font-size: 20px;
+}
+
+.platform small {
+    color: #777b87;
+
+    font-size: 11px;
+}
+
+.platform:hover {
+    border-color: #7c3cff;
+
+    background: #151122;
+
+    transform: translateY(-5px);
+
+    box-shadow: 0 10px 30px rgba(124, 60, 255, 0.15);
+}
+
+/* ================================
+   LETRAS
+   ================================ */
+
+.letters {
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 8px;
+}
+
+.letters button {
+    width: 40px;
+    height: 40px;
+
+    border: 1px solid #292d38;
+
+    border-radius: 6px;
+
+    background: #101219;
+
+    color: #aaa;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.25s;
+}
+
+.letters button:hover,
+.letters button.active {
+    background: #7c3cff;
+
+    border-color: #7c3cff;
+
+    color: white;
+
+    transform: translateY(-2px);
+}
+
+/* ================================
+   JOGOS
+   ================================ */
+
+.games-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fill, minmax(230px, 1fr));
+
+    gap: 20px;
+}
+
+/* CARD */
+
+.game-card {
+    background: #101219;
+
+    border: 1px solid #242832;
+
+    border-radius: 10px;
+
+    overflow: hidden;
+
+    transition: 0.3s;
+
+    animation: cardAppear 0.5s ease;
+}
+
+.game-card:hover {
+    transform: translateY(-7px);
+
+    border-color: #7c3cff;
+
+    box-shadow:
+        0 15px 40px rgba(0, 0, 0, 0.5),
+        0 0 20px rgba(124, 60, 255, 0.12);
+}
+
+/* IMAGEM */
+
+.game-image {
+    height: 280px;
+
+    position: relative;
+
+    overflow: hidden;
+
+    background: #171922;
+}
+
+.game-image img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    display: block;
+
+    transition: 0.5s;
+}
+
+.game-card:hover .game-image img {
+    transform: scale(1.08);
+}
+
+/* PLATAFORMA */
+
+.game-platform {
+    position: absolute;
+
+    top: 12px;
+    left: 12px;
+
+    padding: 5px 9px;
+
+    background: #7c3cff;
+
+    color: white;
+
+    font-size: 11px;
+
+    font-weight: bold;
+
+    border-radius: 5px;
+}
+
+/* INFORMAÇÕES */
+
+.game-info {
+    padding: 17px;
+}
+
+.game-info h3 {
+    font-size: 17px;
+
+    margin-bottom: 8px;
+}
+
+.game-info p {
+    color: #777b87;
+
+    font-size: 13px;
+
+    margin-bottom: 15px;
+}
+
+.details-btn {
+    width: 100%;
+
+    padding: 10px;
+
+    border: 1px solid #303440;
+
+    background: #171a23;
+
+    color: white;
+
+    border-radius: 6px;
+
+    cursor: pointer;
+
+    font-weight: bold;
+
+    transition: 0.3s;
+}
+
+.details-btn:hover {
+    background: #7c3cff;
+
+    border-color: #7c3cff;
+}
+
+/* ================================
+   SEM RESULTADOS
+   ================================ */
+
+.no-results {
+    display: none;
+
+    text-align: center;
+
+    padding: 70px 20px;
+
+    color: #777b87;
+}
+
+.no-results h3 {
+    color: white;
+
+    margin-bottom: 10px;
+}
+
+/* ================================
+   RODAPÉ
+   ================================ */
+
+footer {
+    margin-top: 80px;
+
+    padding: 35px 20px;
+
+    border-top: 1px solid #20232d;
+
+    background: #0d0f15;
+
+    text-align: center;
+}
+
+.footer-logo {
+    font-size: 23px;
+
+    font-weight: 900;
+
+    letter-spacing: 2px;
+
+    margin-bottom: 10px;
+}
+
+.footer-logo span {
+    color: #7c3cff;
+}
+
+footer p {
+    color: #666a75;
+
+    font-size: 13px;
+}
+
+/* ================================
+   ANIMAÇÕES
+   ================================ */
+
+@keyframes cardAppear {
+
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+}
+
+/* ================================
+   RESPONSIVIDADE
+   ================================ */
+
+@media (max-width: 1000px) {
+
+    .platforms {
+        grid-template-columns:
+            repeat(4, 1fr);
+    }
+
+}
+
+@media (max-width: 700px) {
+
+    .header {
+        padding: 0 15px;
+
+        gap: 12px;
+    }
+
+    .logo {
+        font-size: 19px;
+    }
+
+    .search-box {
+        width: auto;
+
+        flex: 1;
+    }
+
+    .content {
+        padding: 0 15px;
+    }
+
+    .hero {
+        min-height: 380px;
+    }
+
+    .hero-text {
+        padding: 30px;
+    }
+
+    .hero h1 {
+        font-size: 48px;
+    }
+
+    .platforms {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+    .games-grid {
+        grid-template-columns:
+            repeat(2, 1fr);
+
+        gap: 12px;
+    }
+
+    .game-image {
+        height: 220px;
+    }
+
+    .section-heading {
+        align-items: flex-start;
+
+        gap: 15px;
+
+        flex-direction: column;
+    }
+
+}
+
+@media (max-width: 450px) {
+
+    .search-box button {
+        display: none;
+    }
+
+    .games-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .game-image {
+        height: 280px;
+    }
+
+    .hero h1 {
+        font-size: 40px;
+    }
+
+    .letters button {
+        width: 36px;
+        height: 36px;
+    }
+
+}
