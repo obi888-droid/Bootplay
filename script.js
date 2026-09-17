@@ -42,14 +42,14 @@ const exploreBtn =
 
 if (menuBtn && sidebar && overlay) {
 
-    menuBtn.addEventListener("click", () => {
+    menuBtn.addEventListener("click", function () {
 
         sidebar.classList.toggle("active");
         overlay.classList.toggle("active");
 
     });
 
-    overlay.addEventListener("click", () => {
+    overlay.addEventListener("click", function () {
 
         sidebar.classList.remove("active");
         overlay.classList.remove("active");
@@ -65,15 +65,16 @@ if (menuBtn && sidebar && overlay) {
 
 document
     .querySelectorAll(".category-btn")
-    .forEach(button => {
+    .forEach(function (button) {
 
-        button.addEventListener("click", () => {
+        button.addEventListener("click", function () {
 
-            if (sidebar && overlay) {
-
+            if (sidebar) {
                 sidebar.classList.remove("active");
-                overlay.classList.remove("active");
+            }
 
+            if (overlay) {
+                overlay.classList.remove("active");
             }
 
         });
@@ -82,12 +83,12 @@ document
 
 
 // ===============================
-// BOTÃO EXPLORAR JOGOS
+// BOTÃO EXPLORAR
 // ===============================
 
 if (exploreBtn) {
 
-    exploreBtn.addEventListener("click", () => {
+    exploreBtn.addEventListener("click", function () {
 
         const gamesSection =
             document.getElementById("gamesSection");
@@ -113,81 +114,75 @@ async function loadGames() {
 
     try {
 
-        const {
-            data: gamesData,
-            error: gamesError
-        } = await supabaseClient
-            .from("games")
-            .select("*")
-            .order("name", {
-                ascending: true
-            });
+        const resultGames =
+            await supabaseClient
+                .from("games")
+                .select("*")
+                .order("name", {
+                    ascending: true
+                });
 
-
-        if (gamesError) {
+        if (resultGames.error) {
 
             console.error(
                 "Erro ao carregar jogos:",
-                gamesError
+                resultGames.error
             );
 
-            if (gamesGrid) {
-
-                gamesGrid.innerHTML = `
-                    <div class="no-results">
-                        <div>⚠️</div>
-                        <h3>ERRO AO CARREGAR</h3>
-                        <p>Não foi possível carregar os jogos.</p>
-                    </div>
-                `;
-
-            }
+            showError(
+                "Erro ao carregar os jogos."
+            );
 
             return;
         }
 
 
-        const {
-            data: partsData,
-            error: partsError
-        } = await supabaseClient
-            .from("game_parts")
-            .select("*")
-            .order("sort_order", {
-                ascending: true
+        const gamesData =
+            resultGames.data || [];
+
+
+        const resultParts =
+            await supabaseClient
+                .from("game_parts")
+                .select("*")
+                .order("sort_order", {
+                    ascending: true
+                });
+
+
+        const partsData =
+            resultParts.data || [];
+
+
+        games =
+            gamesData.map(function (game) {
+
+                return {
+
+                    ...game,
+
+                    parts:
+                        partsData
+                            .filter(function (part) {
+
+                                return (
+                                    part.game_id ===
+                                    game.id
+                                );
+
+                            })
+                            .sort(function (a, b) {
+
+                                return (
+                                    a.sort_order -
+                                    b.sort_order
+                                );
+
+                            })
+
+                };
+
             });
-
-
-        if (partsError) {
-
-            console.error(
-                "Erro ao carregar partes:",
-                partsError
-            );
-
-            games = (gamesData || []).map(game => ({
-                ...game,
-                parts: []
-            }));
-
-        } else {
-
-            games = (gamesData || []).map(game => ({
-
-                ...game,
-
-                parts: (partsData || [])
-                    .filter(part =>
-                        part.game_id === game.id
-                    )
-                    .sort(
-                        (a, b) =>
-                            a.sort_order - b.sort_order
-                    )
-
-            }));
-
-        }
 
 
         renderGames();
@@ -199,19 +194,38 @@ async function loadGames() {
             error
         );
 
-        if (gamesGrid) {
-
-            gamesGrid.innerHTML = `
-                <div class="no-results">
-                    <div>⚠️</div>
-                    <h3>ERRO</h3>
-                    <p>Não foi possível carregar os jogos.</p>
-                </div>
-            `;
-
-        }
+        showError(
+            "Não foi possível carregar os jogos."
+        );
 
     }
+
+}
+
+
+// ===============================
+// MOSTRAR ERRO
+// ===============================
+
+function showError(message) {
+
+    if (!gamesGrid) return;
+
+    gamesGrid.innerHTML = `
+
+        <div class="no-results">
+
+            <div>⚠️</div>
+
+            <h3>ERRO</h3>
+
+            <p>
+                ${escapeHtml(message)}
+            </p>
+
+        </div>
+
+    `;
 
 }
 
@@ -234,26 +248,38 @@ function renderGames() {
 
 
     const filteredGames =
-        games.filter(game => {
+        games.filter(function (game) {
+
+            const name =
+                String(game.name || "");
+
+            const genre =
+                String(game.genre || "");
+
+            const platform =
+                String(game.platform || "");
+
 
             const matchesCategory =
                 selectedCategory === "Todos" ||
-                game.platform === selectedCategory;
+                platform === selectedCategory;
 
 
             const matchesLetter =
                 selectedLetter === "" ||
-                game.name
+                name
                     .toUpperCase()
-                    .startsWith(selectedLetter);
+                    .startsWith(
+                        selectedLetter
+                    );
 
 
             const matchesSearch =
-                game.name
+                name
                     .toLowerCase()
                     .includes(searchTerm) ||
 
-                game.genre
+                genre
                     .toLowerCase()
                     .includes(searchTerm);
 
@@ -273,7 +299,9 @@ function renderGames() {
     if (filteredGames.length === 0) {
 
         gamesGrid.innerHTML = `
+
             <div class="no-results">
+
                 <div>🎮</div>
 
                 <h3>
@@ -283,19 +311,23 @@ function renderGames() {
                 <p>
                     Não existem jogos nessa categoria ou letra.
                 </p>
+
             </div>
+
         `;
 
         return;
     }
 
 
-    filteredGames.forEach(game => {
+    filteredGames.forEach(function (game) {
 
         const card =
             document.createElement("article");
 
-        card.className = "game-card";
+
+        card.className =
+            "game-card";
 
 
         card.innerHTML = `
@@ -327,7 +359,10 @@ function renderGames() {
                     ${escapeHtml(game.genre)}
                 </p>
 
-                <button class="details-btn">
+                <button
+                    type="button"
+                    class="details-btn"
+                >
                     VER JOGO
                 </button>
 
@@ -338,7 +373,11 @@ function renderGames() {
 
         card.addEventListener(
             "click",
-            () => openGameModal(game)
+            function () {
+
+                openGameModal(game);
+
+            }
         );
 
 
@@ -350,7 +389,7 @@ function renderGames() {
 
 
 // ===============================
-// MODAL DO JOGO
+// MODAL
 // ===============================
 
 function openGameModal(game) {
@@ -362,10 +401,11 @@ function openGameModal(game) {
     if (!modal) {
 
         console.error(
-            "Modal do jogo não encontrado."
+            "gameModal não encontrado."
         );
 
         return;
+
     }
 
 
@@ -390,8 +430,11 @@ function openGameModal(game) {
 
     if (modalImage) {
 
-        modalImage.src = game.image;
-        modalImage.alt = game.name;
+        modalImage.src =
+            game.image || "";
+
+        modalImage.alt =
+            game.name || "";
 
     }
 
@@ -399,7 +442,7 @@ function openGameModal(game) {
     if (modalTitle) {
 
         modalTitle.textContent =
-            game.name;
+            game.name || "";
 
     }
 
@@ -407,7 +450,7 @@ function openGameModal(game) {
     if (modalPlatform) {
 
         modalPlatform.textContent =
-            game.platform;
+            game.platform || "";
 
     }
 
@@ -415,7 +458,7 @@ function openGameModal(game) {
     if (modalGenre) {
 
         modalGenre.textContent =
-            game.genre;
+            game.genre || "";
 
     }
 
@@ -423,13 +466,13 @@ function openGameModal(game) {
     if (modalDescription) {
 
         modalDescription.textContent =
-            game.description;
+            game.description || "";
 
     }
 
 
     // ===============================
-    // PARTES DO JOGO
+    // PARTES
     // ===============================
 
     if (modalParts) {
@@ -443,57 +486,66 @@ function openGameModal(game) {
         ) {
 
             modalParts.innerHTML = `
+
                 <p>
                     Nenhuma parte cadastrada.
                 </p>
+
             `;
 
         } else {
 
-            game.parts.forEach(part => {
+            game.parts.forEach(
+                function (part) {
 
-                const link =
-                    document.createElement("a");
-
-
-                link.className =
-                    "part-link";
+                    const link =
+                        document.createElement("a");
 
 
-                link.textContent =
-                    part.name;
+                    link.className =
+                        "part-link";
 
 
-                link.href =
-                    part.link;
+                    link.textContent =
+                        part.name;
 
 
-                link.target =
-                    "_blank";
+                    link.href =
+                        part.link;
 
 
-                link.rel =
-                    "noopener noreferrer";
+                    link.target =
+                        "_blank";
 
 
-                link.addEventListener(
-                    "click",
-                    event => {
-                        event.stopPropagation();
-                    }
-                );
+                    link.rel =
+                        "noopener noreferrer";
 
 
-                modalParts.appendChild(link);
+                    link.addEventListener(
+                        "click",
+                        function (event) {
 
-            });
+                            event.stopPropagation();
+
+                        }
+                    );
+
+
+                    modalParts.appendChild(
+                        link
+                    );
+
+                }
+            );
 
         }
 
     }
 
 
-    // CSS do teu modal usa .show
+    // IMPORTANTE:
+    // O CSS usa .show
     modal.classList.add("show");
 
 }
@@ -511,15 +563,19 @@ if (closeModal) {
 
     closeModal.addEventListener(
         "click",
-        () => {
+        function () {
 
             const modal =
-                document.getElementById("gameModal");
+                document.getElementById(
+                    "gameModal"
+                );
 
 
             if (modal) {
 
-                modal.classList.remove("show");
+                modal.classList.remove(
+                    "show"
+                );
 
             }
 
@@ -537,13 +593,15 @@ if (gameModal) {
 
     gameModal.addEventListener(
         "click",
-        event => {
+        function (event) {
 
             if (
                 event.target === gameModal
             ) {
 
-                gameModal.classList.remove("show");
+                gameModal.classList.remove(
+                    "show"
+                );
 
             }
 
@@ -554,18 +612,20 @@ if (gameModal) {
 
 
 // ===============================
-// FECHAR MODAL COM ESC
+// ESC FECHA MODAL
 // ===============================
 
 document.addEventListener(
     "keydown",
-    event => {
+    function (event) {
 
         if (event.key === "Escape") {
 
             if (gameModal) {
 
-                gameModal.classList.remove("show");
+                gameModal.classList.remove(
+                    "show"
+                );
 
             }
 
@@ -583,24 +643,26 @@ document
     .querySelectorAll(
         ".category-btn, .platform"
     )
-    .forEach(button => {
+    .forEach(function (button) {
 
         button.addEventListener(
             "click",
-            () => {
+            function () {
 
                 selectedCategory =
-                    button.dataset.category;
+                    button.dataset.category ||
+                    "Todos";
+
 
                 selectedLetter = "";
 
 
-                // Remover ativo dos botões
+                // Remover ativo
                 document
                     .querySelectorAll(
                         ".category-btn, .platform"
                     )
-                    .forEach(btn => {
+                    .forEach(function (btn) {
 
                         btn.classList.remove(
                             "active"
@@ -609,13 +671,14 @@ document
                     });
 
 
-                button.classList.add("active");
+                // Ativar botão clicado
+                button.classList.add(
+                    "active"
+                );
 
 
-                // ===============================
-                // MOSTRAR A-Z APENAS COM PLATAFORMA
-                // ===============================
-
+                // Mostrar A-Z somente
+                // quando escolher plataforma
                 if (
                     lettersSection &&
                     selectedCategory !== "Todos"
@@ -656,17 +719,17 @@ function renderLetters() {
 
 
     const alphabet =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-            .split("");
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
 
-    alphabet.forEach(letter => {
+    alphabet.forEach(function (letter) {
 
         const button =
             document.createElement("button");
 
 
-        button.type = "button";
+        button.type =
+            "button";
 
 
         button.textContent =
@@ -690,7 +753,7 @@ function renderLetters() {
 
         button.addEventListener(
             "click",
-            () => {
+            function () {
 
                 selectedLetter =
                     letter;
@@ -720,7 +783,7 @@ if (searchInput) {
 
     searchInput.addEventListener(
         "input",
-        () => {
+        function () {
 
             renderGames();
 
@@ -738,10 +801,11 @@ if (clearFiltersBtn) {
 
     clearFiltersBtn.addEventListener(
         "click",
-        () => {
+        function () {
 
             selectedCategory =
                 "Todos";
+
 
             selectedLetter =
                 "";
@@ -765,12 +829,12 @@ if (clearFiltersBtn) {
             }
 
 
-            // Remover ativo
+            // Remover ativos
             document
                 .querySelectorAll(
                     ".category-btn, .platform"
                 )
-                .forEach(btn => {
+                .forEach(function (btn) {
 
                     btn.classList.remove(
                         "active"
@@ -780,21 +844,17 @@ if (clearFiltersBtn) {
 
 
             // Ativar Todos
-            const allButtons =
-                document.querySelectorAll(
+            document
+                .querySelectorAll(
                     '[data-category="Todos"]'
-                );
-
-
-            allButtons.forEach(
-                button => {
+                )
+                .forEach(function (button) {
 
                     button.classList.add(
                         "active"
                     );
 
-                }
-            );
+                });
 
 
             renderLetters();
@@ -856,7 +916,7 @@ function escapeHtml(value) {
 // INICIALIZAÇÃO
 // ===============================
 
-// A-Z começa escondido
+// Esconder A-Z inicialmente
 if (lettersSection) {
 
     lettersSection.classList.remove(
@@ -866,9 +926,9 @@ if (lettersSection) {
 }
 
 
-// Criar letras
+// Gerar letras
 renderLetters();
 
 
-// Carregar jogos do Supabase
+// Carregar jogos
 loadGames();
