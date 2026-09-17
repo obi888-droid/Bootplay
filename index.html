@@ -1,754 +1,502 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+\<!DOCTYPE html>
+\<html lang="pt-BR">
 
-<head>
+\<head>
+    \<meta charset="UTF-8">
+    \<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta charset="UTF-8">
+    \<title>Bootplay - Portal Gamer\</title>
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    \<link rel="stylesheet" href="style.css">
+\</head>
 
-    <title>Bootplay - Portal Gamer</title>
+\<body>
 
-    <link rel="stylesheet" href="style.css">
-
-</head>
-
-<body>
-
-
-    <!-- =========================
+    \<!-- =========================
          HEADER
-    ========================== -->
+    \========================== -->
 
-    <header class="header">
+    \<header class="header">
 
-        <button id="menuBtn" class="menu-btn">
-            ☰
-        </button>
+        \<button id="menuBtn" class="menu-btn">☰\</button>
 
-        <div class="logo">
-            <span>BOOT</span>PLAY
-        </div>
+        \<div class="logo">
+            \<span>BOOT\</span>PLAY
+        \</div>
 
-        <div class="search-box">
-
-            <input
+        \<div class="search-box">
+            \<input
                 type="text"
                 id="searchInput"
                 placeholder="Pesquisar jogo..."
-            >
+            \>
+        \</div>
 
-        </div>
-
-    </header>
-
+    \</header>
 
 
-    <!-- =========================
+
+    \<!-- =========================
          MENU
-    ========================== -->
+    \========================== -->
 
-    <aside id="sidebar" class="sidebar">
+    \<aside id="sidebar" class="sidebar">
 
-        <div class="sidebar-title">
+        \<div class="sidebar-title">
+            \<h2>PLATAFORMAS\</h2>
+        \</div>
 
-            <h2>PLATAFORMAS</h2>
-
-        </div>
-
-
-        <button
-            class="category-btn active"
-            data-category="Todos"
-        >
+        \<button class="category-btn active" data-category="Todos">
             🎮 Todos
-        </button>
+        \</button>
 
-
-        <button
-            class="category-btn"
-            data-category="PS1"
-        >
+        \<button class="category-btn" data-category="PS1">
             🎮 PS1
-        </button>
+        \</button>
 
-
-        <button
-            class="category-btn"
-            data-category="PS2"
-        >
+        \<button class="category-btn" data-category="PS2">
             🎮 PS2
-        </button>
+        \</button>
 
-
-        <button
-            class="category-btn"
-            data-category="PS3"
-        >
+        \<button class="category-btn" data-category="PS3">
             🎮 PS3
-        </button>
+        \</button>
 
-
-        <button
-            class="category-btn"
-            data-category="PS4"
-        >
+        \<button class="category-btn" data-category="PS4">
             🎮 PS4
-        </button>
+        \</button>
 
-
-        <button
-            class="category-btn"
-            data-category="PS5"
-        >
+        \<button class="category-btn" data-category="PS5">
             🎮 PS5
-        </button>
+        \</button>
 
-
-        <!-- PSP -->
-
-        <button
-            class="category-btn"
-            data-category="PSP"
-        >
-            🎮 PSP
-        </button>
-
-
-        <button
-            class="category-btn"
-            data-category="PC"
-        >
+        \<button class="category-btn" data-category="PC">
             💻 PC
-        </button>
+        \</button>
 
-
-        <button
-            class="category-btn"
-            data-category="Mobile"
-        >
+        \<button class="category-btn" data-category="Mobile">
             📱 Mobile
-        </button>
+        \</button>
 
+        \<div class="sidebar-divider">\</div>
 
-        <div class="sidebar-divider"></div>
-
-
-        <a
-            href="admin.html"
-            class="admin-link"
-        >
+        \<a href="admin.html" class="admin-link">
             🔐 Área Admin
-        </a>
+        \</a>
 
-    </aside>
+    \</aside>
 
-
-    <div id="overlay" class="overlay"></div>
-
+    \<div id="overlay" class="overlay">\</div>
 
 
-    <!-- =========================
+
+    \<!-- =========================
          HERO
-    ========================== -->
+    \========================== -->
 
-    <main>
+    \<main>
 
-        <section class="hero">
+        \<section class="hero">
 
-            <div class="hero-content">
+            \<div class="hero-content">
 
-                <p class="hero-small">
+                \<p class="hero-small">
                     BEM-VINDO AO
-                </p>
+                \</p>
 
+                \<h1>
+                    BOOT\<span>PLAY\</span>
+                \</h1>
 
-                <h1>
-                    BOOT<span>PLAY</span>
-                </h1>
-
-
-                <p>
+                \<p>
                     Seu portal gamer para encontrar seus jogos favoritos.
-                </p>
+                \</p>
 
-
-                <button
-                    id="exploreBtn"
-                    class="explore-btn"
-                >
+                \<button id="exploreBtn" class="explore-btn">
                     EXPLORAR JOGOS
-                </button>
+                \</button>
 
-            </div>
+            \</div>
 
-        </section>
+        \</section>
 
 
 
-        <!-- =========================
+        \<!-- =========================
              PLATAFORMAS
-        ========================== -->
+        \========================== -->
 
-        <section class="section">
+        \<section class="section">
 
-            <h2>
-                ESCOLHA UMA PLATAFORMA
-            </h2>
+            \<h2>ESCOLHA UMA PLATAFORMA\</h2>
 
+            \<div class="platform-grid">
 
-            <div class="platform-grid">
+                \<button class="platform" data-category="PS1">
+                    \<strong>PS1\</strong>
+                    \<span>PlayStation 1\</span>
+                \</button>
 
+                \<button class="platform" data-category="PS2">
+                    \<strong>PS2\</strong>
+                    \<span>PlayStation 2\</span>
+                \</button>
 
-                <button
-                    class="platform"
-                    data-category="PS1"
-                >
+                \<button class="platform" data-category="PS3">
+                    \<strong>PS3\</strong>
+                    \<span>PlayStation 3\</span>
+                \</button>
 
-                    <strong>
-                        PS1
-                    </strong>
+                \<button class="platform" data-category="PS4">
+                    \<strong>PS4\</strong>
+                    \<span>PlayStation 4\</span>
+                \</button>
 
-                    <span>
-                        PlayStation 1
-                    </span>
+                \<button class="platform" data-category="PS5">
+                    \<strong>PS5\</strong>
+                    \<span>PlayStation 5\</span>
+                \</button>
 
-                </button>
+                \<button class="platform" data-category="PC">
+                    \<strong>PC\</strong>
+                    \<span>Computador\</span>
+                \</button>
 
+                \<button class="platform" data-category="Mobile">
+                    \<strong>MOBILE\</strong>
+                    \<span>Android / iOS\</span>
+                \</button>
 
+            \</div>
 
-                <button
-                    class="platform"
-                    data-category="PS2"
-                >
-
-                    <strong>
-                        PS2
-                    </strong>
-
-                    <span>
-                        PlayStation 2
-                    </span>
-
-                </button>
-
-
-
-                <button
-                    class="platform"
-                    data-category="PS3"
-                >
-
-                    <strong>
-                        PS3
-                    </strong>
-
-                    <span>
-                        PlayStation 3
-                    </span>
-
-                </button>
+        \</section>
 
 
 
-                <button
-                    class="platform"
-                    data-category="PS4"
-                >
-
-                    <strong>
-                        PS4
-                    </strong>
-
-                    <span>
-                        PlayStation 4
-                    </span>
-
-                </button>
-
-
-
-                <button
-                    class="platform"
-                    data-category="PS5"
-                >
-
-                    <strong>
-                        PS5
-                    </strong>
-
-                    <span>
-                        PlayStation 5
-                    </span>
-
-                </button>
-
-
-
-                <!-- PSP -->
-
-                <button
-                    class="platform"
-                    data-category="PSP"
-                >
-
-                    <strong>
-                        PSP
-                    </strong>
-
-                    <span>
-                        PlayStation Portable
-                    </span>
-
-                </button>
-
-
-
-                <button
-                    class="platform"
-                    data-category="PC"
-                >
-
-                    <strong>
-                        PC
-                    </strong>
-
-                    <span>
-                        Computador
-                    </span>
-
-                </button>
-
-
-
-                <button
-                    class="platform"
-                    data-category="Mobile"
-                >
-
-                    <strong>
-                        MOBILE
-                    </strong>
-
-                    <span>
-                        Android / iOS
-                    </span>
-
-                </button>
-
-
-            </div>
-
-        </section>
-
-
-
-        <!-- =========================
+        \<!-- =========================
              LETRAS
-        ========================== -->
+        \========================== -->
 
-        <section
-            id="lettersSection"
-            class="section letters-section"
-        >
+        \<section id="lettersSection" class="section letters-section">
 
-            <div class="letters-title">
+            \<div class="letters-title">
 
-                <h2 id="lettersTitle">
+                \<h2 id="lettersTitle">
                     JOGOS POR LETRA
-                </h2>
+                \</h2>
 
-                <p id="lettersDescription">
+                \<p id="lettersDescription">
                     Escolha uma letra para encontrar os jogos.
-                </p>
+                \</p>
 
-            </div>
+            \</div>
 
+            \<div class="letters">
 
-            <div class="letters">
+                \<button data-letter="A">A\</button>
+                \<button data-letter="B">B\</button>
+                \<button data-letter="C">C\</button>
+                \<button data-letter="D">D\</button>
+                \<button data-letter="E">E\</button>
+                \<button data-letter="F">F\</button>
+                \<button data-letter="G">G\</button>
+                \<button data-letter="H">H\</button>
+                \<button data-letter="I">I\</button>
+                \<button data-letter="J">J\</button>
+                \<button data-letter="K">K\</button>
+                \<button data-letter="L">L\</button>
+                \<button data-letter="M">M\</button>
+                \<button data-letter="N">N\</button>
+                \<button data-letter="O">O\</button>
+                \<button data-letter="P">P\</button>
+                \<button data-letter="Q">Q\</button>
+                \<button data-letter="R">R\</button>
+                \<button data-letter="S">S\</button>
+                \<button data-letter="T">T\</button>
+                \<button data-letter="U">U\</button>
+                \<button data-letter="V">V\</button>
+                \<button data-letter="W">W\</button>
+                \<button data-letter="X">X\</button>
+                \<button data-letter="Y">Y\</button>
+                \<button data-letter="Z">Z\</button>
 
-                <button data-letter="A">A</button>
-                <button data-letter="B">B</button>
-                <button data-letter="C">C</button>
-                <button data-letter="D">D</button>
-                <button data-letter="E">E</button>
-                <button data-letter="F">F</button>
-                <button data-letter="G">G</button>
-                <button data-letter="H">H</button>
-                <button data-letter="I">I</button>
-                <button data-letter="J">J</button>
-                <button data-letter="K">K</button>
-                <button data-letter="L">L</button>
-                <button data-letter="M">M</button>
-                <button data-letter="N">N</button>
-                <button data-letter="O">O</button>
-                <button data-letter="P">P</button>
-                <button data-letter="Q">Q</button>
-                <button data-letter="R">R</button>
-                <button data-letter="S">S</button>
-                <button data-letter="T">T</button>
-                <button data-letter="U">U</button>
-                <button data-letter="V">V</button>
-                <button data-letter="W">W</button>
-                <button data-letter="X">X</button>
-                <button data-letter="Y">Y</button>
-                <button data-letter="Z">Z</button>
+            \</div>
 
-            </div>
-
-        </section>
-
+        \</section>
 
 
-        <!-- =========================
+
+        \<!-- =========================
              JOGOS
-        ========================== -->
+        \========================== -->
 
-        <section
-            id="gamesSection"
-            class="section"
-        >
+        \<section id="gamesSection" class="section">
 
-            <div class="games-header">
+            \<div class="games-header">
 
-                <div>
-
-                    <h2 id="gamesTitle">
+                \<div>
+                    \<h2 id="gamesTitle">
                         JOGOS EM DESTAQUE
-                    </h2>
+                    \</h2>
 
-                    <p id="gamesSubtitle">
+                    \<p id="gamesSubtitle">
                         Confira alguns jogos disponíveis.
-                    </p>
+                    \</p>
+                \</div>
 
-                </div>
-
-
-                <button
-                    id="clearBtn"
-                    class="clear-btn"
-                >
+                \<button id="clearBtn" class="clear-btn">
                     LIMPAR FILTROS
-                </button>
+                \</button>
 
-            </div>
-
-
-
-            <div
-                id="gamesGrid"
-                class="games-grid"
-            >
+            \</div>
 
 
-                <!-- JOGO DEMONSTRAÇÃO -->
 
-                <article
+            \<div id="gamesGrid" class="games-grid">
+
+                \<!-- JOGO DEMONSTRAÇÃO -->
+
+                \<article
                     class="game-card"
                     data-name="God of War"
                     data-category="PS2"
                     data-genre="Ação"
                     data-description="God of War é uma aventura de ação protagonizada por Kratos."
-                >
+                \>
 
-                    <div class="game-image">
+                    \<div class="game-image">
 
-                        <img
-                            src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80"
+                        \<img
+                            src="[https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80](https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format\&fit=crop\&w=800\&q=80)"
                             alt="God of War"
-                        >
+                        \>
 
-                        <span class="game-platform">
+                        \<span class="game-platform">
                             PS2
-                        </span>
+                        \</span>
 
-                    </div>
+                    \</div>
 
+                    \<div class="game-info">
 
-                    <div class="game-info">
+                        \<h3>God of War\</h3>
 
-                        <h3>
-                            God of War
-                        </h3>
+                        \<p>PlayStation 2 • Ação\</p>
 
-                        <p>
-                            PlayStation 2 • Ação
-                        </p>
-
-                        <button class="details-btn">
+                        \<button class="details-btn">
                             VER JOGO
-                        </button>
+                        \</button>
 
-                    </div>
+                    \</div>
 
-                </article>
+                \</article>
 
 
 
-                <!-- JOGO DEMONSTRAÇÃO -->
+                \<!-- JOGO DEMONSTRAÇÃO -->
 
-                <article
+                \<article
                     class="game-card"
                     data-name="Minecraft"
                     data-category="PC"
                     data-genre="Sandbox"
                     data-description="Minecraft é um jogo de construção e exploração em um mundo aberto."
-                >
+                \>
 
-                    <div class="game-image">
+                    \<div class="game-image">
 
-                        <img
-                            src="https://images.unsplash.com/photo-1605897597464-06b14f2f7e39?auto=format&fit=crop&w=800&q=80"
+                        \<img
+                            src="[https://images.unsplash.com/photo-1605897597464-06b14f2f7e39?auto=format&fit=crop&w=800&q=80](https://images.unsplash.com/photo-1605897597464-06b14f2f7e39?auto=format\&fit=crop\&w=800\&q=80)"
                             alt="Minecraft"
-                        >
+                        \>
 
-                        <span class="game-platform">
+                        \<span class="game-platform">
                             PC
-                        </span>
+                        \</span>
 
-                    </div>
+                    \</div>
 
+                    \<div class="game-info">
 
-                    <div class="game-info">
+                        \<h3>Minecraft\</h3>
 
-                        <h3>
-                            Minecraft
-                        </h3>
+                        \<p>PC • Sandbox\</p>
 
-                        <p>
-                            PC • Sandbox
-                        </p>
-
-                        <button class="details-btn">
+                        \<button class="details-btn">
                             VER JOGO
-                        </button>
+                        \</button>
 
-                    </div>
+                    \</div>
 
-                </article>
+                \</article>
 
 
 
-                <!-- JOGO DEMONSTRAÇÃO -->
+                \<!-- JOGO DEMONSTRAÇÃO -->
 
-                <article
+                \<article
                     class="game-card"
                     data-name="Grand Theft Auto V"
                     data-category="PS4"
                     data-genre="Ação"
                     data-description="Grand Theft Auto V é um jogo de ação e mundo aberto."
-                >
+                \>
 
-                    <div class="game-image">
+                    \<div class="game-image">
 
-                        <img
-                            src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80"
+                        \<img
+                            src="[https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80](https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format\&fit=crop\&w=800\&q=80)"
                             alt="Grand Theft Auto V"
-                        >
+                        \>
 
-                        <span class="game-platform">
+                        \<span class="game-platform">
                             PS4
-                        </span>
+                        \</span>
 
-                    </div>
+                    \</div>
 
+                    \<div class="game-info">
 
-                    <div class="game-info">
+                        \<h3>Grand Theft Auto V\</h3>
 
-                        <h3>
-                            Grand Theft Auto V
-                        </h3>
+                        \<p>PlayStation 4 • Ação\</p>
 
-                        <p>
-                            PlayStation 4 • Ação
-                        </p>
-
-                        <button class="details-btn">
+                        \<button class="details-btn">
                             VER JOGO
-                        </button>
+                        \</button>
 
-                    </div>
+                    \</div>
 
-                </article>
+                \</article>
 
 
 
-                <!-- JOGO DEMONSTRAÇÃO -->
+                \<!-- JOGO DEMONSTRAÇÃO -->
 
-                <article
+                \<article
                     class="game-card"
                     data-name="Resident Evil"
                     data-category="PS1"
                     data-genre="Terror"
                     data-description="Resident Evil é uma série clássica de jogos de terror e sobrevivência."
-                >
+                \>
 
-                    <div class="game-image">
+                    \<div class="game-image">
 
-                        <img
-                            src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80"
+                        \<img
+                            src="[https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80](https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format\&fit=crop\&w=800\&q=80)"
                             alt="Resident Evil"
-                        >
+                        \>
 
-                        <span class="game-platform">
+                        \<span class="game-platform">
                             PS1
-                        </span>
+                        \</span>
 
-                    </div>
+                    \</div>
 
+                    \<div class="game-info">
 
-                    <div class="game-info">
+                        \<h3>Resident Evil\</h3>
 
-                        <h3>
-                            Resident Evil
-                        </h3>
+                        \<p>PlayStation 1 • Terror\</p>
 
-                        <p>
-                            PlayStation 1 • Terror
-                        </p>
-
-                        <button class="details-btn">
+                        \<button class="details-btn">
                             VER JOGO
-                        </button>
+                        \</button>
 
-                    </div>
+                    \</div>
 
-                </article>
+                \</article>
 
-
-            </div>
-
+            \</div>
 
 
-            <!-- SEM RESULTADOS -->
 
-            <div
-                id="noResults"
-                class="no-results"
-            >
+            \<!-- SEM RESULTADOS -->
 
-                <div>
-                    🎮
-                </div>
+            \<div id="noResults" class="no-results">
 
-                <h3>
-                    NENHUM JOGO ENCONTRADO
-                </h3>
+                \<div>🎮\</div>
 
-                <p>
+                \<h3>NENHUM JOGO ENCONTRADO\</h3>
+
+                \<p>
                     Não existem jogos nessa categoria ou letra.
-                </p>
+                \</p>
 
-            </div>
+            \</div>
 
-        </section>
+        \</section>
 
-    </main>
+    \</main>
 
 
 
-    <!-- =========================
+    \<!-- =========================
          MODAL DO JOGO
-    ========================== -->
+    \========================== -->
 
-    <div
-        id="gameModal"
-        class="game-modal"
-    >
+    \<div id="gameModal" class="game-modal">
 
-        <div class="game-modal-content">
+        \<div class="game-modal-content">
 
-            <button
-                id="closeModal"
-                class="close-modal"
-            >
+            \<button id="closeModal" class="close-modal">
                 ×
-            </button>
+            \</button>
 
+            \<img id="modalImage" src="" alt="">
 
-            <img
-                id="modalImage"
-                src=""
-                alt=""
-            >
+            \<div class="modal-body">
 
+                \<span id="modalPlatform" class="modal-platform">
+                \</span>
 
-            <div class="modal-body">
+                \<h2 id="modalTitle">
+                \</h2>
 
-                <span
-                    id="modalPlatform"
-                    class="modal-platform"
-                ></span>
+                \<p id="modalGenre" class="modal-genre">
+                \</p>
 
+                \<h3>DESCRIÇÃO\</h3>
 
-                <h2 id="modalTitle"></h2>
+                \<p id="modalDescription" class="modal-description">
+                \</p>
 
+                \<h3>PARTES\</h3>
 
-                <p
-                    id="modalGenre"
-                    class="modal-genre"
-                ></p>
+                \<div id="modalParts" class="modal-parts">
+                \</div>
 
+            \</div>
 
-                <h3>
-                    DESCRIÇÃO
-                </h3>
+        \</div>
 
-
-                <p
-                    id="modalDescription"
-                    class="modal-description"
-                ></p>
-
-
-                <h3>
-                    PARTES
-                </h3>
-
-
-                <div
-                    id="modalParts"
-                    class="modal-parts"
-                ></div>
-
-            </div>
-
-        </div>
-
-    </div>
+    \</div>
 
 
 
-    <!-- =========================
+    \<!-- =========================
          FOOTER
-    ========================== -->
+    \========================== -->
 
-    <footer class="footer">
+    \<footer class="footer">
 
-        <div class="logo">
-            <span>BOOT</span>PLAY
-        </div>
+        \<div class="logo">
+            \<span>BOOT\</span>PLAY
+        \</div>
 
-        <p>
+        \<p>
             © 2026 Bootplay — Portal Gamer
-        </p>
+        \</p>
 
-    </footer>
-
-
-
-    <!-- SUPABASE -->
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <script src="supabase.js"></script>
-
-    <script src="script.js"></script>
+    \</footer>
 
 
-</body>
 
-</html>
+\<script src="[https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2](https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2)">\</script>
+\<script src="supabase.js">\</script>
+\<script src="script.js">\</script>
+
+\</body>
+
+\</html>
