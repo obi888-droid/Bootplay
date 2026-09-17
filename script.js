@@ -1,674 +1,390 @@
-/* =========================
-   ELEMENTOS
-========================= */
+// ===============================
+// BOOTPLAY - SCRIPT PRINCIPAL
+// ===============================
 
-const menuBtn = document.getElementById("menuBtn");
-const sidebar = document.getElementById("sidebar");
-const overlay = document.getElementById("overlay");
-
-const categoryButtons =
-    document.querySelectorAll(".category-btn");
-
-const platformButtons =
-    document.querySelectorAll(".platform");
-
-const lettersSection =
-    document.getElementById("lettersSection");
-
-const lettersTitle =
-    document.getElementById("lettersTitle");
-
-const lettersDescription =
-    document.getElementById("lettersDescription");
-
-const letterButtons =
-    document.querySelectorAll(".letters button");
-
-const gamesGrid =
-    document.getElementById("gamesGrid");
-
-const searchInput =
-    document.getElementById("searchInput");
-
-const clearBtn =
-    document.getElementById("clearBtn");
-
-const exploreBtn =
-    document.getElementById("exploreBtn");
-
-const noResults =
-    document.getElementById("noResults");
-
-const gamesTitle =
-    document.getElementById("gamesTitle");
-
-const gamesSubtitle =
-    document.getElementById("gamesSubtitle");
-
-
-/* =========================
-   MODAL
-========================= */
-
-const gameModal =
-    document.getElementById("gameModal");
-
-const closeModal =
-    document.getElementById("closeModal");
-
-const modalImage =
-    document.getElementById("modalImage");
-
-const modalPlatform =
-    document.getElementById("modalPlatform");
-
-const modalTitle =
-    document.getElementById("modalTitle");
-
-const modalGenre =
-    document.getElementById("modalGenre");
-
-const modalDescription =
-    document.getElementById("modalDescription");
-
-const modalParts =
-    document.getElementById("modalParts");
-
-
-/* =========================
-   FILTROS
-========================= */
-
+let games = [];
 let selectedCategory = "Todos";
 let selectedLetter = "";
 
+// Elementos da página
+const gamesGrid = document.getElementById("gamesGrid");
+const searchInput = document.getElementById("searchInput");
+const lettersSection = document.getElementById("lettersSection");
+const lettersContainer = document.getElementById("letters");
+const clearFiltersBtn = document.getElementById("clearFilters");
 
-/* =========================
-   MENU
-========================= */
+// ===============================
+// CARREGAR JOGOS DO SUPABASE
+// ===============================
 
-menuBtn.addEventListener("click", () => {
+async function loadGames() {
+    try {
+        const { data: gamesData, error: gamesError } =
+            await supabaseClient
+                .from("games")
+                .select("*")
+                .order("name", { ascending: true });
 
-    sidebar.classList.add("active");
-    overlay.classList.add("active");
+        if (gamesError) {
+            console.error("Erro ao carregar jogos:", gamesError);
+            gamesGrid.innerHTML = `
+                <p class="empty-message">
+                    Erro ao carregar os jogos.
+                </p>
+            `;
+            return;
+        }
 
-});
+        const { data: partsData, error: partsError } =
+            await supabaseClient
+                .from("game_parts")
+                .select("*")
+                .order("sort_order", { ascending: true });
 
-overlay.addEventListener("click", () => {
+        if (partsError) {
+            console.error("Erro ao carregar partes:", partsError);
+            return;
+        }
 
-    sidebar.classList.remove("active");
-    overlay.classList.remove("active");
+        games = gamesData.map(game => ({
+            ...game,
+            parts: partsData
+                .filter(part => part.game_id === game.id)
+                .sort((a, b) => a.sort_order - b.sort_order)
+        }));
 
-});
+        renderGames();
 
+    } catch (error) {
+        console.error("Erro inesperado:", error);
 
-/* =========================
-   JOGOS SALVOS PELO ADMIN
-========================= */
-
-function loadAdminGames() {
-
-    const savedGames =
-        JSON.parse(
-            localStorage.getItem("bootplayGames") || "[]"
-        );
-
-    savedGames.forEach(game => {
-
-        createGameCard(game);
-
-    });
-
-}
-
-
-/* =========================
-   CRIAR CARD
-========================= */
-
-function createGameCard(game) {
-
-    const card =
-        document.createElement("article");
-
-    card.className = "game-card";
-
-    card.dataset.name = game.name;
-    card.dataset.category = game.category;
-    card.dataset.genre = game.genre;
-    card.dataset.description = game.description;
-
-    card.dataset.image = game.image;
-
-    card.dataset.parts =
-        JSON.stringify(game.parts || []);
-
-
-    card.innerHTML = `
-
-        <div class="game-image">
-
-            <img
-                src="${game.image}"
-                alt="${game.name}"
-            >
-
-            <span class="game-platform">
-                ${game.category}
-            </span>
-
-        </div>
-
-        <div class="game-info">
-
-            <h3>${game.name}</h3>
-
-            <p>
-                ${game.category} • ${game.genre}
+        gamesGrid.innerHTML = `
+            <p class="empty-message">
+                Não foi possível carregar os jogos.
             </p>
-
-            <button class="details-btn">
-                VER JOGO
-            </button>
-
-        </div>
-
-    `;
-
-
-    gamesGrid.appendChild(card);
-
-
-    const button =
-        card.querySelector(".details-btn");
-
-
-    button.addEventListener("click", () => {
-
-        openGameModal(card);
-
-    });
-
+        `;
+    }
 }
 
+// ===============================
+// MOSTRAR JOGOS
+// ===============================
 
-/* =========================
-   MOSTRAR LETRAS
-========================= */
+function renderGames() {
+    const searchTerm = searchInput
+        ? searchInput.value.toLowerCase().trim()
+        : "";
 
-function updateLettersVisibility() {
+    let filteredGames = games.filter(game => {
 
-    if (selectedCategory === "Todos") {
+        const matchesCategory =
+            selectedCategory === "Todos" ||
+            game.platform === selectedCategory;
 
-        lettersSection.classList.remove("active");
+        const matchesLetter =
+            selectedLetter === "" ||
+            game.name.toUpperCase().startsWith(selectedLetter);
 
+        const matchesSearch =
+            game.name.toLowerCase().includes(searchTerm) ||
+            game.genre.toLowerCase().includes(searchTerm);
+
+        return (
+            matchesCategory &&
+            matchesLetter &&
+            matchesSearch
+        );
+    });
+
+    gamesGrid.innerHTML = "";
+
+    if (filteredGames.length === 0) {
+        gamesGrid.innerHTML = `
+            <p class="empty-message">
+                Nenhum jogo encontrado.
+            </p>
+        `;
         return;
-
     }
 
-    lettersSection.classList.add("active");
+    filteredGames.forEach(game => {
+        const card = document.createElement("div");
 
-    lettersTitle.textContent =
-        `JOGOS ${selectedCategory} POR LETRA`;
+        card.className = "game-card";
 
-    lettersDescription.textContent =
-        `Escolha uma letra para encontrar jogos de ${selectedCategory}.`;
+        card.innerHTML = `
+            <img
+                src="${escapeHtml(game.image)}"
+                alt="${escapeHtml(game.name)}"
+            >
 
+            <div class="game-info">
+                <h3>${escapeHtml(game.name)}</h3>
+
+                <p>
+                    ${escapeHtml(game.platform)}
+                    •
+                    ${escapeHtml(game.genre)}
+                </p>
+            </div>
+        `;
+
+        card.addEventListener("click", () => {
+            openGameModal(game);
+        });
+
+        gamesGrid.appendChild(card);
+    });
 }
 
+// ===============================
+// MODAL DO JOGO
+// ===============================
 
-/* =========================
-   FILTRAR JOGOS
-========================= */
+function openGameModal(game) {
 
-function filterGames() {
+    const modal = document.getElementById("gameModal");
 
-    const searchText =
-        searchInput.value.toLowerCase().trim();
+    if (!modal) {
+        console.error("Modal do jogo não encontrado.");
+        return;
+    }
 
-    const cards =
-        document.querySelectorAll(".game-card");
+    const modalImage = document.getElementById("modalImage");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalPlatform = document.getElementById("modalPlatform");
+    const modalGenre = document.getElementById("modalGenre");
+    const modalDescription = document.getElementById("modalDescription");
+    const modalParts = document.getElementById("modalParts");
 
-    let visibleGames = 0;
+    if (modalImage) {
+        modalImage.src = game.image;
+        modalImage.alt = game.name;
+    }
 
+    if (modalTitle) {
+        modalTitle.textContent = game.name;
+    }
 
-    cards.forEach(card => {
+    if (modalPlatform) {
+        modalPlatform.textContent = game.platform;
+    }
 
-        const name =
-            card.dataset.name.toLowerCase();
+    if (modalGenre) {
+        modalGenre.textContent = game.genre;
+    }
 
-        const category =
-            card.dataset.category;
+    if (modalDescription) {
+        modalDescription.textContent = game.description;
+    }
 
+    if (modalParts) {
 
-        const categoryMatch =
-            selectedCategory === "Todos" ||
-            category === selectedCategory;
+        modalParts.innerHTML = "";
 
+        if (!game.parts || game.parts.length === 0) {
 
-        const letterMatch =
-            selectedLetter === "" ||
-            name.startsWith(
-                selectedLetter.toLowerCase()
-            );
-
-
-        const searchMatch =
-            searchText === "" ||
-            name.includes(searchText);
-
-
-        if (
-            categoryMatch &&
-            letterMatch &&
-            searchMatch
-        ) {
-
-            card.style.display = "block";
-
-            visibleGames++;
+            modalParts.innerHTML = `
+                <p>Nenhuma parte cadastrada.</p>
+            `;
 
         } else {
 
-            card.style.display = "none";
+            game.parts.forEach(part => {
 
-        }
+                const button = document.createElement("button");
 
-    });
+                button.className = "part-button";
+                button.textContent = part.name;
 
+                button.addEventListener("click", () => {
 
-    if (visibleGames === 0) {
+                    if (part.link) {
+                        window.open(
+                            part.link,
+                            "_blank",
+                            "noopener,noreferrer"
+                        );
+                    }
 
-        noResults.classList.add("show");
+                });
 
-    } else {
-
-        noResults.classList.remove("show");
-
-    }
-
-
-    if (selectedCategory === "Todos") {
-
-        gamesTitle.textContent =
-            "JOGOS EM DESTAQUE";
-
-        gamesSubtitle.textContent =
-            "Confira alguns jogos disponíveis.";
-
-    } else if (selectedLetter !== "") {
-
-        gamesTitle.textContent =
-            `${selectedCategory} — LETRA ${selectedLetter}`;
-
-        gamesSubtitle.textContent =
-            `Jogos de ${selectedCategory} começando com ${selectedLetter}.`;
-
-    } else {
-
-        gamesTitle.textContent =
-            `JOGOS — ${selectedCategory}`;
-
-        gamesSubtitle.textContent =
-            `Jogos disponíveis para ${selectedCategory}.`;
-
-    }
-
-}
-
-
-/* =========================
-   SELECIONAR CATEGORIA
-========================= */
-
-function selectCategory(category) {
-
-    selectedCategory = category;
-
-    selectedLetter = "";
-
-
-    letterButtons.forEach(button => {
-
-        button.classList.remove("active");
-
-    });
-
-
-    categoryButtons.forEach(button => {
-
-        button.classList.remove("active");
-
-        if (button.dataset.category === category) {
-
-            button.classList.add("active");
-
-        }
-
-    });
-
-
-    updateLettersVisibility();
-
-    filterGames();
-
-
-    sidebar.classList.remove("active");
-    overlay.classList.remove("active");
-
-
-    document
-        .getElementById("gamesSection")
-        .scrollIntoView({
-            behavior: "smooth"
-        });
-
-}
-
-
-/* =========================
-   CATEGORIAS DO MENU
-========================= */
-
-categoryButtons.forEach(button => {
-
-    button.addEventListener("click", () => {
-
-        selectCategory(
-            button.dataset.category
-        );
-
-    });
-
-});
-
-
-/* =========================
-   PLATAFORMAS
-========================= */
-
-platformButtons.forEach(button => {
-
-    button.addEventListener("click", () => {
-
-        selectCategory(
-            button.dataset.category
-        );
-
-    });
-
-});
-
-
-/* =========================
-   LETRAS
-========================= */
-
-letterButtons.forEach(button => {
-
-    button.addEventListener("click", () => {
-
-        if (selectedCategory === "Todos") {
-
-            return;
-
-        }
-
-
-        selectedLetter =
-            button.dataset.letter;
-
-
-        letterButtons.forEach(
-            letter => {
-                letter.classList.remove("active");
-            }
-        );
-
-
-        button.classList.add("active");
-
-
-        filterGames();
-
-
-        document
-            .getElementById("gamesSection")
-            .scrollIntoView({
-                behavior: "smooth"
+                modalParts.appendChild(button);
             });
+        }
+    }
 
-    });
+    modal.classList.add("active");
+}
 
-});
+// ===============================
+// FECHAR MODAL
+// ===============================
 
+const closeModal = document.getElementById("closeModal");
 
-/* =========================
-   PESQUISA
-========================= */
+if (closeModal) {
+    closeModal.addEventListener("click", () => {
 
-searchInput.addEventListener("input", () => {
+        const modal = document.getElementById("gameModal");
 
-    filterGames();
-
-});
-
-
-/* =========================
-   LIMPAR FILTROS
-========================= */
-
-clearBtn.addEventListener("click", () => {
-
-    selectedCategory = "Todos";
-    selectedLetter = "";
-
-    searchInput.value = "";
-
-
-    letterButtons.forEach(button => {
-
-        button.classList.remove("active");
-
-    });
-
-
-    categoryButtons.forEach(button => {
-
-        button.classList.remove("active");
-
-        if (
-            button.dataset.category === "Todos"
-        ) {
-
-            button.classList.add("active");
-
+        if (modal) {
+            modal.classList.remove("active");
         }
 
     });
-
-
-    updateLettersVisibility();
-
-    filterGames();
-
-});
-
-
-/* =========================
-   EXPLORAR
-========================= */
-
-exploreBtn.addEventListener("click", () => {
-
-    document
-        .getElementById("gamesSection")
-        .scrollIntoView({
-            behavior: "smooth"
-        });
-
-});
-
-
-/* =========================
-   ABRIR MODAL
-========================= */
-
-function openGameModal(card) {
-
-    const name =
-        card.dataset.name;
-
-    const category =
-        card.dataset.category;
-
-    const genre =
-        card.dataset.genre;
-
-    const description =
-        card.dataset.description;
-
-    const image =
-        card.dataset.image ||
-        card.querySelector("img").src;
-
-
-    let parts = [];
-
-
-    try {
-
-        parts =
-            JSON.parse(
-                card.dataset.parts || "[]"
-            );
-
-    } catch {
-
-        parts = [];
-
-    }
-
-
-    modalImage.src = image;
-    modalImage.alt = name;
-
-    modalPlatform.textContent =
-        category;
-
-    modalTitle.textContent =
-        name;
-
-    modalGenre.textContent =
-        genre;
-
-    modalDescription.textContent =
-        description || "Sem descrição.";
-
-
-    modalParts.innerHTML = "";
-
-
-    if (parts.length === 0) {
-
-        modalParts.innerHTML =
-            `<p class="no-parts">
-                Nenhuma parte cadastrada.
-            </p>`;
-
-    } else {
-
-        parts.forEach(part => {
-
-            const link =
-                document.createElement("a");
-
-            link.className =
-                "part-link";
-
-            link.textContent =
-                part.name;
-
-            link.href =
-                part.link;
-
-            link.target =
-                "_blank";
-
-            link.rel =
-                "noopener noreferrer";
-
-            modalParts.appendChild(link);
-
-        });
-
-    }
-
-
-    gameModal.classList.add("show");
-
 }
 
+const gameModal = document.getElementById("gameModal");
 
-/* =========================
-   FECHAR MODAL
-========================= */
+if (gameModal) {
 
-closeModal.addEventListener("click", () => {
+    gameModal.addEventListener("click", event => {
 
-    gameModal.classList.remove("show");
+        if (event.target === gameModal) {
+            gameModal.classList.remove("active");
+        }
 
-});
+    });
+}
 
+// ===============================
+// FILTRO POR PLATAFORMA
+// ===============================
 
-gameModal.addEventListener("click", event => {
-
-    if (event.target === gameModal) {
-
-        gameModal.classList.remove("show");
-
-    }
-
-});
-
-
-/* =========================
-   BOTÕES DOS JOGOS
-   QUE JÁ ESTÃO NO HTML
-========================= */
-
-function activateExistingButtons() {
-
-    const buttons =
-        document.querySelectorAll(
-            ".game-card .details-btn"
-        );
-
-
-    buttons.forEach(button => {
+document.querySelectorAll(".category-btn, .platform")
+    .forEach(button => {
 
         button.addEventListener("click", () => {
 
-            const card =
-                button.closest(".game-card");
+            selectedCategory =
+                button.dataset.category;
 
-            openGameModal(card);
+            selectedLetter = "";
 
+            // Atualiza botões ativos
+            document.querySelectorAll(
+                ".category-btn, .platform"
+            ).forEach(btn => {
+                btn.classList.remove("active");
+            });
+
+            button.classList.add("active");
+
+            // Mostrar A-Z somente quando uma plataforma for escolhida
+            if (
+                lettersSection &&
+                selectedCategory !== "Todos"
+            ) {
+                lettersSection.style.display = "block";
+            }
+
+            renderLetters();
+            renderGames();
         });
-
     });
 
+// ===============================
+// LETRAS A-Z
+// ===============================
+
+function renderLetters() {
+
+    if (!lettersContainer) return;
+
+    lettersContainer.innerHTML = "";
+
+    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+
+    alphabet.forEach(letter => {
+
+        const button = document.createElement("button");
+
+        button.textContent = letter;
+        button.dataset.letter = letter;
+
+        if (letter === selectedLetter) {
+            button.classList.add("active");
+        }
+
+        button.addEventListener("click", () => {
+
+            selectedLetter = letter;
+
+            renderLetters();
+            renderGames();
+        });
+
+        lettersContainer.appendChild(button);
+    });
 }
 
+// ===============================
+// PESQUISA
+// ===============================
 
-/* =========================
-   INICIAR
-========================= */
+if (searchInput) {
 
-activateExistingButtons();
+    searchInput.addEventListener("input", () => {
+        renderGames();
+    });
+}
 
-loadAdminGames();
+// ===============================
+// LIMPAR FILTROS
+// ===============================
 
-updateLettersVisibility();
+if (clearFiltersBtn) {
 
-filterGames();
+    clearFiltersBtn.addEventListener("click", () => {
+
+        selectedCategory = "Todos";
+        selectedLetter = "";
+
+        if (searchInput) {
+            searchInput.value = "";
+        }
+
+        if (lettersSection) {
+            lettersSection.style.display = "none";
+        }
+
+        document.querySelectorAll(
+            ".category-btn, .platform"
+        ).forEach(btn => {
+            btn.classList.remove("active");
+        });
+
+        renderGames();
+    });
+}
+
+// ===============================
+// SEGURANÇA CONTRA HTML
+// ===============================
+
+function escapeHtml(value) {
+
+    if (value === null || value === undefined) {
+        return "";
+    }
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+// ===============================
+// INICIALIZAÇÃO
+// ===============================
+
+// A-Z começa escondido
+if (lettersSection) {
+    lettersSection.style.display = "none";
+}
+
+// Carregar jogos online
+loadGames();
