@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Bootplay Admin</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body class="admin-page">
+
+
+    <!-- LOGIN -->
+
+    <section id="loginScreen" class="admin-container">
+
+        <div class="admin-box">
+
+            <div class="logo admin-logo">
+                <span>BOOT</span>PLAY
+            </div>
+
+            <h1>ÁREA ADMIN</h1>
+
+            <p>
+                Acesso restrito ao administrador.
+            </p>
+
+
+            <form id="loginForm">
+
+                <label>
+                    Usuário
+                </label>
+
+                <input
+                    type="text"
+                    id="adminUsername"
+                    placeholder="Digite o usuário"
+                    required
+                >
+
+
+                <label>
+                    Senha
+                </label>
+
+                <input
+                    type="password"
+                    id="adminPassword"
+                    placeholder="Digite a senha"
+                    required
+                >
+
+
+                <button type="submit" class="admin-button">
+                    ENTRAR
+                </button>
+
+            </form>
+
+
+            <p
+                id="loginMessage"
+                class="login-message"
+            ></p>
+
+
+            <a href="index.html" class="back-link">
+                ← Voltar para o Bootplay
+            </a>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- PAINEL -->
+
+    <section
+        id="adminPanel"
+        class="admin-container hidden"
+    >
+
+        <div class="admin-dashboard">
+
+            <div class="admin-top">
+
+                <div>
+
+                    <div class="logo">
+                        <span>BOOT</span>PLAY
+                    </div>
+
+                    <h1>
+                        PAINEL ADMIN
+                    </h1>
+
+                </div>
+
+                <button
+                    id="logoutBtn"
+                    class="logout-button"
+                >
+                    SAIR
+                </button>
+
+            </div>
+
+
+            <!-- ADICIONAR JOGO -->
+
+            <div class="admin-card">
+
+                <h2>
+                    ➕ ADICIONAR JOGO
+                </h2>
+
+                <p class="admin-description">
+                    Cadastre as informações do jogo.
+                </p>
+
+
+                <form id="gameForm">
+
+
+                    <!-- NOME -->
+
+                    <label>
+                        Nome do jogo
+                    </label>
+
+                    <input
+                        type="text"
+                        id="gameName"
+                        placeholder="Ex: God of War III"
+                        required
+                    >
+
+
+                    <!-- PLATAFORMA -->
+
+                    <label>
+                        Plataforma
+                    </label>
+
+                    <select
+                        id="gameCategory"
+                        required
+                    >
+
+                        <option value="">
+                            Escolha uma plataforma
+                        </option>
+
+                        <option value="PS1">
+                            PS1
+                        </option>
+
+                        <option value="PS2">
+                            PS2
+                        </option>
+
+                        <option value="PS3">
+                            PS3
+                        </option>
+
+                        <option value="PS4">
+                            PS4
+                        </option>
+
+                        <option value="PS5">
+                            PS5
+                        </option>
+
+                        <option value="PC">
+                            PC
+                        </option>
+
+                        <option value="Mobile">
+                            Mobile
+                        </option>
+
+                    </select>
+
+
+                    <!-- GÊNERO -->
+
+                    <label>
+                        Gênero
+                    </label>
+
+                    <input
+                        type="text"
+                        id="gameGenre"
+                        placeholder="Ex: Ação"
+                        required
+                    >
+
+
+                    <!-- IMAGEM -->
+
+                    <label>
+                        Imagem do jogo
+                    </label>
+
+                    <input
+                        type="url"
+                        id="gameImage"
+                        placeholder="Cole aqui o link da imagem"
+                        required
+                    >
+
+                    <small class="field-help">
+                        Nesta primeira versão use o link de uma imagem.
+                    </small>
+
+
+                    <!-- DESCRIÇÃO -->
+
+                    <label>
+                        Descrição do jogo
+                    </label>
+
+                    <textarea
+                        id="gameDescription"
+                        rows="6"
+                        placeholder="Escreva aqui a descrição do jogo..."
+                        required
+                    ></textarea>
+
+
+                    <!-- PARTES -->
+
+                    <div class="parts-header">
+
+                        <div>
+
+                            <h3>
+                                PARTES DO JOGO
+                            </h3>
+
+                            <p>
+                                Você pode adicionar quantas partes quiser.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div id="partsContainer">
+
+                        <div class="part-form">
+
+                            <div class="part-number">
+                                PARTE
+                            </div>
+
+                            <label>
+                                Nome da parte
+                            </label>
+
+                            <input
+                                type="text"
+                                class="part-name"
+                                placeholder="Ex: Parte Única, DVD 1, CD 1..."
+                                required
+                            >
+
+
+                            <label>
+                                Link da parte
+                            </label>
+
+                            <input
+                                type="url"
+                                class="part-link-input"
+                                placeholder="Cole o link aqui"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        id="addPartBtn"
+                        class="add-part-button"
+                    >
+                        + ADICIONAR OUTRA PARTE
+                    </button>
+
+
+                    <button
+                        type="submit"
+                        class="save-game-button"
+                    >
+                        💾 ADICIONAR JOGO
+                    </button>
+
+                </form>
+
+            </div>
+
+
+            <!-- JOGOS CADASTRADOS -->
+
+            <div class="admin-card">
+
+                <div class="registered-header">
+
+                    <div>
+
+                        <h2>
+                            🎮 JOGOS CADASTRADOS
+                        </h2>
+
+                        <p>
+                            Jogos adicionados neste navegador.
+                        </p>
+
+                    </div>
+
+                    <span id="gameCount">
+                        0 jogos
+                    </span>
+
+                </div>
+
+
+                <div id="registeredGames">
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+    <script src="admin.js"></script>
+
+</body>
+
+</html>
