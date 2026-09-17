@@ -34,32 +34,28 @@ const gameCount =
 
 
 /* =========================
-   LOGIN TEMPORÁRIO
+   VERIFICAR SESSÃO SUPABASE
 ========================= */
 
-/*
-   ATENÇÃO:
-   Este login é apenas para a versão
-   de demonstração.
-
-   Quando conectarmos o Supabase,
-   o login real será feito através
-   do sistema de autenticação.
-*/
-
-const DEMO_USER = "Tobi";
-const DEMO_PASSWORD = "856980";
+checkSession();
 
 
-/* =========================
-   VERIFICAR LOGIN
-========================= */
+async function checkSession() {
 
-if (
-    sessionStorage.getItem("bootplayAdmin") === "true"
-) {
+    const {
+        data: { session }
+    } = await supabaseClient.auth.getSession();
 
-    showAdminPanel();
+
+    if (session) {
+
+        showAdminPanel();
+
+    } else {
+
+        showLogin();
+
+    }
 
 }
 
@@ -68,12 +64,21 @@ if (
    LOGIN
 ========================= */
 
-loginForm.addEventListener("submit", event => {
+loginForm.addEventListener("submit", async event => {
 
     event.preventDefault();
 
 
-    const username =
+    loginMessage.textContent = "Entrando...";
+
+
+    /*
+       IMPORTANTE:
+       O Supabase usa o e-mail criado
+       em Authentication → Users.
+    */
+
+    const email =
         document.getElementById(
             "adminUsername"
         ).value.trim();
@@ -85,28 +90,48 @@ loginForm.addEventListener("submit", event => {
         ).value;
 
 
-    if (
-        username === DEMO_USER &&
-        password === DEMO_PASSWORD
-    ) {
+    const {
+        data,
+        error
+    } = await supabaseClient.auth.signInWithPassword({
 
-        sessionStorage.setItem(
-            "bootplayAdmin",
-            "true"
-        );
+        email: email,
 
-        loginMessage.textContent = "";
+        password: password
 
-        showAdminPanel();
+    });
 
-    } else {
+
+    if (error) {
+
+        console.error(error);
 
         loginMessage.textContent =
-            "Usuário ou senha incorretos.";
+            "E-mail ou senha incorretos.";
+
+        return;
 
     }
 
+
+    loginMessage.textContent = "";
+
+    showAdminPanel();
+
 });
+
+
+/* =========================
+   MOSTRAR LOGIN
+========================= */
+
+function showLogin() {
+
+    loginScreen.classList.remove("hidden");
+
+    adminPanel.classList.add("hidden");
+
+}
 
 
 /* =========================
@@ -128,15 +153,11 @@ function showAdminPanel() {
    LOGOUT
 ========================= */
 
-logoutBtn.addEventListener("click", () => {
+logoutBtn.addEventListener("click", async () => {
 
-    sessionStorage.removeItem(
-        "bootplayAdmin"
-    );
+    await supabaseClient.auth.signOut();
 
-    adminPanel.classList.add("hidden");
-
-    loginScreen.classList.remove("hidden");
+    showLogin();
 
 });
 
@@ -228,6 +249,7 @@ function updatePartNumbers() {
         const number =
             form.querySelector(".part-number");
 
+
         number.textContent =
             `PARTE ${index + 1}`;
 
@@ -240,7 +262,7 @@ function updatePartNumbers() {
    ADICIONAR JOGO
 ========================= */
 
-gameForm.addEventListener("submit", event => {
+gameForm.addEventListener("submit", async event => {
 
     event.preventDefault();
 
@@ -284,7 +306,7 @@ gameForm.addEventListener("submit", event => {
     const parts = [];
 
 
-    partForms.forEach(form => {
+    partForms.forEach((form, index) => {
 
         const partName =
             form.querySelector(
@@ -304,7 +326,9 @@ gameForm.addEventListener("submit", event => {
 
                 name: partName,
 
-                link: partLink
+                link: partLink,
+
+                sort_order: index
 
             });
 
@@ -313,132 +337,321 @@ gameForm.addEventListener("submit", event => {
     });
 
 
-    const game = {
+    if (parts.length === 0) {
 
-        id: Date.now(),
+        alert(
+            "Adicione pelo menos uma parte do jogo."
+        );
 
-        name: name,
+        return;
 
-        category: category,
-
-        genre: genre,
-
-        image: image,
-
-        description: description,
-
-        parts: parts
-
-    };
+    }
 
 
     /*
-       Pega os jogos existentes.
+       Verifica se o administrador
+       ainda está autenticado.
     */
 
-    const games =
-        JSON.parse(
-            localStorage.getItem(
-                "bootplayGames"
-            ) || "[]"
+    const {
+        data: { session }
+    } = await supabaseClient.auth.getSession();
+
+
+    if (!session) {
+
+        alert(
+            "Sua sessão expirou. Faça login novamente."
+        );
+
+        showLogin();
+
+        return;
+
+    }
+
+
+    /*
+       Desativa o botão enquanto salva.
+    */
+
+    const submitButton =
+        gameForm.querySelector(
+            'button[type="submit"]'
         );
 
 
-    /*
-       Adiciona o novo jogo.
-    */
+    if (submitButton) {
 
-    games.push(game);
+        submitButton.disabled = true;
 
+        submitButton.textContent =
+            "SALVANDO...";
 
-    /*
-       Salva.
-    */
-
-    localStorage.setItem(
-        "bootplayGames",
-        JSON.stringify(games)
-    );
+    }
 
 
-    /*
-       Limpa formulário.
-    */
+    try {
 
-    gameForm.reset();
+        /* =========================
+           SALVAR JOGO
+        ========================= */
+
+        const {
+            data: game,
+            error: gameError
+        } = await supabaseClient
+            .from("games")
+            .insert({
+
+                name: name,
+
+                platform: category,
+
+                genre: genre,
+
+                image: image,
+
+                description: description
+
+            })
+            .select()
+            .single();
 
 
-    /*
-       Deixa somente uma parte.
-    */
+        if (gameError) {
 
-    partsContainer.innerHTML = `
+            throw gameError;
 
-        <div class="part-form">
+        }
 
-            <div class="part-number">
-                PARTE 1
+
+        /* =========================
+           SALVAR PARTES
+        ========================= */
+
+        const partsToInsert =
+            parts.map(part => ({
+
+                game_id: game.id,
+
+                name: part.name,
+
+                link: part.link,
+
+                sort_order: part.sort_order
+
+            }));
+
+
+        const {
+            error: partsError
+        } = await supabaseClient
+            .from("game_parts")
+            .insert(partsToInsert);
+
+
+        if (partsError) {
+
+            /*
+               Se as partes falharem,
+               remove o jogo criado.
+            */
+
+            await supabaseClient
+                .from("games")
+                .delete()
+                .eq("id", game.id);
+
+
+            throw partsError;
+
+        }
+
+
+        /* =========================
+           LIMPAR FORMULÁRIO
+        ========================= */
+
+        gameForm.reset();
+
+
+        partsContainer.innerHTML = `
+
+            <div class="part-form">
+
+                <div class="part-number">
+                    PARTE 1
+                </div>
+
+                <label>
+                    Nome da parte
+                </label>
+
+                <input
+                    type="text"
+                    class="part-name"
+                    placeholder="Ex: Parte Única, DVD 1, CD 1..."
+                    required
+                >
+
+                <label>
+                    Link da parte
+                </label>
+
+                <input
+                    type="url"
+                    class="part-link-input"
+                    placeholder="Cole o link aqui"
+                    required
+                >
+
             </div>
 
-            <label>
-                Nome da parte
-            </label>
-
-            <input
-                type="text"
-                class="part-name"
-                placeholder="Ex: Parte Única, DVD 1, CD 1..."
-                required
-            >
-
-            <label>
-                Link da parte
-            </label>
-
-            <input
-                type="url"
-                class="part-link-input"
-                placeholder="Cole o link aqui"
-                required
-            >
-
-        </div>
-
-    `;
+        `;
 
 
-    loadRegisteredGames();
+        await loadRegisteredGames();
 
 
-    alert(
-        "Jogo adicionado com sucesso!"
-    );
+        alert(
+            "Jogo adicionado com sucesso ao Bootplay!"
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Erro ao adicionar jogo:",
+            error
+        );
+
+
+        alert(
+            "Erro ao adicionar o jogo. Veja o console para mais detalhes."
+        );
+
+
+    } finally {
+
+        if (submitButton) {
+
+            submitButton.disabled = false;
+
+            submitButton.textContent =
+                "ADICIONAR JOGO";
+
+        }
+
+    }
 
 });
 
 
 /* =========================
-   LISTAR JOGOS
+   LISTAR JOGOS DO SUPABASE
 ========================= */
 
-function loadRegisteredGames() {
+async function loadRegisteredGames() {
 
-    const games =
-        JSON.parse(
-            localStorage.getItem(
-                "bootplayGames"
-            ) || "[]"
+    registeredGames.innerHTML = `
+        <div class="empty-games">
+            Carregando jogos...
+        </div>
+    `;
+
+
+    /*
+       Busca jogos.
+    */
+
+    const {
+        data: games,
+        error: gamesError
+    } = await supabaseClient
+        .from("games")
+        .select("*")
+        .order("created_at", {
+            ascending: false
+        });
+
+
+    if (gamesError) {
+
+        console.error(
+            "Erro ao carregar jogos:",
+            gamesError
         );
 
 
+        registeredGames.innerHTML = `
+            <div class="empty-games">
+                Erro ao carregar os jogos.
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    /*
+       Busca todas as partes.
+    */
+
+    const {
+        data: parts,
+        error: partsError
+    } = await supabaseClient
+        .from("game_parts")
+        .select("*")
+        .order("sort_order", {
+            ascending: true
+        });
+
+
+    if (partsError) {
+
+        console.error(
+            "Erro ao carregar partes:",
+            partsError
+        );
+
+        return;
+
+    }
+
+
+    /*
+       Junta as partes aos respectivos jogos.
+    */
+
+    const gamesWithParts =
+        games.map(game => ({
+
+            ...game,
+
+            parts:
+                parts.filter(
+                    part =>
+                        part.game_id === game.id
+                )
+
+        }));
+
+
     gameCount.textContent =
-        `${games.length} jogo${games.length !== 1 ? "s" : ""}`;
+        `${gamesWithParts.length} jogo${
+            gamesWithParts.length !== 1
+                ? "s"
+                : ""
+        }`;
 
 
     registeredGames.innerHTML = "";
 
 
-    if (games.length === 0) {
+    if (gamesWithParts.length === 0) {
 
         registeredGames.innerHTML = `
 
@@ -455,7 +668,7 @@ function loadRegisteredGames() {
     }
 
 
-    games.forEach(game => {
+    gamesWithParts.forEach(game => {
 
         const item =
             document.createElement("div");
@@ -467,20 +680,20 @@ function loadRegisteredGames() {
         item.innerHTML = `
 
             <img
-                src="${game.image}"
-                alt="${game.name}"
+                src="${escapeHtml(game.image)}"
+                alt="${escapeHtml(game.name)}"
             >
 
             <div class="registered-game-info">
 
                 <h3>
-                    ${game.name}
+                    ${escapeHtml(game.name)}
                 </h3>
 
                 <p>
-                    ${game.category}
+                    ${escapeHtml(game.platform)}
                     •
-                    ${game.genre}
+                    ${escapeHtml(game.genre)}
                     •
                     ${game.parts.length}
                     parte(s)
@@ -524,7 +737,7 @@ function activateDeleteButtons() {
 
         button.addEventListener(
             "click",
-            () => {
+            async () => {
 
                 const id =
                     Number(
@@ -545,32 +758,69 @@ function activateDeleteButtons() {
                 }
 
 
-                let games =
-                    JSON.parse(
-                        localStorage.getItem(
-                            "bootplayGames"
-                        ) || "[]"
+                button.disabled = true;
+
+                button.textContent =
+                    "EXCLUINDO...";
+
+
+                /*
+                   Graças ao ON DELETE CASCADE,
+                   as partes também serão apagadas.
+                */
+
+                const {
+                    error
+                } = await supabaseClient
+                    .from("games")
+                    .delete()
+                    .eq("id", id);
+
+
+                if (error) {
+
+                    console.error(
+                        "Erro ao excluir:",
+                        error
                     );
 
 
-                games =
-                    games.filter(
-                        game =>
-                            game.id !== id
+                    alert(
+                        "Não foi possível excluir o jogo."
                     );
 
 
-                localStorage.setItem(
-                    "bootplayGames",
-                    JSON.stringify(games)
-                );
+                    button.disabled = false;
+
+                    button.textContent =
+                        "EXCLUIR";
+
+                    return;
+
+                }
 
 
-                loadRegisteredGames();
+                await loadRegisteredGames();
 
             }
         );
 
     });
+
+}
+
+
+/* =========================
+   PROTEÇÃO CONTRA HTML
+========================= */
+
+function escapeHtml(value) {
+
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 
 }
