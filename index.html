@@ -1,17 +1,21 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Bootplay - Jogos</title>
+    <title>Bootplay - Portal Gamer</title>
 
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <!-- CABEÇALHO -->
+    <!-- =========================
+         HEADER
+    ========================== -->
+
     <header class="header">
 
         <button id="menuBtn" class="menu-btn">☰</button>
@@ -31,7 +35,10 @@
     </header>
 
 
-    <!-- MENU LATERAL -->
+    <!-- =========================
+         MENU
+    ========================== -->
+
     <aside id="sidebar" class="sidebar">
 
         <div class="sidebar-title">
@@ -70,15 +77,23 @@
             📱 Mobile
         </button>
 
+        <div class="sidebar-divider"></div>
+
+        <a href="admin.html" class="admin-link">
+            🔐 Área Admin
+        </a>
+
     </aside>
 
     <div id="overlay" class="overlay"></div>
 
 
-    <!-- PRINCIPAL -->
+    <!-- =========================
+         HERO
+    ========================== -->
+
     <main>
 
-        <!-- HERO -->
         <section class="hero">
 
             <div class="hero-content">
@@ -104,7 +119,10 @@
         </section>
 
 
-        <!-- PLATAFORMAS -->
+        <!-- =========================
+             PLATAFORMAS
+        ========================== -->
+
         <section class="section">
 
             <h2>ESCOLHA UMA PLATAFORMA</h2>
@@ -151,7 +169,10 @@
         </section>
 
 
-        <!-- LETRAS -->
+        <!-- =========================
+             LETRAS
+        ========================== -->
+
         <section id="lettersSection" class="section letters-section">
 
             <div class="letters-title">
@@ -200,7 +221,10 @@
         </section>
 
 
-        <!-- JOGOS -->
+        <!-- =========================
+             JOGOS
+        ========================== -->
+
         <section id="gamesSection" class="section">
 
             <div class="games-header">
@@ -224,12 +248,14 @@
 
             <div id="gamesGrid" class="games-grid">
 
+                <!-- JOGO DEMONSTRAÇÃO -->
 
-                <!-- JOGO 1 -->
                 <article
                     class="game-card"
                     data-name="God of War"
                     data-category="PS2"
+                    data-genre="Ação"
+                    data-description="God of War é uma aventura de ação protagonizada por Kratos."
                 >
 
                     <div class="game-image">
@@ -249,7 +275,7 @@
 
                         <h3>God of War</h3>
 
-                        <p>PlayStation 2</p>
+                        <p>PlayStation 2 • Ação</p>
 
                         <button class="details-btn">
                             VER JOGO
@@ -260,11 +286,14 @@
                 </article>
 
 
-                <!-- JOGO 2 -->
+                <!-- JOGO DEMONSTRAÇÃO -->
+
                 <article
                     class="game-card"
                     data-name="Minecraft"
                     data-category="PC"
+                    data-genre="Sandbox"
+                    data-description="Minecraft é um jogo de construção e exploração em um mundo aberto."
                 >
 
                     <div class="game-image">
@@ -284,7 +313,7 @@
 
                         <h3>Minecraft</h3>
 
-                        <p>PC</p>
+                        <p>PC • Sandbox</p>
 
                         <button class="details-btn">
                             VER JOGO
@@ -295,11 +324,14 @@
                 </article>
 
 
-                <!-- JOGO 3 -->
+                <!-- JOGO DEMONSTRAÇÃO -->
+
                 <article
                     class="game-card"
                     data-name="Grand Theft Auto V"
                     data-category="PS4"
+                    data-genre="Ação"
+                    data-description="Grand Theft Auto V é um jogo de ação e mundo aberto."
                 >
 
                     <div class="game-image">
@@ -319,7 +351,7 @@
 
                         <h3>Grand Theft Auto V</h3>
 
-                        <p>PlayStation 4</p>
+                        <p>PlayStation 4 • Ação</p>
 
                         <button class="details-btn">
                             VER JOGO
@@ -330,11 +362,14 @@
                 </article>
 
 
-                <!-- JOGO 4 -->
+                <!-- JOGO DEMONSTRAÇÃO -->
+
                 <article
                     class="game-card"
                     data-name="Resident Evil"
                     data-category="PS1"
+                    data-genre="Terror"
+                    data-description="Resident Evil é uma série clássica de jogos de terror e sobrevivência."
                 >
 
                     <div class="game-image">
@@ -354,7 +389,7 @@
 
                         <h3>Resident Evil</h3>
 
-                        <p>PlayStation 1</p>
+                        <p>PlayStation 1 • Terror</p>
 
                         <button class="details-btn">
                             VER JOGO
@@ -364,11 +399,11 @@
 
                 </article>
 
-
             </div>
 
 
             <!-- SEM RESULTADOS -->
+
             <div id="noResults" class="no-results">
 
                 <div>🎮</div>
@@ -376,7 +411,7 @@
                 <h3>NENHUM JOGO ENCONTRADO</h3>
 
                 <p>
-                    Ainda não existem jogos nessa categoria ou letra.
+                    Não existem jogos nessa categoria ou letra.
                 </p>
 
             </div>
@@ -386,7 +421,52 @@
     </main>
 
 
-    <!-- RODAPÉ -->
+    <!-- =========================
+         MODAL DO JOGO
+    ========================== -->
+
+    <div id="gameModal" class="game-modal">
+
+        <div class="game-modal-content">
+
+            <button id="closeModal" class="close-modal">
+                ×
+            </button>
+
+            <img id="modalImage" src="" alt="">
+
+            <div class="modal-body">
+
+                <span id="modalPlatform" class="modal-platform">
+                </span>
+
+                <h2 id="modalTitle">
+                </h2>
+
+                <p id="modalGenre" class="modal-genre">
+                </p>
+
+                <h3>DESCRIÇÃO</h3>
+
+                <p id="modalDescription" class="modal-description">
+                </p>
+
+                <h3>PARTES</h3>
+
+                <div id="modalParts" class="modal-parts">
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
+
     <footer class="footer">
 
         <div class="logo">
@@ -403,4 +483,5 @@
     <script src="script.js"></script>
 
 </body>
+
 </html>
