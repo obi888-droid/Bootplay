@@ -39,13 +39,13 @@
             <form id="loginForm">
 
                 <label>
-                    Usuário
+                    E-mail do administrador
                 </label>
 
                 <input
-                    type="text"
+                    type="email"
                     id="adminUsername"
-                    placeholder="Digite o usuário"
+                    placeholder="Digite o e-mail"
                     required
                 >
 
@@ -183,6 +183,10 @@
                             PS5
                         </option>
 
+                        <option value="PSP">
+                            PSP
+                        </option>
+
                         <option value="PC">
                             PC
                         </option>
@@ -264,7 +268,7 @@
                         <div class="part-form">
 
                             <div class="part-number">
-                                PARTE
+                                PARTE 1
                             </div>
 
                             <label>
@@ -329,7 +333,7 @@
                         </h2>
 
                         <p>
-                            Jogos adicionados neste navegador.
+                            Jogos cadastrados online no Bootplay.
                         </p>
 
                     </div>
@@ -353,10 +357,16 @@
     </section>
 
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase.js"></script>
-<script src="admin.js"></script>
-    
+
+    <!-- SUPABASE -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="supabase.js"></script>
+
+    <script src="admin.js"></script>
+
+
 </body>
 
 </html>
