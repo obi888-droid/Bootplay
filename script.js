@@ -114,10 +114,6 @@ async function loadGames() {
 
     try {
 
-        // ===============================
-        // JOGOS
-        // ===============================
-
         const resultGames =
             await supabaseClient
                 .from("games")
@@ -145,10 +141,6 @@ async function loadGames() {
             resultGames.data || [];
 
 
-        // ===============================
-        // PARTES
-        // ===============================
-
         const resultParts =
             await supabaseClient
                 .from("game_parts")
@@ -158,50 +150,9 @@ async function loadGames() {
                 });
 
 
-        if (resultParts.error) {
-
-            console.error(
-                "Erro ao carregar partes:",
-                resultParts.error
-            );
-
-        }
-
-
         const partsData =
             resultParts.data || [];
 
-
-        // ===============================
-        // SCREENSHOTS
-        // ===============================
-
-        const resultImages =
-            await supabaseClient
-                .from("game_images")
-                .select("*")
-                .order("sort_order", {
-                    ascending: true
-                });
-
-
-        if (resultImages.error) {
-
-            console.error(
-                "Erro ao carregar screenshots:",
-                resultImages.error
-            );
-
-        }
-
-
-        const imagesData =
-            resultImages.data || [];
-
-
-        // ===============================
-        // JUNTAR DADOS
-        // ===============================
 
         games =
             gamesData.map(function (game) {
@@ -210,34 +161,13 @@ async function loadGames() {
 
                     ...game,
 
-                    // PARTES
                     parts:
                         partsData
                             .filter(function (part) {
 
                                 return (
-                                    Number(part.game_id) ===
-                                    Number(game.id)
-                                );
-
-                            })
-                            .sort(function (a, b) {
-
-                                return (
-                                    a.sort_order -
-                                    b.sort_order
-                                );
-
-                            }),
-
-                    // SCREENSHOTS
-                    images:
-                        imagesData
-                            .filter(function (image) {
-
-                                return (
-                                    Number(image.game_id) ===
-                                    Number(game.id)
+                                    part.game_id ===
+                                    game.id
                                 );
 
                             })
@@ -498,10 +428,6 @@ function openGameModal(game) {
         document.getElementById("modalParts");
 
 
-    // ===============================
-    // IMAGEM PRINCIPAL
-    // ===============================
-
     if (modalImage) {
 
         modalImage.src =
@@ -512,10 +438,6 @@ function openGameModal(game) {
 
     }
 
-
-    // ===============================
-    // INFORMAÇÕES
-    // ===============================
 
     if (modalTitle) {
 
@@ -547,13 +469,6 @@ function openGameModal(game) {
             game.description || "";
 
     }
-
-
-    // ===============================
-    // GALERIA DE SCREENSHOTS
-    // ===============================
-
-    createScreenshotGallery(game);
 
 
     // ===============================
@@ -632,323 +547,6 @@ function openGameModal(game) {
     // IMPORTANTE:
     // O CSS usa .show
     modal.classList.add("show");
-
-}
-
-
-// ===============================
-// CRIAR GALERIA
-// ===============================
-
-function createScreenshotGallery(game) {
-
-    const oldGallery =
-        document.getElementById(
-            "screenshotGallery"
-        );
-
-
-    // Remover galeria anterior
-    if (oldGallery) {
-
-        oldGallery.remove();
-
-    }
-
-
-    // Se não houver screenshots,
-    // não criar galeria
-    if (
-        !game.images ||
-        game.images.length === 0
-    ) {
-
-        return;
-
-    }
-
-
-    const modalImage =
-        document.getElementById("modalImage");
-
-
-    if (!modalImage) {
-
-        return;
-
-    }
-
-
-    // ===============================
-    // CONTAINER PRINCIPAL
-    // ===============================
-
-    const gallery =
-        document.createElement("div");
-
-
-    gallery.id =
-        "screenshotGallery";
-
-
-    gallery.className =
-        "screenshot-gallery";
-
-
-    // ===============================
-    // TÍTULO
-    // ===============================
-
-    const galleryTitle =
-        document.createElement("div");
-
-
-    galleryTitle.className =
-        "screenshot-gallery-title";
-
-
-    galleryTitle.innerHTML = `
-        <span>📸 SCREENSHOTS</span>
-        <small>${game.images.length} imagem${
-            game.images.length !== 1
-                ? "ns"
-                : ""
-        }</small>
-    `;
-
-
-    gallery.appendChild(
-        galleryTitle
-    );
-
-
-    // ===============================
-    // ÁREA DA GALERIA
-    // ===============================
-
-    const galleryWrapper =
-        document.createElement("div");
-
-
-    galleryWrapper.className =
-        "screenshot-gallery-wrapper";
-
-
-    // ===============================
-    // BOTÃO ESQUERDO
-    // ===============================
-
-    const prevButton =
-        document.createElement("button");
-
-
-    prevButton.type =
-        "button";
-
-
-    prevButton.className =
-        "gallery-arrow gallery-prev";
-
-
-    prevButton.innerHTML =
-        "‹";
-
-
-    prevButton.setAttribute(
-        "aria-label",
-        "Screenshot anterior"
-    );
-
-
-    // ===============================
-    // CONTAINER SCROLL
-    // ===============================
-
-    const galleryTrack =
-        document.createElement("div");
-
-
-    galleryTrack.className =
-        "screenshot-track";
-
-
-    // ===============================
-    // SCREENSHOTS
-    // ===============================
-
-    game.images.forEach(
-        function (imageData, index) {
-
-            const image =
-                document.createElement("img");
-
-
-            image.className =
-                "screenshot-item";
-
-
-            image.src =
-                imageData.image_url;
-
-
-            image.alt =
-                `${game.name} - Screenshot ${index + 1}`;
-
-
-            image.loading =
-                "lazy";
-
-
-            /*
-             * IMPORTANTE:
-             *
-             * A screenshot NÃO altera
-             * a imagem principal.
-             *
-             * Por isso não existe aqui:
-             *
-             * modalImage.src = ...
-             *
-             */
-
-
-            image.addEventListener(
-                "click",
-                function (event) {
-
-                    event.stopPropagation();
-
-                }
-            );
-
-
-            galleryTrack.appendChild(
-                image
-            );
-
-        }
-    );
-
-
-    // ===============================
-    // BOTÃO DIREITO
-    // ===============================
-
-    const nextButton =
-        document.createElement("button");
-
-
-    nextButton.type =
-        "button";
-
-
-    nextButton.className =
-        "gallery-arrow gallery-next";
-
-
-    nextButton.innerHTML =
-        "›";
-
-
-    nextButton.setAttribute(
-        "aria-label",
-        "Próxima screenshot"
-    );
-
-
-    // ===============================
-    // NAVEGAÇÃO
-    // ===============================
-
-    prevButton.addEventListener(
-        "click",
-        function (event) {
-
-            event.stopPropagation();
-
-            galleryTrack.scrollBy({
-
-                left:
-                    -galleryTrack.clientWidth * 0.75,
-
-                behavior:
-                    "smooth"
-
-            });
-
-        }
-    );
-
-
-    nextButton.addEventListener(
-        "click",
-        function (event) {
-
-            event.stopPropagation();
-
-            galleryTrack.scrollBy({
-
-                left:
-                    galleryTrack.clientWidth * 0.75,
-
-                behavior:
-                    "smooth"
-
-            });
-
-        }
-    );
-
-
-    // ===============================
-    // MONTAR GALERIA
-    // ===============================
-
-    galleryWrapper.appendChild(
-        prevButton
-    );
-
-    galleryWrapper.appendChild(
-        galleryTrack
-    );
-
-    galleryWrapper.appendChild(
-        nextButton
-    );
-
-
-    gallery.appendChild(
-        galleryWrapper
-    );
-
-
-    // ===============================
-    // INSERIR DEPOIS DA CAPA
-    // ===============================
-
-    /*
-     * A galeria fica depois da imagem
-     * principal.
-     *
-     * A capa continua sendo a imagem
-     * principal e nunca é substituída.
-     */
-
-    const modalContent =
-        modalImage.parentElement;
-
-
-    if (
-        modalContent &&
-        modalContent.parentElement
-    ) {
-
-        modalContent.parentElement.insertBefore(
-            gallery,
-            modalContent.nextSibling
-        );
-
-    }
 
 }
 
