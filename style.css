@@ -833,10 +833,34 @@ body {
 }
 
 
+/* =========================
+   CELULAR PEQUENO
+========================= */
+
 @media (max-width: 450px) {
 
+    /* PESQUISA VISÍVEL NO CELULAR */
     .search-box {
-        display: none;
+        display: block !important;
+
+        margin-left: auto;
+
+        width: auto;
+
+        flex-shrink: 0;
+    }
+
+    .search-box input {
+        display: block !important;
+
+        width: 120px;
+        max-width: 120px;
+
+        padding: 10px 12px;
+
+        font-size: 13px;
+
+        box-sizing: border-box;
     }
 
     .platform-grid {
@@ -852,6 +876,8 @@ body {
     }
 
 }
+
+
 /* =========================
    ADMIN
 ========================= */
