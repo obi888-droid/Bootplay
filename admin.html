@@ -212,22 +212,76 @@
                     >
 
 
-                    <!-- IMAGEM -->
+                    <!-- IMAGEM PRINCIPAL -->
 
                     <label>
-                        Imagem do jogo
+                        Imagem principal do jogo
                     </label>
 
                     <input
                         type="url"
                         id="gameImage"
-                        placeholder="Cole aqui o link da imagem"
+                        placeholder="Cole aqui o link da capa principal"
                         required
                     >
 
                     <small class="field-help">
-                        Nesta primeira versão use o link de uma imagem.
+                        Esta será a imagem principal/capa do jogo.
                     </small>
+
+
+                    <!-- GALERIA DE SCREENSHOTS -->
+
+                    <div class="parts-header">
+
+                        <div>
+
+                            <h3>
+                                📸 SCREENSHOTS DO JOGO
+                            </h3>
+
+                            <p>
+                                Adicione imagens de gameplay,
+                                menus e outras capturas.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div id="imagesContainer">
+
+                        <!-- SCREENSHOT 1 -->
+
+                        <div class="image-form">
+
+                            <div class="image-number">
+                                SCREENSHOT 1
+                            </div>
+
+                            <label>
+                                Link da imagem
+                            </label>
+
+                            <input
+                                type="url"
+                                class="game-image-input"
+                                placeholder="Cole aqui o link da screenshot"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        id="addImageBtn"
+                        class="add-part-button"
+                    >
+                        + ADICIONAR SCREENSHOT
+                    </button>
 
 
                     <!-- DESCRIÇÃO -->
@@ -307,6 +361,8 @@
                         + ADICIONAR OUTRA PARTE
                     </button>
 
+
+                    <!-- SALVAR -->
 
                     <button
                         type="submit"
