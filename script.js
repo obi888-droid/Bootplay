@@ -924,6 +924,433 @@ if (lettersSection) {
     );
 
 }
+/* =========================================================
+   BOOTPLAY — CARROSSEL AUTOMÁTICO
+   ========================================================= */
+
+let carouselIndex = 0;
+let carouselTimer = null;
+let carouselCards = [];
+
+const carouselGrid = document.getElementById("gamesGrid");
+const carouselPrev = document.getElementById("carouselPrev");
+const carouselNext = document.getElementById("carouselNext");
+const carouselDots = document.getElementById("carouselDots");
+
+
+function getCarouselCards() {
+
+  if (!carouselGrid) {
+    return [];
+  }
+
+  return Array.from(
+    carouselGrid.querySelectorAll(".game-card")
+  );
+
+}
+
+
+function getCardsPerView() {
+
+  const width = window.innerWidth;
+
+  if (width <= 600) {
+    return 1;
+  }
+
+  if (width <= 900) {
+    return 3;
+  }
+
+  return 5;
+
+}
+
+
+function updateCarousel() {
+
+  carouselCards = getCarouselCards();
+
+  if (!carouselCards.length) {
+    return;
+  }
+
+  const cardsPerView = getCardsPerView();
+
+  /*
+   * Não deixa o índice ultrapassar o limite
+   */
+
+  const maxIndex = Math.max(
+    0,
+    carouselCards.length - cardsPerView
+  );
+
+  if (carouselIndex > maxIndex) {
+    carouselIndex = 0;
+  }
+
+
+  /*
+   * Calcula a largura do card + espaço
+   */
+
+  const firstCard = carouselCards[0];
+
+  if (!firstCard) {
+    return;
+  }
+
+  const cardStyle = window.getComputedStyle(firstCard);
+
+  const cardWidth = firstCard.offsetWidth;
+
+  const gap = parseFloat(
+    window.getComputedStyle(carouselGrid).gap
+  ) || 0;
+
+  const step = cardWidth + gap;
+
+
+  /*
+   * Move a lista horizontalmente
+   */
+
+  carouselGrid.style.transform =
+    `translateX(-${carouselIndex * step}px)`;
+
+
+  /*
+   * Remove destaque dos cards
+   */
+
+  carouselCards.forEach(card => {
+    card.classList.remove("carousel-active");
+  });
+
+
+  /*
+   * Calcula o card central
+   */
+
+  const centerOffset = Math.floor(
+    (cardsPerView - 1) / 2
+  );
+
+  const activeIndex =
+    Math.min(
+      carouselIndex + centerOffset,
+      carouselCards.length - 1
+    );
+
+
+  if (carouselCards[activeIndex]) {
+
+    carouselCards[activeIndex]
+      .classList
+      .add("carousel-active");
+
+  }
+
+
+  updateCarouselDots();
+
+}
+
+
+function updateCarouselDots() {
+
+  if (!carouselDots) {
+    return;
+  }
+
+  carouselDots.innerHTML = "";
+
+  const cardsPerView = getCardsPerView();
+
+  const totalPositions =
+    Math.max(
+      1,
+      carouselCards.length - cardsPerView + 1
+    );
+
+
+  for (
+    let i = 0;
+    i < totalPositions;
+    i++
+  ) {
+
+    const dot =
+      document.createElement("button");
+
+    dot.type = "button";
+
+    dot.className =
+      "carousel-dot";
+
+
+    if (i === carouselIndex) {
+      dot.classList.add("active");
+    }
+
+
+    dot.addEventListener(
+      "click",
+      () => {
+
+        carouselIndex = i;
+
+        updateCarousel();
+
+        restartCarousel();
+
+      }
+    );
+
+
+    carouselDots.appendChild(dot);
+
+  }
+
+}
+
+
+function nextCarousel() {
+
+  carouselCards = getCarouselCards();
+
+  if (!carouselCards.length) {
+    return;
+  }
+
+  const cardsPerView = getCardsPerView();
+
+  const maxIndex = Math.max(
+    0,
+    carouselCards.length - cardsPerView
+  );
+
+
+  if (carouselIndex >= maxIndex) {
+
+    /*
+     * Volta para o início
+     */
+
+    carouselIndex = 0;
+
+  } else {
+
+    carouselIndex++;
+
+  }
+
+
+  updateCarousel();
+
+}
+
+
+function previousCarousel() {
+
+  carouselCards = getCarouselCards();
+
+  if (!carouselCards.length) {
+    return;
+  }
+
+  const cardsPerView = getCardsPerView();
+
+  const maxIndex = Math.max(
+    0,
+    carouselCards.length - cardsPerView
+  );
+
+
+  if (carouselIndex <= 0) {
+
+    carouselIndex = maxIndex;
+
+  } else {
+
+    carouselIndex--;
+
+  }
+
+
+  updateCarousel();
+
+}
+
+
+function startCarousel() {
+
+  stopCarousel();
+
+
+  carouselTimer = setInterval(
+    () => {
+
+      nextCarousel();
+
+    },
+    3500
+  );
+
+}
+
+
+function stopCarousel() {
+
+  if (carouselTimer) {
+
+    clearInterval(carouselTimer);
+
+    carouselTimer = null;
+
+  }
+
+}
+
+
+function restartCarousel() {
+
+  startCarousel();
+
+}
+
+
+/*
+ * Botão anterior
+ */
+
+if (carouselPrev) {
+
+  carouselPrev.addEventListener(
+    "click",
+    () => {
+
+      previousCarousel();
+
+      restartCarousel();
+
+    }
+  );
+
+}
+
+
+/*
+ * Botão próximo
+ */
+
+if (carouselNext) {
+
+  carouselNext.addEventListener(
+    "click",
+    () => {
+
+      nextCarousel();
+
+      restartCarousel();
+
+    }
+  );
+
+}
+
+
+/*
+ * Pausar quando o mouse estiver em cima
+ */
+
+if (carouselGrid) {
+
+  carouselGrid.addEventListener(
+    "mouseenter",
+    stopCarousel
+  );
+
+
+  carouselGrid.addEventListener(
+    "mouseleave",
+    startCarousel
+  );
+
+}
+
+
+/*
+ * Atualizar quando mudar o tamanho da tela
+ */
+
+window.addEventListener(
+  "resize",
+  () => {
+
+    updateCarousel();
+
+  }
+);
+
+
+/*
+ * Detecta quando o script.js adiciona/remove
+ * jogos do Supabase.
+ */
+
+if (carouselGrid) {
+
+  const carouselObserver =
+    new MutationObserver(
+      () => {
+
+        setTimeout(
+          () => {
+
+            carouselCards =
+              getCarouselCards();
+
+            carouselIndex = 0;
+
+            updateCarousel();
+
+            startCarousel();
+
+          },
+          50
+        );
+
+      }
+    );
+
+
+  carouselObserver.observe(
+    carouselGrid,
+    {
+      childList: true
+    }
+  );
+
+}
+
+
+/*
+ * Inicialização
+ */
+
+setTimeout(
+  () => {
+
+    updateCarousel();
+
+    startCarousel();
+
+  },
+  500
+);
 
 
 // Gerar letras
