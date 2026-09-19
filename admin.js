@@ -26,6 +26,12 @@ const partsContainer =
 const addPartBtn =
     document.getElementById("addPartBtn");
 
+const imagesContainer =
+    document.getElementById("imagesContainer");
+
+const addImageBtn =
+    document.getElementById("addImageBtn");
+
 const registeredGames =
     document.getElementById("registeredGames");
 
@@ -240,7 +246,7 @@ function updatePartNumbers() {
 
     const forms =
         document.querySelectorAll(
-            ".part-form"
+            "#partsContainer .part-form"
         );
 
 
@@ -252,6 +258,133 @@ function updatePartNumbers() {
 
         number.textContent =
             `PARTE ${index + 1}`;
+
+    });
+
+}
+
+
+/* =========================
+   ADICIONAR SCREENSHOT
+========================= */
+
+if (addImageBtn && imagesContainer) {
+
+    addImageBtn.addEventListener("click", () => {
+
+        const imageForms =
+            imagesContainer.querySelectorAll(
+                ".image-form"
+            );
+
+        const imageNumber =
+            imageForms.length + 1;
+
+
+        const imageForm =
+            document.createElement("div");
+
+        imageForm.className =
+            "image-form";
+
+
+        imageForm.innerHTML = `
+
+            <button
+                type="button"
+                class="remove-image-button"
+            >
+                × Remover
+            </button>
+
+            <div class="part-number">
+                SCREENSHOT ${imageNumber}
+            </div>
+
+            <label>
+                Link da imagem
+            </label>
+
+            <input
+                type="url"
+                class="game-image-input"
+                placeholder="Cole aqui o link da screenshot ${imageNumber}"
+            >
+
+        `;
+
+
+        imagesContainer.appendChild(imageForm);
+
+
+        const removeButton =
+            imageForm.querySelector(
+                ".remove-image-button"
+            );
+
+
+        removeButton.addEventListener(
+            "click",
+            () => {
+
+                imageForm.remove();
+
+                updateImageNumbers();
+
+            }
+        );
+
+
+        updateImageNumbers();
+
+    });
+
+}
+
+
+/* =========================
+   NUMERAR SCREENSHOTS
+========================= */
+
+function updateImageNumbers() {
+
+    if (!imagesContainer) {
+        return;
+    }
+
+
+    const forms =
+        imagesContainer.querySelectorAll(
+            ".image-form"
+        );
+
+
+    forms.forEach((form, index) => {
+
+        const number =
+            form.querySelector(".part-number");
+
+
+        if (number) {
+
+            number.textContent =
+                `SCREENSHOT ${index + 1}`;
+
+        }
+
+
+        const input =
+            form.querySelector(
+                ".game-image-input"
+            );
+
+
+        if (input) {
+
+            input.placeholder =
+                `Cole aqui o link da screenshot ${index + 1}`;
+
+        }
 
     });
 
@@ -299,7 +432,7 @@ gameForm.addEventListener("submit", async event => {
 
     const partForms =
         document.querySelectorAll(
-            ".part-form"
+            "#partsContainer .part-form"
         );
 
 
@@ -308,16 +441,29 @@ gameForm.addEventListener("submit", async event => {
 
     partForms.forEach((form, index) => {
 
-        const partName =
+        const partNameInput =
             form.querySelector(
                 ".part-name"
-            ).value.trim();
+            );
+
+
+        const partLinkInput =
+            form.querySelector(
+                ".part-link-input"
+            );
+
+
+        if (!partNameInput || !partLinkInput) {
+            return;
+        }
+
+
+        const partName =
+            partNameInput.value.trim();
 
 
         const partLink =
-            form.querySelector(
-                ".part-link-input"
-            ).value.trim();
+            partLinkInput.value.trim();
 
 
         if (partName && partLink) {
@@ -346,6 +492,46 @@ gameForm.addEventListener("submit", async event => {
         return;
 
     }
+
+
+    /*
+       PEGAR SCREENSHOTS
+    */
+
+    const imageInputs =
+        imagesContainer
+            ? imagesContainer.querySelectorAll(
+                ".game-image-input"
+            )
+            : [];
+
+
+    const screenshots = [];
+
+
+    imageInputs.forEach((input, index) => {
+
+        const imageUrl =
+            input.value.trim();
+
+
+        /*
+           Screenshot vazia é ignorada.
+        */
+
+        if (imageUrl) {
+
+            screenshots.push({
+
+                image_url: imageUrl,
+
+                sort_order: index
+
+            });
+
+        }
+
+    });
 
 
     /*
@@ -391,7 +577,11 @@ gameForm.addEventListener("submit", async event => {
     }
 
 
+    let createdGameId = null;
+
+
     try {
+
 
         /* =========================
            SALVAR JOGO
@@ -424,6 +614,9 @@ gameForm.addEventListener("submit", async event => {
             throw gameError;
 
         }
+
+
+        createdGameId = game.id;
 
 
         /* =========================
@@ -464,7 +657,70 @@ gameForm.addEventListener("submit", async event => {
                 .eq("id", game.id);
 
 
+            createdGameId = null;
+
+
             throw partsError;
+
+        }
+
+
+        /* =========================
+           SALVAR SCREENSHOTS
+        ========================= */
+
+        if (screenshots.length > 0) {
+
+            const screenshotsToInsert =
+                screenshots.map(screenshot => ({
+
+                    game_id: game.id,
+
+                    image_url:
+                        screenshot.image_url,
+
+                    sort_order:
+                        screenshot.sort_order
+
+                }));
+
+
+            const {
+                error: imagesError
+            } = await supabaseClient
+                .from("game_images")
+                .insert(screenshotsToInsert);
+
+
+            if (imagesError) {
+
+                console.error(
+                    "Erro ao salvar screenshots:",
+                    imagesError
+                );
+
+
+                /*
+                   Se as screenshots falharem,
+                   remove o jogo.
+
+                   Como as tabelas usam
+                   ON DELETE CASCADE,
+                   as partes também serão removidas.
+                */
+
+                await supabaseClient
+                    .from("games")
+                    .delete()
+                    .eq("id", game.id);
+
+
+                createdGameId = null;
+
+
+                throw imagesError;
+
+            }
 
         }
 
@@ -475,6 +731,10 @@ gameForm.addEventListener("submit", async event => {
 
         gameForm.reset();
 
+
+        /*
+           Restaurar partes
+        */
 
         partsContainer.innerHTML = `
 
@@ -511,11 +771,44 @@ gameForm.addEventListener("submit", async event => {
         `;
 
 
+        /*
+           Restaurar screenshots
+        */
+
+        if (imagesContainer) {
+
+            imagesContainer.innerHTML = `
+
+                <div class="image-form">
+
+                    <div class="part-number">
+                        SCREENSHOT 1
+                    </div>
+
+                    <label>
+                        Link da imagem
+                    </label>
+
+                    <input
+                        type="url"
+                        class="game-image-input"
+                        placeholder="Cole aqui o link da screenshot 1"
+                    >
+
+                </div>
+
+            `;
+
+        }
+
+
         await loadRegisteredGames();
 
 
         alert(
-            "Jogo adicionado com sucesso ao Bootplay!"
+            screenshots.length > 0
+                ? `Jogo adicionado com sucesso!\n\n${screenshots.length} screenshot(s) salva(s).`
+                : "Jogo adicionado com sucesso ao Bootplay!\n\nNenhuma screenshot foi cadastrada."
         );
 
 
@@ -527,8 +820,26 @@ gameForm.addEventListener("submit", async event => {
         );
 
 
+        /*
+           Segurança extra:
+           se o jogo foi criado mas ocorreu
+           algum erro que não conseguimos tratar
+           antes, tenta remover.
+        */
+
+        if (createdGameId !== null) {
+
+            await supabaseClient
+                .from("games")
+                .delete()
+                .eq("id", createdGameId);
+
+        }
+
+
         alert(
-            "Erro ao adicionar o jogo. Veja o console para mais detalhes."
+            "Erro ao adicionar o jogo.\n\n" +
+            (error.message || "Veja o console para mais detalhes.")
         );
 
 
@@ -623,7 +934,43 @@ async function loadRegisteredGames() {
 
 
     /*
-       Junta as partes aos respectivos jogos.
+       Busca todas as screenshots.
+    */
+
+    const {
+        data: gameImages,
+        error: imagesError
+    } = await supabaseClient
+        .from("game_images")
+        .select("*")
+        .order("sort_order", {
+            ascending: true
+        });
+
+
+    /*
+       Se houver erro nas screenshots,
+       não vamos impedir a lista de jogos
+       de aparecer.
+    */
+
+    if (imagesError) {
+
+        console.error(
+            "Erro ao carregar screenshots:",
+            imagesError
+        );
+
+    }
+
+
+    const screenshots =
+        gameImages || [];
+
+
+    /*
+       Junta as partes e screenshots
+       aos respectivos jogos.
     */
 
     const gamesWithParts =
@@ -635,6 +982,12 @@ async function loadRegisteredGames() {
                 parts.filter(
                     part =>
                         part.game_id === game.id
+                ),
+
+            screenshots:
+                screenshots.filter(
+                    screenshot =>
+                        screenshot.game_id === game.id
                 )
 
         }));
@@ -697,6 +1050,9 @@ async function loadRegisteredGames() {
                     •
                     ${game.parts.length}
                     parte(s)
+                    •
+                    ${game.screenshots.length}
+                    screenshot(s)
                 </p>
 
             </div>
@@ -766,7 +1122,8 @@ function activateDeleteButtons() {
 
                 /*
                    Graças ao ON DELETE CASCADE,
-                   as partes também serão apagadas.
+                   as partes e screenshots
+                   também serão apagadas.
                 */
 
                 const {
