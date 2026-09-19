@@ -212,55 +212,30 @@
             <div class="letters">
 
                 <button data-letter="A">A</button>
-
                 <button data-letter="B">B</button>
-
                 <button data-letter="C">C</button>
-
                 <button data-letter="D">D</button>
-
                 <button data-letter="E">E</button>
-
                 <button data-letter="F">F</button>
-
                 <button data-letter="G">G</button>
-
                 <button data-letter="H">H</button>
-
                 <button data-letter="I">I</button>
-
                 <button data-letter="J">J</button>
-
                 <button data-letter="K">K</button>
-
                 <button data-letter="L">L</button>
-
                 <button data-letter="M">M</button>
-
                 <button data-letter="N">N</button>
-
                 <button data-letter="O">O</button>
-
                 <button data-letter="P">P</button>
-
                 <button data-letter="Q">Q</button>
-
                 <button data-letter="R">R</button>
-
                 <button data-letter="S">S</button>
-
                 <button data-letter="T">T</button>
-
                 <button data-letter="U">U</button>
-
                 <button data-letter="V">V</button>
-
                 <button data-letter="W">W</button>
-
                 <button data-letter="X">X</button>
-
                 <button data-letter="Y">Y</button>
-
                 <button data-letter="Z">Z</button>
 
             </div>
@@ -270,17 +245,22 @@
 
 
         <!-- =========================
-             JOGOS
+             JOGOS EM DESTAQUE
+             CARROSSEL
         ========================== -->
 
         <section
             id="gamesSection"
-            class="section"
+            class="section featured-section"
         >
 
             <div class="games-header">
 
                 <div>
+
+                    <span class="section-kicker">
+                        COLEÇÃO BOOTPLAY
+                    </span>
 
                     <h2 id="gamesTitle">
                         JOGOS EM DESTAQUE
@@ -304,196 +284,249 @@
 
 
 
-            <div
-                id="gamesGrid"
-                class="games-grid"
-            >
+            <!-- =========================
+                 CARROSSEL
+            ========================== -->
+
+            <div class="featured-carousel">
 
 
-                <!-- =========================
-                     JOGO DEMONSTRAÇÃO
-                ========================== -->
+                <!-- SETA ESQUERDA -->
 
-                <article
-                    class="game-card"
-                    data-name="God of War"
-                    data-category="PS2"
-                    data-genre="Ação"
-                    data-description="God of War é uma aventura de ação protagonizada por Kratos."
+                <button
+                    id="carouselPrev"
+                    class="carousel-arrow carousel-prev"
+                    type="button"
+                    aria-label="Jogo anterior"
                 >
+                    ‹
+                </button>
 
-                    <div class="game-image">
 
-                        <img
-                            src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80"
-                            alt="God of War"
+
+                <!-- ÁREA VISÍVEL -->
+
+                <div class="carousel-window">
+
+                    <div
+                        id="gamesGrid"
+                        class="games-grid"
+                    >
+
+
+                        <!-- =========================
+                             JOGO DEMONSTRAÇÃO
+                        ========================== -->
+
+                        <article
+                            class="game-card"
+                            data-name="God of War"
+                            data-category="PS2"
+                            data-genre="Ação"
+                            data-description="God of War é uma aventura de ação protagonizada por Kratos."
                         >
 
-                        <span class="game-platform">
-                            PS2
-                        </span>
+                            <div class="game-image">
 
-                    </div>
+                                <img
+                                    src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80"
+                                    alt="God of War"
+                                >
 
+                                <span class="game-platform">
+                                    PS2
+                                </span>
 
-                    <div class="game-info">
-
-                        <h3>
-                            God of War
-                        </h3>
-
-                        <p>
-                            PlayStation 2 • Ação
-                        </p>
-
-                        <button class="details-btn">
-                            VER JOGO
-                        </button>
-
-                    </div>
-
-                </article>
+                            </div>
 
 
+                            <div class="game-info">
 
-                <!-- =========================
-                     JOGO DEMONSTRAÇÃO
-                ========================== -->
+                                <h3>
+                                    God of War
+                                </h3>
 
-                <article
-                    class="game-card"
-                    data-name="Minecraft"
-                    data-category="PC"
-                    data-genre="Sandbox"
-                    data-description="Minecraft é um jogo de construção e exploração em um mundo aberto."
-                >
+                                <p>
+                                    PlayStation 2 • Ação
+                                </p>
 
-                    <div class="game-image">
+                                <button class="details-btn">
+                                    VER JOGO
+                                </button>
 
-                        <img
-                            src="https://images.unsplash.com/photo-1605897597464-06b14f2f7e39?auto=format&fit=crop&w=800&q=80"
-                            alt="Minecraft"
+                            </div>
+
+                        </article>
+
+
+
+                        <!-- =========================
+                             JOGO DEMONSTRAÇÃO
+                        ========================== -->
+
+                        <article
+                            class="game-card"
+                            data-name="Minecraft"
+                            data-category="PC"
+                            data-genre="Sandbox"
+                            data-description="Minecraft é um jogo de construção e exploração em um mundo aberto."
                         >
 
-                        <span class="game-platform">
-                            PC
-                        </span>
+                            <div class="game-image">
 
-                    </div>
+                                <img
+                                    src="https://images.unsplash.com/photo-1605897597464-06b14f2f7e39?auto=format&fit=crop&w=800&q=80"
+                                    alt="Minecraft"
+                                >
 
+                                <span class="game-platform">
+                                    PC
+                                </span>
 
-                    <div class="game-info">
-
-                        <h3>
-                            Minecraft
-                        </h3>
-
-                        <p>
-                            PC • Sandbox
-                        </p>
-
-                        <button class="details-btn">
-                            VER JOGO
-                        </button>
-
-                    </div>
-
-                </article>
+                            </div>
 
 
+                            <div class="game-info">
 
-                <!-- =========================
-                     JOGO DEMONSTRAÇÃO
-                ========================== -->
+                                <h3>
+                                    Minecraft
+                                </h3>
 
-                <article
-                    class="game-card"
-                    data-name="Grand Theft Auto V"
-                    data-category="PS4"
-                    data-genre="Ação"
-                    data-description="Grand Theft Auto V é um jogo de ação e mundo aberto."
-                >
+                                <p>
+                                    PC • Sandbox
+                                </p>
 
-                    <div class="game-image">
+                                <button class="details-btn">
+                                    VER JOGO
+                                </button>
 
-                        <img
-                            src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80"
-                            alt="Grand Theft Auto V"
+                            </div>
+
+                        </article>
+
+
+
+                        <!-- =========================
+                             JOGO DEMONSTRAÇÃO
+                        ========================== -->
+
+                        <article
+                            class="game-card"
+                            data-name="Grand Theft Auto V"
+                            data-category="PS4"
+                            data-genre="Ação"
+                            data-description="Grand Theft Auto V é um jogo de ação e mundo aberto."
                         >
 
-                        <span class="game-platform">
-                            PS4
-                        </span>
+                            <div class="game-image">
 
-                    </div>
+                                <img
+                                    src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80"
+                                    alt="Grand Theft Auto V"
+                                >
 
+                                <span class="game-platform">
+                                    PS4
+                                </span>
 
-                    <div class="game-info">
-
-                        <h3>
-                            Grand Theft Auto V
-                        </h3>
-
-                        <p>
-                            PlayStation 4 • Ação
-                        </p>
-
-                        <button class="details-btn">
-                            VER JOGO
-                        </button>
-
-                    </div>
-
-                </article>
+                            </div>
 
 
+                            <div class="game-info">
 
-                <!-- =========================
-                     JOGO DEMONSTRAÇÃO
-                ========================== -->
+                                <h3>
+                                    Grand Theft Auto V
+                                </h3>
 
-                <article
-                    class="game-card"
-                    data-name="Resident Evil"
-                    data-category="PS1"
-                    data-genre="Terror"
-                    data-description="Resident Evil é uma série clássica de jogos de terror e sobrevivência."
-                >
+                                <p>
+                                    PlayStation 4 • Ação
+                                </p>
 
-                    <div class="game-image">
+                                <button class="details-btn">
+                                    VER JOGO
+                                </button>
 
-                        <img
-                            src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80"
-                            alt="Resident Evil"
+                            </div>
+
+                        </article>
+
+
+
+                        <!-- =========================
+                             JOGO DEMONSTRAÇÃO
+                        ========================== -->
+
+                        <article
+                            class="game-card"
+                            data-name="Resident Evil"
+                            data-category="PS1"
+                            data-genre="Terror"
+                            data-description="Resident Evil é uma série clássica de jogos de terror e sobrevivência."
                         >
 
-                        <span class="game-platform">
-                            PS1
-                        </span>
+                            <div class="game-image">
+
+                                <img
+                                    src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80"
+                                    alt="Resident Evil"
+                                >
+
+                                <span class="game-platform">
+                                    PS1
+                                </span>
+
+                            </div>
+
+
+                            <div class="game-info">
+
+                                <h3>
+                                    Resident Evil
+                                </h3>
+
+                                <p>
+                                    PlayStation 1 • Terror
+                                </p>
+
+                                <button class="details-btn">
+                                    VER JOGO
+                                </button>
+
+                            </div>
+
+                        </article>
+
 
                     </div>
 
+                </div>
 
-                    <div class="game-info">
 
-                        <h3>
-                            Resident Evil
-                        </h3>
 
-                        <p>
-                            PlayStation 1 • Terror
-                        </p>
+                <!-- SETA DIREITA -->
 
-                        <button class="details-btn">
-                            VER JOGO
-                        </button>
-
-                    </div>
-
-                </article>
+                <button
+                    id="carouselNext"
+                    class="carousel-arrow carousel-next"
+                    type="button"
+                    aria-label="Próximo jogo"
+                >
+                    ›
+                </button>
 
 
             </div>
+
+
+
+            <!-- =========================
+                 INDICADORES
+            ========================== -->
+
+            <div
+                id="carouselDots"
+                class="carousel-dots"
+            ></div>
 
 
 
