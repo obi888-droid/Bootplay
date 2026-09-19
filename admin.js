@@ -34,6 +34,34 @@ const gameCount =
 
 
 /* =========================
+   ELEMENTOS DE EDIÇÃO
+========================= */
+
+const saveGameBtn =
+    document.getElementById("saveGameBtn");
+
+const cancelEditBtn =
+    document.getElementById("cancelEditBtn");
+
+const gameFormTitle =
+    document.getElementById("gameFormTitle");
+
+const gameFormDescription =
+    document.getElementById("gameFormDescription");
+
+
+/*
+   Guarda o ID do jogo que está
+   sendo editado.
+
+   null = modo adicionar
+   número = modo editar
+*/
+
+let editingGameId = null;
+
+
+/* =========================
    VERIFICAR SESSÃO SUPABASE
 ========================= */
 
@@ -71,12 +99,6 @@ loginForm.addEventListener("submit", async event => {
 
     loginMessage.textContent = "Entrando...";
 
-
-    /*
-       IMPORTANTE:
-       O Supabase usa o e-mail criado
-       em Authentication → Users.
-    */
 
     const email =
         document.getElementById(
@@ -156,6 +178,8 @@ function showAdminPanel() {
 logoutBtn.addEventListener("click", async () => {
 
     await supabaseClient.auth.signOut();
+
+    resetGameForm();
 
     showLogin();
 
@@ -250,8 +274,12 @@ function updatePartNumbers() {
             form.querySelector(".part-number");
 
 
-        number.textContent =
-            `PARTE ${index + 1}`;
+        if (number) {
+
+            number.textContent =
+                `PARTE ${index + 1}`;
+
+        }
 
     });
 
@@ -259,89 +287,17 @@ function updatePartNumbers() {
 
 
 /* =========================
-   ADICIONAR JOGO
+   ENTRAR NO MODO EDIÇÃO
 ========================= */
 
-gameForm.addEventListener("submit", async event => {
+async function editGame(gameId) {
 
-    event.preventDefault();
-
-
-    const name =
-        document.getElementById(
-            "gameName"
-        ).value.trim();
+    gameId = Number(gameId);
 
 
-    const category =
-        document.getElementById(
-            "gameCategory"
-        ).value;
+    if (!gameId) {
 
-
-    const genre =
-        document.getElementById(
-            "gameGenre"
-        ).value.trim();
-
-
-    const image =
-        document.getElementById(
-            "gameImage"
-        ).value.trim();
-
-
-    const description =
-        document.getElementById(
-            "gameDescription"
-        ).value.trim();
-
-
-    const partForms =
-        document.querySelectorAll(
-            ".part-form"
-        );
-
-
-    const parts = [];
-
-
-    partForms.forEach((form, index) => {
-
-        const partName =
-            form.querySelector(
-                ".part-name"
-            ).value.trim();
-
-
-        const partLink =
-            form.querySelector(
-                ".part-link-input"
-            ).value.trim();
-
-
-        if (partName && partLink) {
-
-            parts.push({
-
-                name: partName,
-
-                link: partLink,
-
-                sort_order: index
-
-            });
-
-        }
-
-    });
-
-
-    if (parts.length === 0) {
-
-        alert(
-            "Adicione pelo menos uma parte do jogo."
-        );
+        alert("ID do jogo inválido.");
 
         return;
 
@@ -349,8 +305,7 @@ gameForm.addEventListener("submit", async event => {
 
 
     /*
-       Verifica se o administrador
-       ainda está autenticado.
+       Verifica se a sessão ainda está ativa.
     */
 
     const {
@@ -371,51 +326,19 @@ gameForm.addEventListener("submit", async event => {
     }
 
 
-    /*
-       Desativa o botão enquanto salva.
-    */
-
-    const submitButton =
-        gameForm.querySelector(
-            'button[type="submit"]'
-        );
-
-
-    if (submitButton) {
-
-        submitButton.disabled = true;
-
-        submitButton.textContent =
-            "SALVANDO...";
-
-    }
-
-
     try {
 
-        /* =========================
-           SALVAR JOGO
-        ========================= */
+        /*
+           Busca o jogo.
+        */
 
         const {
             data: game,
             error: gameError
         } = await supabaseClient
             .from("games")
-            .insert({
-
-                name: name,
-
-                platform: category,
-
-                genre: genre,
-
-                image: image,
-
-                description: description
-
-            })
-            .select()
+            .select("*")
+            .eq("id", gameId)
             .single();
 
 
@@ -426,126 +349,766 @@ gameForm.addEventListener("submit", async event => {
         }
 
 
-        /* =========================
-           SALVAR PARTES
-        ========================= */
-
-        const partsToInsert =
-            parts.map(part => ({
-
-                game_id: game.id,
-
-                name: part.name,
-
-                link: part.link,
-
-                sort_order: part.sort_order
-
-            }));
-
+        /*
+           Busca as partes do jogo.
+        */
 
         const {
+            data: parts,
             error: partsError
         } = await supabaseClient
             .from("game_parts")
-            .insert(partsToInsert);
+            .select("*")
+            .eq("game_id", gameId)
+            .order("sort_order", {
+                ascending: true
+            });
 
 
         if (partsError) {
-
-            /*
-               Se as partes falharem,
-               remove o jogo criado.
-            */
-
-            await supabaseClient
-                .from("games")
-                .delete()
-                .eq("id", game.id);
-
 
             throw partsError;
 
         }
 
 
-        /* =========================
-           LIMPAR FORMULÁRIO
-        ========================= */
+        /*
+           Guarda o ID que está sendo editado.
+        */
 
-        gameForm.reset();
-
-
-        partsContainer.innerHTML = `
-
-            <div class="part-form">
-
-                <div class="part-number">
-                    PARTE 1
-                </div>
-
-                <label>
-                    Nome da parte
-                </label>
-
-                <input
-                    type="text"
-                    class="part-name"
-                    placeholder="Ex: Parte Única, DVD 1, CD 1..."
-                    required
-                >
-
-                <label>
-                    Link da parte
-                </label>
-
-                <input
-                    type="url"
-                    class="part-link-input"
-                    placeholder="Cole o link aqui"
-                    required
-                >
-
-            </div>
-
-        `;
+        editingGameId = gameId;
 
 
-        await loadRegisteredGames();
+        /*
+           Preenche os dados principais.
+        */
+
+        document.getElementById(
+            "gameName"
+        ).value = game.name || "";
 
 
-        alert(
-            "Jogo adicionado com sucesso ao Bootplay!"
-        );
+        document.getElementById(
+            "gameCategory"
+        ).value = game.platform || "";
+
+
+        document.getElementById(
+            "gameGenre"
+        ).value = game.genre || "";
+
+
+        document.getElementById(
+            "gameImage"
+        ).value = game.image || "";
+
+
+        document.getElementById(
+            "gameDescription"
+        ).value = game.description || "";
+
+
+        /*
+           Limpa as partes atuais.
+        */
+
+        partsContainer.innerHTML = "";
+
+
+        /*
+           Se o jogo tiver partes,
+           cria todas novamente.
+        */
+
+        if (parts && parts.length > 0) {
+
+            parts.forEach((part, index) => {
+
+                createPartForm(
+                    part.name,
+                    part.link,
+                    index
+                );
+
+            });
+
+        } else {
+
+            createPartForm(
+                "",
+                "",
+                0
+            );
+
+        }
+
+
+        updatePartNumbers();
+
+
+        /*
+           Muda o formulário para edição.
+        */
+
+        if (gameFormTitle) {
+
+            gameFormTitle.textContent =
+                "✏️ EDITAR JOGO";
+
+        }
+
+
+        if (gameFormDescription) {
+
+            gameFormDescription.textContent =
+                "Altere as informações do jogo e salve as mudanças.";
+
+        }
+
+
+        if (saveGameBtn) {
+
+            saveGameBtn.textContent =
+                "💾 SALVAR ALTERAÇÕES";
+
+        }
+
+
+        if (cancelEditBtn) {
+
+            cancelEditBtn.style.display =
+                "block";
+
+        }
+
+
+        /*
+           Leva o usuário até o formulário.
+        */
+
+        gameForm.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
 
 
     } catch (error) {
 
         console.error(
-            "Erro ao adicionar jogo:",
+            "Erro ao carregar jogo para edição:",
             error
         );
 
 
         alert(
-            "Erro ao adicionar o jogo. Veja o console para mais detalhes."
+            "Não foi possível carregar o jogo para edição."
+        );
+
+    }
+
+}
+
+
+/* =========================
+   CRIAR FORMULÁRIO DE PARTE
+========================= */
+
+function createPartForm(
+    partName = "",
+    partLink = "",
+    index = 0
+) {
+
+    const partForm =
+        document.createElement("div");
+
+    partForm.className =
+        "part-form";
+
+
+    /*
+       A primeira parte não recebe
+       botão remover.
+
+       As outras recebem.
+    */
+
+    const removeButton =
+        index > 0
+            ? `
+                <button
+                    type="button"
+                    class="remove-part-button"
+                >
+                    × Remover
+                </button>
+              `
+            : "";
+
+
+    partForm.innerHTML = `
+
+        ${removeButton}
+
+        <div class="part-number">
+            PARTE ${index + 1}
+        </div>
+
+        <label>
+            Nome da parte
+        </label>
+
+        <input
+            type="text"
+            class="part-name"
+            placeholder="Ex: Parte Única, DVD 1, CD 1..."
+            value="${escapeHtml(partName)}"
+            required
+        >
+
+        <label>
+            Link da parte
+        </label>
+
+        <input
+            type="url"
+            class="part-link-input"
+            placeholder="Cole o link aqui"
+            value="${escapeHtml(partLink)}"
+            required
+        >
+
+    `;
+
+
+    partsContainer.appendChild(partForm);
+
+
+    const removeButtonElement =
+        partForm.querySelector(
+            ".remove-part-button"
         );
 
 
-    } finally {
+    if (removeButtonElement) {
 
-        if (submitButton) {
+        removeButtonElement.addEventListener(
+            "click",
+            () => {
 
-            submitButton.disabled = false;
+                partForm.remove();
 
-            submitButton.textContent =
-                "ADICIONAR JOGO";
+                updatePartNumbers();
+
+            }
+        );
+
+    }
+
+}
+
+
+/* =========================
+   CANCELAR EDIÇÃO
+========================= */
+
+if (cancelEditBtn) {
+
+    cancelEditBtn.addEventListener(
+        "click",
+        () => {
+
+            resetGameForm();
+
+            gameForm.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+        }
+    );
+
+}
+
+
+/* =========================
+   RESETAR FORMULÁRIO
+========================= */
+
+function resetGameForm() {
+
+    editingGameId = null;
+
+
+    gameForm.reset();
+
+
+    partsContainer.innerHTML = `
+
+        <div class="part-form">
+
+            <div class="part-number">
+                PARTE 1
+            </div>
+
+            <label>
+                Nome da parte
+            </label>
+
+            <input
+                type="text"
+                class="part-name"
+                placeholder="Ex: Parte Única, DVD 1, CD 1..."
+                required
+            >
+
+            <label>
+                Link da parte
+            </label>
+
+            <input
+                type="url"
+                class="part-link-input"
+                placeholder="Cole o link aqui"
+                required
+            >
+
+        </div>
+
+    `;
+
+
+    if (gameFormTitle) {
+
+        gameFormTitle.textContent =
+            "➕ ADICIONAR JOGO";
+
+    }
+
+
+    if (gameFormDescription) {
+
+        gameFormDescription.textContent =
+            "Cadastre as informações do jogo.";
+
+    }
+
+
+    if (saveGameBtn) {
+
+        saveGameBtn.textContent =
+            "💾 ADICIONAR JOGO";
+
+    }
+
+
+    if (cancelEditBtn) {
+
+        cancelEditBtn.style.display =
+            "none";
+
+    }
+
+}
+
+
+/* =========================
+   ADICIONAR / EDITAR JOGO
+========================= */
+
+gameForm.addEventListener(
+    "submit",
+    async event => {
+
+        event.preventDefault();
+
+
+        const name =
+            document.getElementById(
+                "gameName"
+            ).value.trim();
+
+
+        const category =
+            document.getElementById(
+                "gameCategory"
+            ).value;
+
+
+        const genre =
+            document.getElementById(
+                "gameGenre"
+            ).value.trim();
+
+
+        const image =
+            document.getElementById(
+                "gameImage"
+            ).value.trim();
+
+
+        const description =
+            document.getElementById(
+                "gameDescription"
+            ).value.trim();
+
+
+        /*
+           Coleta as partes.
+        */
+
+        const partForms =
+            document.querySelectorAll(
+                ".part-form"
+            );
+
+
+        const parts = [];
+
+
+        partForms.forEach(
+            (form, index) => {
+
+                const partName =
+                    form.querySelector(
+                        ".part-name"
+                    ).value.trim();
+
+
+                const partLink =
+                    form.querySelector(
+                        ".part-link-input"
+                    ).value.trim();
+
+
+                if (
+                    partName &&
+                    partLink
+                ) {
+
+                    parts.push({
+
+                        name: partName,
+
+                        link: partLink,
+
+                        sort_order: index
+
+                    });
+
+                }
+
+            }
+        );
+
+
+        if (parts.length === 0) {
+
+            alert(
+                "Adicione pelo menos uma parte do jogo."
+            );
+
+            return;
+
+        }
+
+
+        /*
+           Verifica sessão.
+        */
+
+        const {
+            data: { session }
+        } = await supabaseClient.auth.getSession();
+
+
+        if (!session) {
+
+            alert(
+                "Sua sessão expirou. Faça login novamente."
+            );
+
+            showLogin();
+
+            return;
+
+        }
+
+
+        /*
+           Desativa botão.
+        */
+
+        if (saveGameBtn) {
+
+            saveGameBtn.disabled = true;
+
+            saveGameBtn.textContent =
+                editingGameId
+                    ? "SALVANDO ALTERAÇÕES..."
+                    : "SALVANDO...";
+
+        }
+
+
+        try {
+
+            /* =========================
+               MODO EDITAR
+            ========================= */
+
+            if (editingGameId !== null) {
+
+                const gameId =
+                    editingGameId;
+
+
+                /*
+                   Atualiza o jogo.
+                */
+
+                const {
+                    error: gameError
+                } = await supabaseClient
+                    .from("games")
+                    .update({
+
+                        name: name,
+
+                        platform: category,
+
+                        genre: genre,
+
+                        image: image,
+
+                        description: description
+
+                    })
+                    .eq(
+                        "id",
+                        gameId
+                    );
+
+
+                if (gameError) {
+
+                    throw gameError;
+
+                }
+
+
+                /*
+                   Remove as partes antigas.
+                   Depois cria as novas.
+                */
+
+                const {
+                    error: deletePartsError
+                } = await supabaseClient
+                    .from("game_parts")
+                    .delete()
+                    .eq(
+                        "game_id",
+                        gameId
+                    );
+
+
+                if (deletePartsError) {
+
+                    throw deletePartsError;
+
+                }
+
+
+                const partsToInsert =
+                    parts.map(
+                        part => ({
+
+                            game_id:
+                                gameId,
+
+                            name:
+                                part.name,
+
+                            link:
+                                part.link,
+
+                            sort_order:
+                                part.sort_order
+
+                        })
+                    );
+
+
+                const {
+                    error: insertPartsError
+                } = await supabaseClient
+                    .from("game_parts")
+                    .insert(
+                        partsToInsert
+                    );
+
+
+                if (insertPartsError) {
+
+                    throw insertPartsError;
+
+                }
+
+
+                /*
+                   Sai do modo edição.
+                */
+
+                resetGameForm();
+
+
+                await loadRegisteredGames();
+
+
+                alert(
+                    "Jogo atualizado com sucesso!"
+                );
+
+
+                return;
+
+            }
+
+
+            /* =========================
+               MODO ADICIONAR
+            ========================= */
+
+            const {
+                data: game,
+                error: gameError
+            } = await supabaseClient
+                .from("games")
+                .insert({
+
+                    name: name,
+
+                    platform: category,
+
+                    genre: genre,
+
+                    image: image,
+
+                    description: description
+
+                })
+                .select()
+                .single();
+
+
+            if (gameError) {
+
+                throw gameError;
+
+            }
+
+
+            /*
+               Salva as partes.
+            */
+
+            const partsToInsert =
+                parts.map(
+                    part => ({
+
+                        game_id:
+                            game.id,
+
+                        name:
+                            part.name,
+
+                        link:
+                            part.link,
+
+                        sort_order:
+                            part.sort_order
+
+                    })
+                );
+
+
+            const {
+                error: partsError
+            } = await supabaseClient
+                .from("game_parts")
+                .insert(
+                    partsToInsert
+                );
+
+
+            if (partsError) {
+
+                /*
+                   Se as partes falharem,
+                   remove o jogo criado.
+                */
+
+                await supabaseClient
+                    .from("games")
+                    .delete()
+                    .eq(
+                        "id",
+                        game.id
+                    );
+
+
+                throw partsError;
+
+            }
+
+
+            /*
+               Limpa formulário.
+            */
+
+            resetGameForm();
+
+
+            await loadRegisteredGames();
+
+
+            alert(
+                "Jogo adicionado com sucesso ao Bootplay!"
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Erro ao salvar jogo:",
+                error
+            );
+
+
+            alert(
+                "Erro ao salvar o jogo. Veja o console para mais detalhes."
+            );
+
+
+        } finally {
+
+            if (saveGameBtn) {
+
+                saveGameBtn.disabled = false;
+
+
+                saveGameBtn.textContent =
+                    editingGameId !== null
+                        ? "💾 SALVAR ALTERAÇÕES"
+                        : "💾 ADICIONAR JOGO";
+
+            }
 
         }
 
     }
-
-});
+);
 
 
 /* =========================
@@ -701,12 +1264,25 @@ async function loadRegisteredGames() {
 
             </div>
 
-            <button
-                class="delete-game-button"
-                data-id="${game.id}"
-            >
-                EXCLUIR
-            </button>
+            <div class="registered-game-actions">
+
+                <button
+                    type="button"
+                    class="edit-game-button"
+                    data-id="${game.id}"
+                >
+                    ✏️ EDITAR
+                </button>
+
+                <button
+                    type="button"
+                    class="delete-game-button"
+                    data-id="${game.id}"
+                >
+                    🗑️ EXCLUIR
+                </button>
+
+            </div>
 
         `;
 
@@ -716,7 +1292,55 @@ async function loadRegisteredGames() {
     });
 
 
+    activateEditButtons();
+
     activateDeleteButtons();
+
+}
+
+
+/* =========================
+   ATIVAR BOTÕES EDITAR
+========================= */
+
+function activateEditButtons() {
+
+    const buttons =
+        document.querySelectorAll(
+            ".edit-game-button"
+        );
+
+
+    buttons.forEach(button => {
+
+        button.addEventListener(
+            "click",
+            async () => {
+
+                const id =
+                    Number(
+                        button.dataset.id
+                    );
+
+
+                button.disabled = true;
+
+                button.textContent =
+                    "CARREGANDO...";
+
+
+                await editGame(id);
+
+
+                button.disabled = false;
+
+                button.textContent =
+                    "✏️ EDITAR";
+
+            }
+        );
+
+    });
 
 }
 
@@ -774,7 +1398,10 @@ function activateDeleteButtons() {
                 } = await supabaseClient
                     .from("games")
                     .delete()
-                    .eq("id", id);
+                    .eq(
+                        "id",
+                        id
+                    );
 
 
                 if (error) {
@@ -793,9 +1420,23 @@ function activateDeleteButtons() {
                     button.disabled = false;
 
                     button.textContent =
-                        "EXCLUIR";
+                        "🗑️ EXCLUIR";
 
                     return;
+
+                }
+
+
+                /*
+                   Se o jogo excluído estava
+                   em edição, cancela a edição.
+                */
+
+                if (
+                    editingGameId === id
+                ) {
+
+                    resetGameForm();
 
                 }
 
@@ -817,10 +1458,25 @@ function activateDeleteButtons() {
 function escapeHtml(value) {
 
     return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 
 }
