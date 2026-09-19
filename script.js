@@ -544,8 +544,6 @@ function openGameModal(game) {
     }
 
 
-    // IMPORTANTE:
-    // O CSS usa .show
     modal.classList.add("show");
 
 }
@@ -629,6 +627,9 @@ document.addEventListener(
 
             }
 
+            // Fechar também os modais de mensagem
+            closeMessageModals();
+
         }
 
     }
@@ -657,7 +658,6 @@ document
                 selectedLetter = "";
 
 
-                // Remover ativo
                 document
                     .querySelectorAll(
                         ".category-btn, .platform"
@@ -671,14 +671,11 @@ document
                     });
 
 
-                // Ativar botão clicado
                 button.classList.add(
                     "active"
                 );
 
 
-                // Mostrar A-Z somente
-                // quando escolher plataforma
                 if (
                     lettersSection &&
                     selectedCategory !== "Todos"
@@ -819,7 +816,6 @@ if (clearFiltersBtn) {
             }
 
 
-            // Esconder A-Z
             if (lettersSection) {
 
                 lettersSection.classList.remove(
@@ -829,7 +825,6 @@ if (clearFiltersBtn) {
             }
 
 
-            // Remover ativos
             document
                 .querySelectorAll(
                     ".category-btn, .platform"
@@ -843,7 +838,6 @@ if (clearFiltersBtn) {
                 });
 
 
-            // Ativar Todos
             document
                 .querySelectorAll(
                     '[data-category="Todos"]'
@@ -916,7 +910,6 @@ function escapeHtml(value) {
 // INICIALIZAÇÃO
 // ===============================
 
-// Esconder A-Z inicialmente
 if (lettersSection) {
 
     lettersSection.classList.remove(
@@ -924,6 +917,8 @@ if (lettersSection) {
     );
 
 }
+
+
 /* =========================================================
    BOOTPLAY — CARROSSEL AUTOMÁTICO
    ========================================================= */
@@ -932,426 +927,813 @@ let carouselIndex = 0;
 let carouselTimer = null;
 let carouselCards = [];
 
-const carouselGrid = document.getElementById("gamesGrid");
-const carouselPrev = document.getElementById("carouselPrev");
-const carouselNext = document.getElementById("carouselNext");
-const carouselDots = document.getElementById("carouselDots");
+const carouselGrid =
+    document.getElementById("gamesGrid");
+
+const carouselPrev =
+    document.getElementById("carouselPrev");
+
+const carouselNext =
+    document.getElementById("carouselNext");
+
+const carouselDots =
+    document.getElementById("carouselDots");
 
 
 function getCarouselCards() {
 
-  if (!carouselGrid) {
-    return [];
-  }
+    if (!carouselGrid) {
+        return [];
+    }
 
-  return Array.from(
-    carouselGrid.querySelectorAll(".game-card")
-  );
+    return Array.from(
+        carouselGrid.querySelectorAll(".game-card")
+    );
 
 }
 
 
 function getCardsPerView() {
 
-  const width = window.innerWidth;
+    const width = window.innerWidth;
 
-  if (width <= 600) {
-    return 1;
-  }
+    if (width <= 600) {
+        return 1;
+    }
 
-  if (width <= 900) {
-    return 3;
-  }
+    if (width <= 900) {
+        return 3;
+    }
 
-  return 5;
+    return 5;
 
 }
 
 
 function updateCarousel() {
 
-  carouselCards = getCarouselCards();
+    carouselCards = getCarouselCards();
 
-  if (!carouselCards.length) {
-    return;
-  }
+    if (!carouselCards.length) {
+        return;
+    }
 
-  const cardsPerView = getCardsPerView();
+    const cardsPerView =
+        getCardsPerView();
 
-  /*
-   * Não deixa o índice ultrapassar o limite
-   */
+    const maxIndex =
+        Math.max(
+            0,
+            carouselCards.length - cardsPerView
+        );
 
-  const maxIndex = Math.max(
-    0,
-    carouselCards.length - cardsPerView
-  );
-
-  if (carouselIndex > maxIndex) {
-    carouselIndex = 0;
-  }
+    if (carouselIndex > maxIndex) {
+        carouselIndex = 0;
+    }
 
 
-  /*
-   * Calcula a largura do card + espaço
-   */
+    const firstCard =
+        carouselCards[0];
 
-  const firstCard = carouselCards[0];
-
-  if (!firstCard) {
-    return;
-  }
-
-  const cardStyle = window.getComputedStyle(firstCard);
-
-  const cardWidth = firstCard.offsetWidth;
-
-  const gap = parseFloat(
-    window.getComputedStyle(carouselGrid).gap
-  ) || 0;
-
-  const step = cardWidth + gap;
+    if (!firstCard) {
+        return;
+    }
 
 
-  /*
-   * Move a lista horizontalmente
-   */
+    const cardWidth =
+        firstCard.offsetWidth;
 
-  carouselGrid.style.transform =
-    `translateX(-${carouselIndex * step}px)`;
-
-
-  /*
-   * Remove destaque dos cards
-   */
-
-  carouselCards.forEach(card => {
-    card.classList.remove("carousel-active");
-  });
+    const gap =
+        parseFloat(
+            window.getComputedStyle(
+                carouselGrid
+            ).gap
+        ) || 0;
 
 
-  /*
-   * Calcula o card central
-   */
-
-  const centerOffset = Math.floor(
-    (cardsPerView - 1) / 2
-  );
-
-  const activeIndex =
-    Math.min(
-      carouselIndex + centerOffset,
-      carouselCards.length - 1
-    );
+    const step =
+        cardWidth + gap;
 
 
-  if (carouselCards[activeIndex]) {
-
-    carouselCards[activeIndex]
-      .classList
-      .add("carousel-active");
-
-  }
+    carouselGrid.style.transform =
+        `translateX(-${carouselIndex * step}px)`;
 
 
-  updateCarouselDots();
+    carouselCards.forEach(card => {
+
+        card.classList.remove(
+            "carousel-active"
+        );
+
+    });
+
+
+    const centerOffset =
+        Math.floor(
+            (cardsPerView - 1) / 2
+        );
+
+
+    const activeIndex =
+        Math.min(
+            carouselIndex + centerOffset,
+            carouselCards.length - 1
+        );
+
+
+    if (carouselCards[activeIndex]) {
+
+        carouselCards[activeIndex]
+            .classList
+            .add("carousel-active");
+
+    }
+
+
+    updateCarouselDots();
 
 }
 
 
 function updateCarouselDots() {
 
-  if (!carouselDots) {
-    return;
-  }
-
-  carouselDots.innerHTML = "";
-
-  const cardsPerView = getCardsPerView();
-
-  const totalPositions =
-    Math.max(
-      1,
-      carouselCards.length - cardsPerView + 1
-    );
-
-
-  for (
-    let i = 0;
-    i < totalPositions;
-    i++
-  ) {
-
-    const dot =
-      document.createElement("button");
-
-    dot.type = "button";
-
-    dot.className =
-      "carousel-dot";
-
-
-    if (i === carouselIndex) {
-      dot.classList.add("active");
+    if (!carouselDots) {
+        return;
     }
 
+    carouselDots.innerHTML = "";
 
-    dot.addEventListener(
-      "click",
-      () => {
-
-        carouselIndex = i;
-
-        updateCarousel();
-
-        restartCarousel();
-
-      }
-    );
+    const cardsPerView =
+        getCardsPerView();
 
 
-    carouselDots.appendChild(dot);
+    const totalPositions =
+        Math.max(
+            1,
+            carouselCards.length -
+            cardsPerView +
+            1
+        );
 
-  }
+
+    for (
+        let i = 0;
+        i < totalPositions;
+        i++
+    ) {
+
+        const dot =
+            document.createElement("button");
+
+
+        dot.type =
+            "button";
+
+
+        dot.className =
+            "carousel-dot";
+
+
+        if (i === carouselIndex) {
+
+            dot.classList.add(
+                "active"
+            );
+
+        }
+
+
+        dot.addEventListener(
+            "click",
+            () => {
+
+                carouselIndex =
+                    i;
+
+                updateCarousel();
+
+                restartCarousel();
+
+            }
+        );
+
+
+        carouselDots.appendChild(
+            dot
+        );
+
+    }
 
 }
 
 
 function nextCarousel() {
 
-  carouselCards = getCarouselCards();
-
-  if (!carouselCards.length) {
-    return;
-  }
-
-  const cardsPerView = getCardsPerView();
-
-  const maxIndex = Math.max(
-    0,
-    carouselCards.length - cardsPerView
-  );
+    carouselCards =
+        getCarouselCards();
 
 
-  if (carouselIndex >= maxIndex) {
-
-    /*
-     * Volta para o início
-     */
-
-    carouselIndex = 0;
-
-  } else {
-
-    carouselIndex++;
-
-  }
+    if (!carouselCards.length) {
+        return;
+    }
 
 
-  updateCarousel();
+    const cardsPerView =
+        getCardsPerView();
+
+
+    const maxIndex =
+        Math.max(
+            0,
+            carouselCards.length -
+            cardsPerView
+        );
+
+
+    if (
+        carouselIndex >=
+        maxIndex
+    ) {
+
+        carouselIndex = 0;
+
+    } else {
+
+        carouselIndex++;
+
+    }
+
+
+    updateCarousel();
 
 }
 
 
 function previousCarousel() {
 
-  carouselCards = getCarouselCards();
-
-  if (!carouselCards.length) {
-    return;
-  }
-
-  const cardsPerView = getCardsPerView();
-
-  const maxIndex = Math.max(
-    0,
-    carouselCards.length - cardsPerView
-  );
+    carouselCards =
+        getCarouselCards();
 
 
-  if (carouselIndex <= 0) {
-
-    carouselIndex = maxIndex;
-
-  } else {
-
-    carouselIndex--;
-
-  }
+    if (!carouselCards.length) {
+        return;
+    }
 
 
-  updateCarousel();
+    const cardsPerView =
+        getCardsPerView();
+
+
+    const maxIndex =
+        Math.max(
+            0,
+            carouselCards.length -
+            cardsPerView
+        );
+
+
+    if (carouselIndex <= 0) {
+
+        carouselIndex =
+            maxIndex;
+
+    } else {
+
+        carouselIndex--;
+
+    }
+
+
+    updateCarousel();
 
 }
 
 
 function startCarousel() {
 
-  stopCarousel();
+    stopCarousel();
 
 
-  carouselTimer = setInterval(
-    () => {
+    carouselTimer =
+        setInterval(
+            () => {
 
-      nextCarousel();
+                nextCarousel();
 
-    },
-    3500
-  );
+            },
+            3500
+        );
 
 }
 
 
 function stopCarousel() {
 
-  if (carouselTimer) {
+    if (carouselTimer) {
 
-    clearInterval(carouselTimer);
+        clearInterval(
+            carouselTimer
+        );
 
-    carouselTimer = null;
+        carouselTimer = null;
 
-  }
+    }
 
 }
 
 
 function restartCarousel() {
 
-  startCarousel();
+    startCarousel();
 
 }
 
-
-/*
- * Botão anterior
- */
 
 if (carouselPrev) {
 
-  carouselPrev.addEventListener(
-    "click",
-    () => {
+    carouselPrev.addEventListener(
+        "click",
+        () => {
 
-      previousCarousel();
+            previousCarousel();
 
-      restartCarousel();
+            restartCarousel();
 
-    }
-  );
+        }
+    );
 
 }
 
-
-/*
- * Botão próximo
- */
 
 if (carouselNext) {
 
-  carouselNext.addEventListener(
-    "click",
-    () => {
+    carouselNext.addEventListener(
+        "click",
+        () => {
 
-      nextCarousel();
+            nextCarousel();
 
-      restartCarousel();
+            restartCarousel();
 
-    }
-  );
-
-}
-
-
-/*
- * Pausar quando o mouse estiver em cima
- */
-
-if (carouselGrid) {
-
-  carouselGrid.addEventListener(
-    "mouseenter",
-    stopCarousel
-  );
-
-
-  carouselGrid.addEventListener(
-    "mouseleave",
-    startCarousel
-  );
+        }
+    );
 
 }
 
 
-/*
- * Atualizar quando mudar o tamanho da tela
- */
-
-window.addEventListener(
-  "resize",
-  () => {
-
-    updateCarousel();
-
-  }
-);
-
-
-/*
- * Detecta quando o script.js adiciona/remove
- * jogos do Supabase.
- */
-
 if (carouselGrid) {
 
-  const carouselObserver =
-    new MutationObserver(
-      () => {
-
-        setTimeout(
-          () => {
-
-            carouselCards =
-              getCarouselCards();
-
-            carouselIndex = 0;
-
-            updateCarousel();
-
-            startCarousel();
-
-          },
-          50
-        );
-
-      }
+    carouselGrid.addEventListener(
+        "mouseenter",
+        stopCarousel
     );
 
 
-  carouselObserver.observe(
-    carouselGrid,
-    {
-      childList: true
-    }
-  );
+    carouselGrid.addEventListener(
+        "mouseleave",
+        startCarousel
+    );
 
 }
 
 
-/*
- * Inicialização
- */
+window.addEventListener(
+    "resize",
+    () => {
 
-setTimeout(
-  () => {
+        updateCarousel();
 
-    updateCarousel();
-
-    startCarousel();
-
-  },
-  500
+    }
 );
 
+
+if (carouselGrid) {
+
+    const carouselObserver =
+        new MutationObserver(
+            () => {
+
+                setTimeout(
+                    () => {
+
+                        carouselCards =
+                            getCarouselCards();
+
+                        carouselIndex = 0;
+
+                        updateCarousel();
+
+                        startCarousel();
+
+                    },
+                    50
+                );
+
+            }
+        );
+
+
+    carouselObserver.observe(
+        carouselGrid,
+        {
+            childList: true
+        }
+    );
+
+}
+
+
+setTimeout(
+    () => {
+
+        updateCarousel();
+
+        startCarousel();
+
+    },
+    500
+);
+
+
+// =========================================================
+// 💬 SISTEMA DE MENSAGENS
+// =========================================================
+
+const openMessageBtn =
+    document.getElementById("openMessageBtn");
+
+const closeMessageModalBtn =
+    document.getElementById("closeMessageModal");
+
+const cancelMessageBtn =
+    document.getElementById("cancelMessageBtn");
+
+const messageModal =
+    document.getElementById("messageModal");
+
+const messageConfirmModal =
+    document.getElementById("messageConfirmModal");
+
+const messageForm =
+    document.getElementById("messageForm");
+
+const cancelMessageConfirm =
+    document.getElementById("cancelMessageConfirm");
+
+const confirmMessageSend =
+    document.getElementById("confirmMessageSend");
+
+
+let pendingMessage = null;
+
+
+// ===============================
+// ABRIR FORMULÁRIO
+// ===============================
+
+if (openMessageBtn) {
+
+    openMessageBtn.addEventListener(
+        "click",
+        function () {
+
+            if (messageModal) {
+
+                messageModal.classList.add(
+                    "show"
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+// ===============================
+// FECHAR FORMULÁRIO
+// ===============================
+
+function closeMessageForm() {
+
+    if (messageModal) {
+
+        messageModal.classList.remove(
+            "show"
+        );
+
+    }
+
+}
+
+
+if (closeMessageModalBtn) {
+
+    closeMessageModalBtn.addEventListener(
+        "click",
+        closeMessageForm
+    );
+
+}
+
+
+if (cancelMessageBtn) {
+
+    cancelMessageBtn.addEventListener(
+        "click",
+        closeMessageForm
+    );
+
+}
+
+
+// ===============================
+// CLICAR FORA DO FORMULÁRIO
+// ===============================
+
+if (messageModal) {
+
+    messageModal.addEventListener(
+        "click",
+        function (event) {
+
+            if (
+                event.target ===
+                messageModal
+            ) {
+
+                closeMessageForm();
+
+            }
+
+        }
+    );
+
+}
+
+
+// ===============================
+// ABRIR CONFIRMAÇÃO
+// ===============================
+
+if (messageForm) {
+
+    messageForm.addEventListener(
+        "submit",
+        function (event) {
+
+            event.preventDefault();
+
+
+            const type =
+                document.getElementById(
+                    "messageType"
+                )?.value || "";
+
+
+            const message =
+                document.getElementById(
+                    "messageText"
+                )?.value.trim() || "";
+
+
+            if (!type || !message) {
+
+                alert(
+                    "Preencha o tipo e a mensagem."
+                );
+
+                return;
+
+            }
+
+
+            pendingMessage = {
+
+                type: type,
+
+                message: message
+
+            };
+
+
+            if (messageConfirmModal) {
+
+                messageConfirmModal.classList.add(
+                    "show"
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+// ===============================
+// CANCELAR CONFIRMAÇÃO
+// ===============================
+
+if (cancelMessageConfirm) {
+
+    cancelMessageConfirm.addEventListener(
+        "click",
+        function () {
+
+            if (messageConfirmModal) {
+
+                messageConfirmModal.classList.remove(
+                    "show"
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+// ===============================
+// ENVIAR MENSAGEM PARA SUPABASE
+// ===============================
+
+if (confirmMessageSend) {
+
+    confirmMessageSend.addEventListener(
+        "click",
+        async function () {
+
+            if (!pendingMessage) {
+                return;
+            }
+
+
+            confirmMessageSend.disabled =
+                true;
+
+
+            confirmMessageSend.textContent =
+                "ENVIANDO...";
+
+
+            try {
+
+                const result =
+                    await supabaseClient
+                        .from("messages")
+                        .insert([
+                            {
+                                type:
+                                    pendingMessage.type,
+
+                                message:
+                                    pendingMessage.message
+                            }
+                        ]);
+
+
+                if (result.error) {
+
+                    console.error(
+                        "Erro ao enviar mensagem:",
+                        result.error
+                    );
+
+
+                    alert(
+                        "Não foi possível enviar a mensagem. Tente novamente."
+                    );
+
+
+                    return;
+
+                }
+
+
+                // Fechar confirmação
+                if (messageConfirmModal) {
+
+                    messageConfirmModal.classList.remove(
+                        "show"
+                    );
+
+                }
+
+
+                // Fechar formulário
+                if (messageModal) {
+
+                    messageModal.classList.remove(
+                        "show"
+                    );
+
+                }
+
+
+                // Limpar formulário
+                if (messageForm) {
+
+                    messageForm.reset();
+
+                }
+
+
+                pendingMessage = null;
+
+
+                alert(
+                    "✅ Mensagem enviada com sucesso!"
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "Erro inesperado ao enviar mensagem:",
+                    error
+                );
+
+
+                alert(
+                    "Ocorreu um erro ao enviar a mensagem."
+                );
+
+
+            } finally {
+
+                confirmMessageSend.disabled =
+                    false;
+
+                confirmMessageSend.textContent =
+                    "SIM, ENVIAR";
+
+            }
+
+        }
+    );
+
+}
+
+
+// ===============================
+// FECHAR MODAIS DE MENSAGEM
+// ===============================
+
+function closeMessageModals() {
+
+    if (messageModal) {
+
+        messageModal.classList.remove(
+            "show"
+        );
+
+    }
+
+
+    if (messageConfirmModal) {
+
+        messageConfirmModal.classList.remove(
+            "show"
+        );
+
+    }
+
+}
+
+
+// ===============================
+// FECHAR CONFIRMAÇÃO CLICANDO FORA
+// ===============================
+
+if (messageConfirmModal) {
+
+    messageConfirmModal.addEventListener(
+        "click",
+        function (event) {
+
+            if (
+                event.target ===
+                messageConfirmModal
+            ) {
+
+                messageConfirmModal.classList.remove(
+                    "show"
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+// =========================================================
+// INICIALIZAÇÃO
+// =========================================================
 
 // Gerar letras
 renderLetters();
