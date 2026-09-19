@@ -50,6 +50,17 @@ const gameFormDescription =
     document.getElementById("gameFormDescription");
 
 
+/* =========================
+   ELEMENTOS DO TAMANHO
+========================= */
+
+const gameSizeInput =
+    document.getElementById("gameSize");
+
+const gameSizeUnit =
+    document.getElementById("gameSizeUnit");
+
+
 /*
    Guarda o ID do jogo que está
    sendo editado.
@@ -304,10 +315,6 @@ async function editGame(gameId) {
     }
 
 
-    /*
-       Verifica se a sessão ainda está ativa.
-    */
-
     const {
         data: { session }
     } = await supabaseClient.auth.getSession();
@@ -328,9 +335,9 @@ async function editGame(gameId) {
 
     try {
 
-        /*
-           Busca o jogo.
-        */
+        /* =========================
+           BUSCAR JOGO
+        ========================= */
 
         const {
             data: game,
@@ -349,9 +356,9 @@ async function editGame(gameId) {
         }
 
 
-        /*
-           Busca as partes do jogo.
-        */
+        /* =========================
+           BUSCAR PARTES
+        ========================= */
 
         const {
             data: parts,
@@ -372,16 +379,12 @@ async function editGame(gameId) {
         }
 
 
-        /*
-           Guarda o ID que está sendo editado.
-        */
-
         editingGameId = gameId;
 
 
-        /*
-           Preenche os dados principais.
-        */
+        /* =========================
+           PREENCHER DADOS
+        ========================= */
 
         document.getElementById(
             "gameName"
@@ -398,6 +401,26 @@ async function editGame(gameId) {
         ).value = game.genre || "";
 
 
+        /*
+           TAMANHO DO JOGO
+        */
+
+        if (gameSizeInput) {
+
+            gameSizeInput.value =
+                game.game_size ?? "";
+
+        }
+
+
+        if (gameSizeUnit) {
+
+            gameSizeUnit.value =
+                game.game_size_unit || "GB";
+
+        }
+
+
         document.getElementById(
             "gameImage"
         ).value = game.image || "";
@@ -408,17 +431,12 @@ async function editGame(gameId) {
         ).value = game.description || "";
 
 
-        /*
-           Limpa as partes atuais.
-        */
+        /* =========================
+           LIMPAR PARTES
+        ========================= */
 
         partsContainer.innerHTML = "";
 
-
-        /*
-           Se o jogo tiver partes,
-           cria todas novamente.
-        */
 
         if (parts && parts.length > 0) {
 
@@ -446,9 +464,9 @@ async function editGame(gameId) {
         updatePartNumbers();
 
 
-        /*
-           Muda o formulário para edição.
-        */
+        /* =========================
+           MODO EDIÇÃO
+        ========================= */
 
         if (gameFormTitle) {
 
@@ -481,10 +499,6 @@ async function editGame(gameId) {
 
         }
 
-
-        /*
-           Leva o usuário até o formulário.
-        */
 
         gameForm.scrollIntoView({
             behavior: "smooth",
@@ -525,13 +539,6 @@ function createPartForm(
     partForm.className =
         "part-form";
 
-
-    /*
-       A primeira parte não recebe
-       botão remover.
-
-       As outras recebem.
-    */
 
     const removeButton =
         index > 0
@@ -643,6 +650,18 @@ function resetGameForm() {
     gameForm.reset();
 
 
+    /*
+       Volta a unidade padrão
+       para GB.
+    */
+
+    if (gameSizeUnit) {
+
+        gameSizeUnit.value = "GB";
+
+    }
+
+
     partsContainer.innerHTML = `
 
         <div class="part-form">
@@ -723,6 +742,10 @@ gameForm.addEventListener(
         event.preventDefault();
 
 
+        /* =========================
+           DADOS PRINCIPAIS
+        ========================= */
+
         const name =
             document.getElementById(
                 "gameName"
@@ -741,11 +764,77 @@ gameForm.addEventListener(
             ).value.trim();
 
 
+        /* =========================
+           TAMANHO
+        ========================= */
+
+        const sizeValue =
+            gameSizeInput
+                ? gameSizeInput.value.trim()
+                : "";
+
+
+        const sizeUnit =
+            gameSizeUnit
+                ? gameSizeUnit.value
+                : "GB";
+
+
+        const gameSize =
+            Number(sizeValue);
+
+
+        if (
+            sizeValue === "" ||
+            !Number.isFinite(gameSize) ||
+            gameSize <= 0
+        ) {
+
+            alert(
+                "Informe um tamanho válido para o jogo."
+            );
+
+            return;
+
+        }
+
+
+        const allowedUnits = [
+            "KB",
+            "MB",
+            "GB",
+            "TB"
+        ];
+
+
+        if (
+            !allowedUnits.includes(
+                sizeUnit
+            )
+        ) {
+
+            alert(
+                "Escolha uma unidade de tamanho válida."
+            );
+
+            return;
+
+        }
+
+
+        /* =========================
+           IMAGEM
+        ========================= */
+
         const image =
             document.getElementById(
                 "gameImage"
             ).value.trim();
 
+
+        /* =========================
+           DESCRIÇÃO
+        ========================= */
 
         const description =
             document.getElementById(
@@ -753,9 +842,9 @@ gameForm.addEventListener(
             ).value.trim();
 
 
-        /*
-           Coleta as partes.
-        */
+        /* =========================
+           PARTES
+        ========================= */
 
         const partForms =
             document.querySelectorAll(
@@ -788,11 +877,14 @@ gameForm.addEventListener(
 
                     parts.push({
 
-                        name: partName,
+                        name:
+                            partName,
 
-                        link: partLink,
+                        link:
+                            partLink,
 
-                        sort_order: index
+                        sort_order:
+                            index
 
                     });
 
@@ -813,9 +905,9 @@ gameForm.addEventListener(
         }
 
 
-        /*
-           Verifica sessão.
-        */
+        /* =========================
+           VERIFICAR SESSÃO
+        ========================= */
 
         const {
             data: { session }
@@ -835,9 +927,9 @@ gameForm.addEventListener(
         }
 
 
-        /*
-           Desativa botão.
-        */
+        /* =========================
+           DESATIVAR BOTÃO
+        ========================= */
 
         if (saveGameBtn) {
 
@@ -863,25 +955,32 @@ gameForm.addEventListener(
                     editingGameId;
 
 
-                /*
-                   Atualiza o jogo.
-                */
-
                 const {
                     error: gameError
                 } = await supabaseClient
                     .from("games")
                     .update({
 
-                        name: name,
+                        name:
+                            name,
 
-                        platform: category,
+                        platform:
+                            category,
 
-                        genre: genre,
+                        genre:
+                            genre,
 
-                        image: image,
+                        game_size:
+                            gameSize,
 
-                        description: description
+                        game_size_unit:
+                            sizeUnit,
+
+                        image:
+                            image,
+
+                        description:
+                            description
 
                     })
                     .eq(
@@ -897,10 +996,9 @@ gameForm.addEventListener(
                 }
 
 
-                /*
-                   Remove as partes antigas.
-                   Depois cria as novas.
-                */
+                /* =========================
+                   APAGAR PARTES ANTIGAS
+                ========================= */
 
                 const {
                     error: deletePartsError
@@ -919,6 +1017,10 @@ gameForm.addEventListener(
 
                 }
 
+
+                /* =========================
+                   INSERIR NOVAS PARTES
+                ========================= */
 
                 const partsToInsert =
                     parts.map(
@@ -956,10 +1058,6 @@ gameForm.addEventListener(
                 }
 
 
-                /*
-                   Sai do modo edição.
-                */
-
                 resetGameForm();
 
 
@@ -987,15 +1085,26 @@ gameForm.addEventListener(
                 .from("games")
                 .insert({
 
-                    name: name,
+                    name:
+                        name,
 
-                    platform: category,
+                    platform:
+                        category,
 
-                    genre: genre,
+                    genre:
+                        genre,
 
-                    image: image,
+                    game_size:
+                        gameSize,
 
-                    description: description
+                    game_size_unit:
+                        sizeUnit,
+
+                    image:
+                        image,
+
+                    description:
+                        description
 
                 })
                 .select()
@@ -1009,9 +1118,9 @@ gameForm.addEventListener(
             }
 
 
-            /*
-               Salva as partes.
-            */
+            /* =========================
+               SALVAR PARTES
+            ========================= */
 
             const partsToInsert =
                 parts.map(
@@ -1062,10 +1171,6 @@ gameForm.addEventListener(
 
             }
 
-
-            /*
-               Limpa formulário.
-            */
 
             resetGameForm();
 
@@ -1124,9 +1229,9 @@ async function loadRegisteredGames() {
     `;
 
 
-    /*
-       Busca jogos.
-    */
+    /* =========================
+       BUSCAR JOGOS
+    ========================= */
 
     const {
         data: games,
@@ -1158,9 +1263,9 @@ async function loadRegisteredGames() {
     }
 
 
-    /*
-       Busca todas as partes.
-    */
+    /* =========================
+       BUSCAR PARTES
+    ========================= */
 
     const {
         data: parts,
@@ -1185,9 +1290,9 @@ async function loadRegisteredGames() {
     }
 
 
-    /*
-       Junta as partes aos respectivos jogos.
-    */
+    /* =========================
+       JUNTAR PARTES
+    ========================= */
 
     const gamesWithParts =
         games.map(game => ({
@@ -1231,6 +1336,10 @@ async function loadRegisteredGames() {
     }
 
 
+    /* =========================
+       RENDERIZAR JOGOS
+    ========================= */
+
     gamesWithParts.forEach(game => {
 
         const item =
@@ -1238,6 +1347,14 @@ async function loadRegisteredGames() {
 
         item.className =
             "registered-game";
+
+
+        const sizeText =
+            game.game_size !== null &&
+            game.game_size !== undefined &&
+            game.game_size !== ""
+                ? `${game.game_size} ${game.game_size_unit || "GB"}`
+                : "Tamanho não informado";
 
 
         item.innerHTML = `
@@ -1257,6 +1374,8 @@ async function loadRegisteredGames() {
                     ${escapeHtml(game.platform)}
                     •
                     ${escapeHtml(game.genre)}
+                    •
+                    ${sizeText}
                     •
                     ${game.parts.length}
                     parte(s)
@@ -1426,11 +1545,6 @@ function activateDeleteButtons() {
 
                 }
 
-
-                /*
-                   Se o jogo excluído estava
-                   em edição, cancela a edição.
-                */
 
                 if (
                     editingGameId === id
