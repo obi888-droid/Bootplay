@@ -2,7 +2,6 @@
 // BOOTPLAY - SCRIPT PRINCIPAL
 // ===============================
 
-
 let games = [];
 let selectedCategory = "Todos";
 let selectedLetter = "";
@@ -12,11 +11,8 @@ let selectedLetter = "";
 // ELEMENTOS
 // ===============================
 
-const gamesGrid =
-    document.getElementById("gamesGrid");
-
-const searchInput =
-    document.getElementById("searchInput");
+const gamesGrid = document.getElementById("gamesGrid");
+const searchInput = document.getElementById("searchInput");
 
 const lettersSection =
     document.getElementById("lettersSection");
@@ -53,7 +49,6 @@ if (menuBtn && sidebar && overlay) {
 
     });
 
-
     overlay.addEventListener("click", function () {
 
         sidebar.classList.remove("active");
@@ -75,16 +70,11 @@ document
         button.addEventListener("click", function () {
 
             if (sidebar) {
-
                 sidebar.classList.remove("active");
-
             }
 
-
             if (overlay) {
-
                 overlay.classList.remove("active");
-
             }
 
         });
@@ -102,7 +92,6 @@ if (exploreBtn) {
 
         const gamesSection =
             document.getElementById("gamesSection");
-
 
         if (gamesSection) {
 
@@ -125,10 +114,6 @@ async function loadGames() {
 
     try {
 
-        // ===============================
-        // JOGOS
-        // ===============================
-
         const resultGames =
             await supabaseClient
                 .from("games")
@@ -137,7 +122,6 @@ async function loadGames() {
                     ascending: true
                 });
 
-
         if (resultGames.error) {
 
             console.error(
@@ -145,24 +129,17 @@ async function loadGames() {
                 resultGames.error
             );
 
-
             showError(
                 "Erro ao carregar os jogos."
             );
 
-
             return;
-
         }
 
 
         const gamesData =
             resultGames.data || [];
 
-
-        // ===============================
-        // PARTES
-        // ===============================
 
         const resultParts =
             await supabaseClient
@@ -173,69 +150,9 @@ async function loadGames() {
                 });
 
 
-        if (resultParts.error) {
-
-            console.error(
-                "Erro ao carregar partes:",
-                resultParts.error
-            );
-
-
-            showError(
-                "Erro ao carregar as partes dos jogos."
-            );
-
-
-            return;
-
-        }
-
-
         const partsData =
             resultParts.data || [];
 
-
-        // ===============================
-        // SCREENSHOTS
-        // ===============================
-
-        const resultImages =
-            await supabaseClient
-                .from("game_images")
-                .select("*")
-                .order("sort_order", {
-                    ascending: true
-                });
-
-
-        /*
-           Se houver erro ao carregar screenshots,
-           não vamos quebrar o site inteiro.
-
-           Os jogos continuam aparecendo.
-        */
-
-        let imagesData = [];
-
-
-        if (resultImages.error) {
-
-            console.error(
-                "Erro ao carregar screenshots:",
-                resultImages.error
-            );
-
-        } else {
-
-            imagesData =
-                resultImages.data || [];
-
-        }
-
-
-        // ===============================
-        // MONTAR JOGOS
-        // ===============================
 
         games =
             gamesData.map(function (game) {
@@ -244,41 +161,12 @@ async function loadGames() {
 
                     ...game,
 
-
-                    // ===============================
-                    // PARTES
-                    // ===============================
-
                     parts:
                         partsData
                             .filter(function (part) {
 
                                 return (
                                     part.game_id ===
-                                    game.id
-                                );
-
-                            })
-                            .sort(function (a, b) {
-
-                                return (
-                                    a.sort_order -
-                                    b.sort_order
-                                );
-
-                            }),
-
-
-                    // ===============================
-                    // SCREENSHOTS
-                    // ===============================
-
-                    images:
-                        imagesData
-                            .filter(function (image) {
-
-                                return (
-                                    image.game_id ===
                                     game.id
                                 );
 
@@ -299,14 +187,12 @@ async function loadGames() {
 
         renderGames();
 
-
     } catch (error) {
 
         console.error(
             "Erro inesperado:",
             error
         );
-
 
         showError(
             "Não foi possível carregar os jogos."
@@ -325,16 +211,13 @@ function showError(message) {
 
     if (!gamesGrid) return;
 
-
     gamesGrid.innerHTML = `
 
         <div class="no-results">
 
             <div>⚠️</div>
 
-            <h3>
-                ERRO
-            </h3>
+            <h3>ERRO</h3>
 
             <p>
                 ${escapeHtml(message)}
@@ -370,10 +253,8 @@ function renderGames() {
             const name =
                 String(game.name || "");
 
-
             const genre =
                 String(game.genre || "");
-
 
             const platform =
                 String(game.platform || "");
@@ -435,9 +316,7 @@ function renderGames() {
 
         `;
 
-
         return;
-
     }
 
 
@@ -525,7 +404,6 @@ function openGameModal(game) {
             "gameModal não encontrado."
         );
 
-
         return;
 
     }
@@ -550,25 +428,16 @@ function openGameModal(game) {
         document.getElementById("modalParts");
 
 
-    // ===============================
-    // IMAGEM PRINCIPAL
-    // ===============================
-
     if (modalImage) {
 
         modalImage.src =
             game.image || "";
-
 
         modalImage.alt =
             game.name || "";
 
     }
 
-
-    // ===============================
-    // TÍTULO
-    // ===============================
 
     if (modalTitle) {
 
@@ -578,10 +447,6 @@ function openGameModal(game) {
     }
 
 
-    // ===============================
-    // PLATAFORMA
-    // ===============================
-
     if (modalPlatform) {
 
         modalPlatform.textContent =
@@ -590,10 +455,6 @@ function openGameModal(game) {
     }
 
 
-    // ===============================
-    // GÊNERO
-    // ===============================
-
     if (modalGenre) {
 
         modalGenre.textContent =
@@ -601,10 +462,6 @@ function openGameModal(game) {
 
     }
 
-
-    // ===============================
-    // DESCRIÇÃO
-    // ===============================
 
     if (modalDescription) {
 
@@ -687,379 +544,9 @@ function openGameModal(game) {
     }
 
 
-    // ===============================
-    // SCREENSHOTS
-    // ===============================
-
-    createScreenshotsGallery(
-        modal,
-        game
-    );
-
-
-    // ===============================
-    // ABRIR MODAL
-    // ===============================
-
+    // IMPORTANTE:
+    // O CSS usa .show
     modal.classList.add("show");
-
-}
-
-
-// ===============================
-// GALERIA DE SCREENSHOTS
-// ===============================
-
-function createScreenshotsGallery(modal, game) {
-
-    /*
-       Procura uma galeria já existente.
-    */
-
-    let gallery =
-        modal.querySelector(
-            "#modalScreenshots"
-        );
-
-
-    /*
-       Se ainda não existir,
-       cria automaticamente.
-    */
-
-    if (!gallery) {
-
-        gallery =
-            document.createElement("div");
-
-
-        gallery.id =
-            "modalScreenshots";
-
-
-        gallery.className =
-            "modal-screenshots";
-
-
-        /*
-           Coloca a galeria depois
-           das partes do jogo.
-        */
-
-        const modalParts =
-            document.getElementById(
-                "modalParts"
-            );
-
-
-        if (
-            modalParts &&
-            modalParts.parentNode
-        ) {
-
-            modalParts.parentNode.insertBefore(
-                gallery,
-                modalParts.nextSibling
-            );
-
-        } else {
-
-            modal.appendChild(
-                gallery
-            );
-
-        }
-
-    }
-
-
-    /*
-       Limpa a galeria anterior.
-    */
-
-    gallery.innerHTML = "";
-
-
-    /*
-       Se não houver screenshots,
-       não mostra a seção.
-    */
-
-    if (
-        !game.images ||
-        game.images.length === 0
-    ) {
-
-        gallery.style.display =
-            "none";
-
-
-        return;
-
-    }
-
-
-    gallery.style.display =
-        "";
-
-
-    // ===============================
-    // TÍTULO
-    // ===============================
-
-    const title =
-        document.createElement("h3");
-
-
-    title.className =
-        "screenshots-title";
-
-
-    title.textContent =
-        "SCREENSHOTS";
-
-
-    gallery.appendChild(title);
-
-
-    // ===============================
-    // CONTAINER DAS IMAGENS
-    // ===============================
-
-    const grid =
-        document.createElement("div");
-
-
-    grid.className =
-        "screenshots-grid";
-
-
-    gallery.appendChild(grid);
-
-
-    // ===============================
-    // IMAGENS
-    // ===============================
-
-    game.images.forEach(
-        function (screenshot, index) {
-
-            const imageWrapper =
-                document.createElement("button");
-
-
-            imageWrapper.type =
-                "button";
-
-
-            imageWrapper.className =
-                "screenshot-item";
-
-
-            imageWrapper.title =
-                `Abrir screenshot ${index + 1}`;
-
-
-            const image =
-                document.createElement("img");
-
-
-            image.src =
-                screenshot.image_url;
-
-
-            image.alt =
-                `${game.name} - Screenshot ${index + 1}`;
-
-
-            image.loading =
-                "lazy";
-
-
-            image.onerror =
-                function () {
-
-                    imageWrapper.style.display =
-                        "none";
-
-                };
-
-
-            imageWrapper.appendChild(
-                image
-            );
-
-
-            imageWrapper.addEventListener(
-                "click",
-                function (event) {
-
-                    event.stopPropagation();
-
-                    openScreenshotViewer(
-                        screenshot.image_url,
-                        game.name
-                    );
-
-                }
-            );
-
-
-            grid.appendChild(
-                imageWrapper
-            );
-
-        }
-    );
-
-}
-
-
-// ===============================
-// VISUALIZADOR DE SCREENSHOT
-// ===============================
-
-function openScreenshotViewer(imageUrl, gameName) {
-
-    /*
-       Cria o visualizador somente
-       quando for necessário.
-    */
-
-    let viewer =
-        document.getElementById(
-            "screenshotViewer"
-        );
-
-
-    if (!viewer) {
-
-        viewer =
-            document.createElement("div");
-
-
-        viewer.id =
-            "screenshotViewer";
-
-
-        viewer.className =
-            "screenshot-viewer";
-
-
-        viewer.innerHTML = `
-
-            <button
-                type="button"
-                class="screenshot-viewer-close"
-                aria-label="Fechar screenshot"
-            >
-                ×
-            </button>
-
-            <img
-                class="screenshot-viewer-image"
-                alt=""
-            >
-
-        `;
-
-
-        document.body.appendChild(
-            viewer
-        );
-
-
-        /*
-           Fechar pelo botão.
-        */
-
-        const closeButton =
-            viewer.querySelector(
-                ".screenshot-viewer-close"
-            );
-
-
-        closeButton.addEventListener(
-            "click",
-            function () {
-
-                closeScreenshotViewer();
-
-            }
-        );
-
-
-        /*
-           Fechar clicando fora da imagem.
-        */
-
-        viewer.addEventListener(
-            "click",
-            function (event) {
-
-                if (
-                    event.target === viewer
-                ) {
-
-                    closeScreenshotViewer();
-
-                }
-
-            }
-        );
-
-    }
-
-
-    const viewerImage =
-        viewer.querySelector(
-            ".screenshot-viewer-image"
-        );
-
-
-    viewerImage.src =
-        imageUrl;
-
-
-    viewerImage.alt =
-        `${gameName || "Jogo"} - Screenshot`;
-
-
-    viewer.classList.add("show");
-
-
-    document.body.classList.add(
-        "screenshot-viewer-open"
-    );
-
-}
-
-
-// ===============================
-// FECHAR VISUALIZADOR
-// ===============================
-
-function closeScreenshotViewer() {
-
-    const viewer =
-        document.getElementById(
-            "screenshotViewer"
-        );
-
-
-    if (!viewer) {
-        return;
-    }
-
-
-    viewer.classList.remove(
-        "show"
-    );
-
-
-    document.body.classList.remove(
-        "screenshot-viewer-open"
-    );
 
 }
 
@@ -1098,10 +585,6 @@ if (closeModal) {
 }
 
 
-// ===============================
-// CLICAR FORA DO MODAL
-// ===============================
-
 const gameModal =
     document.getElementById("gameModal");
 
@@ -1129,7 +612,7 @@ if (gameModal) {
 
 
 // ===============================
-// ESC FECHA MODAL / SCREENSHOT
+// ESC FECHA MODAL
 // ===============================
 
 document.addEventListener(
@@ -1137,24 +620,6 @@ document.addEventListener(
     function (event) {
 
         if (event.key === "Escape") {
-
-            const viewer =
-                document.getElementById(
-                    "screenshotViewer"
-                );
-
-
-            if (
-                viewer &&
-                viewer.classList.contains("show")
-            ) {
-
-                closeScreenshotViewer();
-
-                return;
-
-            }
-
 
             if (gameModal) {
 
@@ -1192,10 +657,7 @@ document
                 selectedLetter = "";
 
 
-                // ===============================
-                // REMOVER ATIVO
-                // ===============================
-
+                // Remover ativo
                 document
                     .querySelectorAll(
                         ".category-btn, .platform"
@@ -1209,20 +671,14 @@ document
                     });
 
 
-                // ===============================
-                // ATIVAR BOTÃO CLICADO
-                // ===============================
-
+                // Ativar botão clicado
                 button.classList.add(
                     "active"
                 );
 
 
-                // ===============================
-                // MOSTRAR A-Z SOMENTE
-                // QUANDO ESCOLHER PLATAFORMA
-                // ===============================
-
+                // Mostrar A-Z somente
+                // quando escolher plataforma
                 if (
                     lettersSection &&
                     selectedCategory !== "Todos"
@@ -1363,10 +819,7 @@ if (clearFiltersBtn) {
             }
 
 
-            // ===============================
-            // ESCONDER A-Z
-            // ===============================
-
+            // Esconder A-Z
             if (lettersSection) {
 
                 lettersSection.classList.remove(
@@ -1376,10 +829,7 @@ if (clearFiltersBtn) {
             }
 
 
-            // ===============================
-            // REMOVER ATIVOS
-            // ===============================
-
+            // Remover ativos
             document
                 .querySelectorAll(
                     ".category-btn, .platform"
@@ -1393,10 +843,7 @@ if (clearFiltersBtn) {
                 });
 
 
-            // ===============================
-            // ATIVAR TODOS
-            // ===============================
-
+            // Ativar Todos
             document
                 .querySelectorAll(
                     '[data-category="Todos"]'
@@ -1470,7 +917,6 @@ function escapeHtml(value) {
 // ===============================
 
 // Esconder A-Z inicialmente
-
 if (lettersSection) {
 
     lettersSection.classList.remove(
@@ -1481,10 +927,8 @@ if (lettersSection) {
 
 
 // Gerar letras
-
 renderLetters();
 
 
 // Carregar jogos
-
 loadGames();
