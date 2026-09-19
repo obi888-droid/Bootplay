@@ -122,6 +122,7 @@ async function loadGames() {
                     ascending: true
                 });
 
+
         if (resultGames.error) {
 
             console.error(
@@ -134,6 +135,7 @@ async function loadGames() {
             );
 
             return;
+
         }
 
 
@@ -148,6 +150,16 @@ async function loadGames() {
                 .order("sort_order", {
                     ascending: true
                 });
+
+
+        if (resultParts.error) {
+
+            console.error(
+                "Erro ao carregar partes:",
+                resultParts.error
+            );
+
+        }
 
 
         const partsData =
@@ -226,6 +238,83 @@ function showError(message) {
         </div>
 
     `;
+
+}
+
+
+// ===============================
+// FORMATAR TAMANHO
+// ===============================
+
+function formatGameSize(game) {
+
+    if (
+        game.game_size === null ||
+        game.game_size === undefined ||
+        game.game_size === ""
+    ) {
+
+        return "";
+
+    }
+
+
+    const size =
+        Number(game.game_size);
+
+
+    if (!Number.isFinite(size)) {
+
+        return "";
+
+    }
+
+
+    const unit =
+        String(
+            game.game_size_unit || "GB"
+        ).toUpperCase();
+
+
+    const allowedUnits = [
+        "KB",
+        "MB",
+        "GB",
+        "TB"
+    ];
+
+
+    if (
+        !allowedUnits.includes(unit)
+    ) {
+
+        return "";
+
+    }
+
+
+    /*
+       Evita mostrar números como:
+       10.0000000001
+
+       Se for inteiro:
+       10 GB
+
+       Se tiver decimal:
+       1.5 GB
+    */
+
+    const formattedSize =
+        Number.isInteger(size)
+            ? String(size)
+            : String(
+                Number(
+                    size.toFixed(2)
+                )
+            );
+
+
+    return `${formattedSize} ${unit}`;
 
 }
 
@@ -317,6 +406,7 @@ function renderGames() {
         `;
 
         return;
+
     }
 
 
@@ -328,6 +418,30 @@ function renderGames() {
 
         card.className =
             "game-card";
+
+
+        const gameSize =
+            formatGameSize(game);
+
+
+        /*
+           Se o jogo tiver tamanho,
+           mostra "PS3 • 10 GB".
+
+           Se não tiver tamanho,
+           mantém o formato antigo.
+        */
+
+        const platformInfo =
+            gameSize
+                ? `
+                    ${escapeHtml(game.platform)}
+                    •
+                    ${escapeHtml(gameSize)}
+                  `
+                : `
+                    ${escapeHtml(game.platform)}
+                  `;
 
 
         card.innerHTML = `
@@ -354,7 +468,7 @@ function renderGames() {
                 </h3>
 
                 <p>
-                    ${escapeHtml(game.platform)}
+                    ${platformInfo}
                     •
                     ${escapeHtml(game.genre)}
                 </p>
@@ -449,8 +563,14 @@ function openGameModal(game) {
 
     if (modalPlatform) {
 
+        const gameSize =
+            formatGameSize(game);
+
+
         modalPlatform.textContent =
-            game.platform || "";
+            gameSize
+                ? `${game.platform} • ${gameSize}`
+                : game.platform || "";
 
     }
 
@@ -544,8 +664,6 @@ function openGameModal(game) {
     }
 
 
-    // IMPORTANTE:
-    // O CSS usa .show
     modal.classList.add("show");
 
 }
@@ -657,7 +775,6 @@ document
                 selectedLetter = "";
 
 
-                // Remover ativo
                 document
                     .querySelectorAll(
                         ".category-btn, .platform"
@@ -671,14 +788,11 @@ document
                     });
 
 
-                // Ativar botão clicado
                 button.classList.add(
                     "active"
                 );
 
 
-                // Mostrar A-Z somente
-                // quando escolher plataforma
                 if (
                     lettersSection &&
                     selectedCategory !== "Todos"
@@ -819,7 +933,6 @@ if (clearFiltersBtn) {
             }
 
 
-            // Esconder A-Z
             if (lettersSection) {
 
                 lettersSection.classList.remove(
@@ -829,7 +942,6 @@ if (clearFiltersBtn) {
             }
 
 
-            // Remover ativos
             document
                 .querySelectorAll(
                     ".category-btn, .platform"
@@ -843,7 +955,6 @@ if (clearFiltersBtn) {
                 });
 
 
-            // Ativar Todos
             document
                 .querySelectorAll(
                     '[data-category="Todos"]'
@@ -924,6 +1035,8 @@ if (lettersSection) {
     );
 
 }
+
+
 /* =========================================================
    BOOTPLAY — CARROSSEL AUTOMÁTICO
    ========================================================= */
@@ -932,292 +1045,348 @@ let carouselIndex = 0;
 let carouselTimer = null;
 let carouselCards = [];
 
-const carouselGrid = document.getElementById("gamesGrid");
-const carouselPrev = document.getElementById("carouselPrev");
-const carouselNext = document.getElementById("carouselNext");
-const carouselDots = document.getElementById("carouselDots");
+const carouselGrid =
+    document.getElementById("gamesGrid");
+
+const carouselPrev =
+    document.getElementById("carouselPrev");
+
+const carouselNext =
+    document.getElementById("carouselNext");
+
+const carouselDots =
+    document.getElementById("carouselDots");
 
 
 function getCarouselCards() {
 
-  if (!carouselGrid) {
-    return [];
-  }
+    if (!carouselGrid) {
+        return [];
+    }
 
-  return Array.from(
-    carouselGrid.querySelectorAll(".game-card")
-  );
+    return Array.from(
+        carouselGrid.querySelectorAll(".game-card")
+    );
 
 }
 
 
 function getCardsPerView() {
 
-  const width = window.innerWidth;
+    const width = window.innerWidth;
 
-  if (width <= 600) {
-    return 1;
-  }
+    if (width <= 600) {
+        return 1;
+    }
 
-  if (width <= 900) {
-    return 3;
-  }
+    if (width <= 900) {
+        return 3;
+    }
 
-  return 5;
+    return 5;
 
 }
 
 
 function updateCarousel() {
 
-  carouselCards = getCarouselCards();
-
-  if (!carouselCards.length) {
-    return;
-  }
-
-  const cardsPerView = getCardsPerView();
-
-  /*
-   * Não deixa o índice ultrapassar o limite
-   */
-
-  const maxIndex = Math.max(
-    0,
-    carouselCards.length - cardsPerView
-  );
-
-  if (carouselIndex > maxIndex) {
-    carouselIndex = 0;
-  }
+    carouselCards =
+        getCarouselCards();
 
 
-  /*
-   * Calcula a largura do card + espaço
-   */
-
-  const firstCard = carouselCards[0];
-
-  if (!firstCard) {
-    return;
-  }
-
-  const cardStyle = window.getComputedStyle(firstCard);
-
-  const cardWidth = firstCard.offsetWidth;
-
-  const gap = parseFloat(
-    window.getComputedStyle(carouselGrid).gap
-  ) || 0;
-
-  const step = cardWidth + gap;
+    if (!carouselCards.length) {
+        return;
+    }
 
 
-  /*
-   * Move a lista horizontalmente
-   */
-
-  carouselGrid.style.transform =
-    `translateX(-${carouselIndex * step}px)`;
+    const cardsPerView =
+        getCardsPerView();
 
 
-  /*
-   * Remove destaque dos cards
-   */
-
-  carouselCards.forEach(card => {
-    card.classList.remove("carousel-active");
-  });
-
-
-  /*
-   * Calcula o card central
-   */
-
-  const centerOffset = Math.floor(
-    (cardsPerView - 1) / 2
-  );
-
-  const activeIndex =
-    Math.min(
-      carouselIndex + centerOffset,
-      carouselCards.length - 1
-    );
+    const maxIndex =
+        Math.max(
+            0,
+            carouselCards.length -
+            cardsPerView
+        );
 
 
-  if (carouselCards[activeIndex]) {
+    if (
+        carouselIndex >
+        maxIndex
+    ) {
 
-    carouselCards[activeIndex]
-      .classList
-      .add("carousel-active");
+        carouselIndex = 0;
 
-  }
+    }
 
 
-  updateCarouselDots();
+    const firstCard =
+        carouselCards[0];
+
+
+    if (!firstCard) {
+        return;
+    }
+
+
+    const cardWidth =
+        firstCard.offsetWidth;
+
+
+    const gap =
+        parseFloat(
+            window.getComputedStyle(
+                carouselGrid
+            ).gap
+        ) || 0;
+
+
+    const step =
+        cardWidth + gap;
+
+
+    carouselGrid.style.transform =
+        `translateX(-${carouselIndex * step}px)`;
+
+
+    carouselCards.forEach(card => {
+
+        card.classList.remove(
+            "carousel-active"
+        );
+
+    });
+
+
+    const centerOffset =
+        Math.floor(
+            (cardsPerView - 1) / 2
+        );
+
+
+    const activeIndex =
+        Math.min(
+            carouselIndex +
+            centerOffset,
+            carouselCards.length - 1
+        );
+
+
+    if (
+        carouselCards[activeIndex]
+    ) {
+
+        carouselCards[activeIndex]
+            .classList
+            .add("carousel-active");
+
+    }
+
+
+    updateCarouselDots();
 
 }
 
 
 function updateCarouselDots() {
 
-  if (!carouselDots) {
-    return;
-  }
-
-  carouselDots.innerHTML = "";
-
-  const cardsPerView = getCardsPerView();
-
-  const totalPositions =
-    Math.max(
-      1,
-      carouselCards.length - cardsPerView + 1
-    );
-
-
-  for (
-    let i = 0;
-    i < totalPositions;
-    i++
-  ) {
-
-    const dot =
-      document.createElement("button");
-
-    dot.type = "button";
-
-    dot.className =
-      "carousel-dot";
-
-
-    if (i === carouselIndex) {
-      dot.classList.add("active");
+    if (!carouselDots) {
+        return;
     }
 
 
-    dot.addEventListener(
-      "click",
-      () => {
-
-        carouselIndex = i;
-
-        updateCarousel();
-
-        restartCarousel();
-
-      }
-    );
+    carouselDots.innerHTML = "";
 
 
-    carouselDots.appendChild(dot);
+    const cardsPerView =
+        getCardsPerView();
 
-  }
+
+    const totalPositions =
+        Math.max(
+            1,
+            carouselCards.length -
+            cardsPerView +
+            1
+        );
+
+
+    for (
+        let i = 0;
+        i < totalPositions;
+        i++
+    ) {
+
+        const dot =
+            document.createElement(
+                "button"
+            );
+
+
+        dot.type =
+            "button";
+
+
+        dot.className =
+            "carousel-dot";
+
+
+        if (
+            i === carouselIndex
+        ) {
+
+            dot.classList.add(
+                "active"
+            );
+
+        }
+
+
+        dot.addEventListener(
+            "click",
+            () => {
+
+                carouselIndex =
+                    i;
+
+                updateCarousel();
+
+                restartCarousel();
+
+            }
+        );
+
+
+        carouselDots.appendChild(
+            dot
+        );
+
+    }
 
 }
 
 
 function nextCarousel() {
 
-  carouselCards = getCarouselCards();
-
-  if (!carouselCards.length) {
-    return;
-  }
-
-  const cardsPerView = getCardsPerView();
-
-  const maxIndex = Math.max(
-    0,
-    carouselCards.length - cardsPerView
-  );
+    carouselCards =
+        getCarouselCards();
 
 
-  if (carouselIndex >= maxIndex) {
-
-    /*
-     * Volta para o início
-     */
-
-    carouselIndex = 0;
-
-  } else {
-
-    carouselIndex++;
-
-  }
+    if (!carouselCards.length) {
+        return;
+    }
 
 
-  updateCarousel();
+    const cardsPerView =
+        getCardsPerView();
+
+
+    const maxIndex =
+        Math.max(
+            0,
+            carouselCards.length -
+            cardsPerView
+        );
+
+
+    if (
+        carouselIndex >=
+        maxIndex
+    ) {
+
+        carouselIndex = 0;
+
+    } else {
+
+        carouselIndex++;
+
+    }
+
+
+    updateCarousel();
 
 }
 
 
 function previousCarousel() {
 
-  carouselCards = getCarouselCards();
-
-  if (!carouselCards.length) {
-    return;
-  }
-
-  const cardsPerView = getCardsPerView();
-
-  const maxIndex = Math.max(
-    0,
-    carouselCards.length - cardsPerView
-  );
+    carouselCards =
+        getCarouselCards();
 
 
-  if (carouselIndex <= 0) {
-
-    carouselIndex = maxIndex;
-
-  } else {
-
-    carouselIndex--;
-
-  }
+    if (!carouselCards.length) {
+        return;
+    }
 
 
-  updateCarousel();
+    const cardsPerView =
+        getCardsPerView();
+
+
+    const maxIndex =
+        Math.max(
+            0,
+            carouselCards.length -
+            cardsPerView
+        );
+
+
+    if (
+        carouselIndex <= 0
+    ) {
+
+        carouselIndex =
+            maxIndex;
+
+    } else {
+
+        carouselIndex--;
+
+    }
+
+
+    updateCarousel();
 
 }
 
 
 function startCarousel() {
 
-  stopCarousel();
+    stopCarousel();
 
 
-  carouselTimer = setInterval(
-    () => {
+    carouselTimer =
+        setInterval(
+            () => {
 
-      nextCarousel();
+                nextCarousel();
 
-    },
-    3500
-  );
+            },
+            3500
+        );
 
 }
 
 
 function stopCarousel() {
 
-  if (carouselTimer) {
+    if (carouselTimer) {
 
-    clearInterval(carouselTimer);
+        clearInterval(
+            carouselTimer
+        );
 
-    carouselTimer = null;
+        carouselTimer = null;
 
-  }
+    }
 
 }
 
 
 function restartCarousel() {
 
-  startCarousel();
+    startCarousel();
 
 }
 
@@ -1228,16 +1397,16 @@ function restartCarousel() {
 
 if (carouselPrev) {
 
-  carouselPrev.addEventListener(
-    "click",
-    () => {
+    carouselPrev.addEventListener(
+        "click",
+        () => {
 
-      previousCarousel();
+            previousCarousel();
 
-      restartCarousel();
+            restartCarousel();
 
-    }
-  );
+        }
+    );
 
 }
 
@@ -1248,16 +1417,16 @@ if (carouselPrev) {
 
 if (carouselNext) {
 
-  carouselNext.addEventListener(
-    "click",
-    () => {
+    carouselNext.addEventListener(
+        "click",
+        () => {
 
-      nextCarousel();
+            nextCarousel();
 
-      restartCarousel();
+            restartCarousel();
 
-    }
-  );
+        }
+    );
 
 }
 
@@ -1268,16 +1437,16 @@ if (carouselNext) {
 
 if (carouselGrid) {
 
-  carouselGrid.addEventListener(
-    "mouseenter",
-    stopCarousel
-  );
+    carouselGrid.addEventListener(
+        "mouseenter",
+        stopCarousel
+    );
 
 
-  carouselGrid.addEventListener(
-    "mouseleave",
-    startCarousel
-  );
+    carouselGrid.addEventListener(
+        "mouseleave",
+        startCarousel
+    );
 
 }
 
@@ -1287,12 +1456,12 @@ if (carouselGrid) {
  */
 
 window.addEventListener(
-  "resize",
-  () => {
+    "resize",
+    () => {
 
-    updateCarousel();
+        updateCarousel();
 
-  }
+    }
 );
 
 
@@ -1303,36 +1472,36 @@ window.addEventListener(
 
 if (carouselGrid) {
 
-  const carouselObserver =
-    new MutationObserver(
-      () => {
+    const carouselObserver =
+        new MutationObserver(
+            () => {
 
-        setTimeout(
-          () => {
+                setTimeout(
+                    () => {
 
-            carouselCards =
-              getCarouselCards();
+                        carouselCards =
+                            getCarouselCards();
 
-            carouselIndex = 0;
+                        carouselIndex = 0;
 
-            updateCarousel();
+                        updateCarousel();
 
-            startCarousel();
+                        startCarousel();
 
-          },
-          50
+                    },
+                    50
+                );
+
+            }
         );
 
-      }
+
+    carouselObserver.observe(
+        carouselGrid,
+        {
+            childList: true
+        }
     );
-
-
-  carouselObserver.observe(
-    carouselGrid,
-    {
-      childList: true
-    }
-  );
 
 }
 
@@ -1342,20 +1511,21 @@ if (carouselGrid) {
  */
 
 setTimeout(
-  () => {
+    () => {
 
-    updateCarousel();
+        updateCarousel();
 
-    startCarousel();
+        startCarousel();
 
-  },
-  500
+    },
+    500
 );
 
 
-// Gerar letras
+// ===============================
+// INICIALIZAR
+// ===============================
+
 renderLetters();
 
-
-// Carregar jogos
 loadGames();
