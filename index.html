@@ -1,156 +1,665 @@
-<!-- =========================
-     MODAL DE MENSAGEM
-========================== -->
+<!DOCTYPE html>
+<html lang="pt-BR">
 
-<div
-    id="messageModal"
-    class="message-modal"
->
+<head>
 
-    <div class="message-modal-content">
+    <meta charset="UTF-8">
 
-        <button
-            type="button"
-            id="closeMessageModal"
-            class="close-message-modal"
-            aria-label="Fechar"
-        >
-            ×
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Bootplay - Portal Gamer</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+
+    <!-- =========================
+         HEADER
+    ========================== -->
+
+    <header class="header">
+
+        <button id="menuBtn" class="menu-btn">
+            ☰
         </button>
 
-        <div class="message-modal-header">
+        <div class="logo">
+            <span>BOOT</span>PLAY
+        </div>
 
-            <span class="message-icon">
-                💬
-            </span>
+        <div class="search-box">
 
-            <h2>
-                ENVIAR MENSAGEM
-            </h2>
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="Pesquisar jogo..."
+            >
 
-            <p>
-                Encontrou um erro, link faltando ou quer deixar uma sugestão?
-            </p>
+        </div>
+
+    </header>
+
+
+
+    <!-- =========================
+         MENU LATERAL
+    ========================== -->
+
+    <aside id="sidebar" class="sidebar">
+
+        <div class="sidebar-title">
+
+            <h2>PLATAFORMAS</h2>
 
         </div>
 
 
-        <form id="messageForm">
-
-            <label for="messageType">
-                Tipo da mensagem
-            </label>
-
-            <select
-                id="messageType"
-                required
-            >
-
-                <option value="">
-                    Escolha uma opção
-                </option>
-
-                <option value="Erro no site">
-                    🐛 Erro no site
-                </option>
-
-                <option value="Link faltando">
-                    🔗 Link faltando
-                </option>
-
-                <option value="Sugestão">
-                    💡 Sugestão
-                </option>
-
-                <option value="Outro">
-                    ❓ Outro
-                </option>
-
-            </select>
+        <button
+            class="category-btn active"
+            data-category="Todos"
+        >
+            🎮 Todos
+        </button>
 
 
-            <label for="messageText">
-                Sua mensagem
-            </label>
-
-            <textarea
-                id="messageText"
-                rows="6"
-                maxlength="2000"
-                placeholder="Escreva aqui o que aconteceu..."
-                required
-            ></textarea>
+        <button
+            class="category-btn"
+            data-category="PS1"
+        >
+            🎮 PS1
+        </button>
 
 
-            <div class="message-form-actions">
+        <button
+            class="category-btn"
+            data-category="PS2"
+        >
+            🎮 PS2
+        </button>
+
+
+        <button
+            class="category-btn"
+            data-category="PS3"
+        >
+            🎮 PS3
+        </button>
+
+
+        <button
+            class="category-btn"
+            data-category="PS4"
+        >
+            🎮 PS4
+        </button>
+
+
+        <button
+            class="category-btn"
+            data-category="PS5"
+        >
+            🎮 PS5
+        </button>
+
+
+        <button
+            class="category-btn"
+            data-category="PSP"
+        >
+            🎮 PSP
+        </button>
+
+
+        <button
+            class="category-btn"
+            data-category="PC"
+        >
+            💻 PC
+        </button>
+
+
+        <button
+            class="category-btn"
+            data-category="Mobile"
+        >
+            📱 Mobile
+        </button>
+
+
+        <div class="sidebar-divider"></div>
+
+
+        <a
+            href="admin.html"
+            class="admin-link"
+        >
+            🔐 Área Admin
+        </a>
+
+    </aside>
+
+
+    <div id="overlay" class="overlay"></div>
+
+
+
+    <!-- =========================
+         HERO / BANNER
+    ========================== -->
+
+    <main>
+
+        <section class="hero">
+
+            <div class="hero-content">
+
+                <p class="hero-small">
+                    BEM-VINDO AO
+                </p>
+
+
+                <h1>
+                    BOOT<span>PLAY</span>
+                </h1>
+
+
+                <p>
+                    Seu portal gamer para encontrar seus jogos favoritos.
+                </p>
+
 
                 <button
-                    type="button"
-                    id="cancelMessageBtn"
-                    class="message-cancel-btn"
+                    id="exploreBtn"
+                    class="explore-btn"
                 >
-                    CANCELAR
-                </button>
-
-                <button
-                    type="submit"
-                    class="message-submit-btn"
-                >
-                    ENVIAR MENSAGEM
+                    EXPLORAR JOGOS
                 </button>
 
             </div>
 
-        </form>
+        </section>
+
+
+
+        <!-- =========================
+             LETRAS
+        ========================== -->
+
+        <section
+            id="lettersSection"
+            class="section letters-section"
+        >
+
+            <div class="letters-title">
+
+                <h2 id="lettersTitle">
+                    JOGOS POR LETRA
+                </h2>
+
+                <p id="lettersDescription">
+                    Escolha uma letra para encontrar os jogos.
+                </p>
+
+            </div>
+
+
+            <div class="letters">
+
+                <button data-letter="A">A</button>
+                <button data-letter="B">B</button>
+                <button data-letter="C">C</button>
+                <button data-letter="D">D</button>
+                <button data-letter="E">E</button>
+                <button data-letter="F">F</button>
+                <button data-letter="G">G</button>
+                <button data-letter="H">H</button>
+                <button data-letter="I">I</button>
+                <button data-letter="J">J</button>
+                <button data-letter="K">K</button>
+                <button data-letter="L">L</button>
+                <button data-letter="M">M</button>
+                <button data-letter="N">N</button>
+                <button data-letter="O">O</button>
+                <button data-letter="P">P</button>
+                <button data-letter="Q">Q</button>
+                <button data-letter="R">R</button>
+                <button data-letter="S">S</button>
+                <button data-letter="T">T</button>
+                <button data-letter="U">U</button>
+                <button data-letter="V">V</button>
+                <button data-letter="W">W</button>
+                <button data-letter="X">X</button>
+                <button data-letter="Y">Y</button>
+                <button data-letter="Z">Z</button>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================
+             JOGOS EM DESTAQUE
+             CARROSSEL
+        ========================== -->
+
+        <section
+            id="gamesSection"
+            class="section featured-section"
+        >
+
+            <div class="games-header">
+
+                <div>
+
+                    <span class="section-kicker">
+                        COLEÇÃO BOOTPLAY
+                    </span>
+
+                    <h2 id="gamesTitle">
+                        JOGOS EM DESTAQUE
+                    </h2>
+
+                    <p id="gamesSubtitle">
+                        Confira alguns jogos disponíveis.
+                    </p>
+
+                </div>
+
+
+                <button
+                    id="clearBtn"
+                    class="clear-btn"
+                >
+                    LIMPAR FILTROS
+                </button>
+
+            </div>
+
+
+
+            <!-- =========================
+                 CARROSSEL
+            ========================== -->
+
+            <div class="featured-carousel">
+
+
+                <!-- SETA ESQUERDA -->
+
+                <button
+                    id="carouselPrev"
+                    class="carousel-arrow carousel-prev"
+                    type="button"
+                    aria-label="Jogo anterior"
+                >
+                    ‹
+                </button>
+
+
+
+                <!-- ÁREA VISÍVEL -->
+
+                <div class="carousel-window">
+
+                    <div
+                        id="gamesGrid"
+                        class="games-grid"
+                    >
+
+
+                        <!-- =========================
+                             JOGO DEMONSTRAÇÃO
+                        ========================== -->
+
+                        <article
+                            class="game-card"
+                            data-name="God of War"
+                            data-category="PS2"
+                            data-genre="Ação"
+                            data-description="God of War é uma aventura de ação protagonizada por Kratos."
+                        >
+
+                            <div class="game-image">
+
+                                <img
+                                    src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80"
+                                    alt="God of War"
+                                >
+
+                                <span class="game-platform">
+                                    PS2
+                                </span>
+
+                            </div>
+
+
+                            <div class="game-info">
+
+                                <h3>
+                                    God of War
+                                </h3>
+
+                                <p>
+                                    PlayStation 2 • Ação
+                                </p>
+
+                                <button class="details-btn">
+                                    VER JOGO
+                                </button>
+
+                            </div>
+
+                        </article>
+
+
+
+                        <!-- =========================
+                             JOGO DEMONSTRAÇÃO
+                        ========================== -->
+
+                        <article
+                            class="game-card"
+                            data-name="Minecraft"
+                            data-category="PC"
+                            data-genre="Sandbox"
+                            data-description="Minecraft é um jogo de construção e exploração em um mundo aberto."
+                        >
+
+                            <div class="game-image">
+
+                                <img
+                                    src="https://images.unsplash.com/photo-1605897597464-06b14f2f7e39?auto=format&fit=crop&w=800&q=80"
+                                    alt="Minecraft"
+                                >
+
+                                <span class="game-platform">
+                                    PC
+                                </span>
+
+                            </div>
+
+
+                            <div class="game-info">
+
+                                <h3>
+                                    Minecraft
+                                </h3>
+
+                                <p>
+                                    PC • Sandbox
+                                </p>
+
+                                <button class="details-btn">
+                                    VER JOGO
+                                </button>
+
+                            </div>
+
+                        </article>
+
+
+
+                        <!-- =========================
+                             JOGO DEMONSTRAÇÃO
+                        ========================== -->
+
+                        <article
+                            class="game-card"
+                            data-name="Grand Theft Auto V"
+                            data-category="PS4"
+                            data-genre="Ação"
+                            data-description="Grand Theft Auto V é um jogo de ação e mundo aberto."
+                        >
+
+                            <div class="game-image">
+
+                                <img
+                                    src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80"
+                                    alt="Grand Theft Auto V"
+                                >
+
+                                <span class="game-platform">
+                                    PS4
+                                </span>
+
+                            </div>
+
+
+                            <div class="game-info">
+
+                                <h3>
+                                    Grand Theft Auto V
+                                </h3>
+
+                                <p>
+                                    PlayStation 4 • Ação
+                                </p>
+
+                                <button class="details-btn">
+                                    VER JOGO
+                                </button>
+
+                            </div>
+
+                        </article>
+
+
+
+                        <!-- =========================
+                             JOGO DEMONSTRAÇÃO
+                        ========================== -->
+
+                        <article
+                            class="game-card"
+                            data-name="Resident Evil"
+                            data-category="PS1"
+                            data-genre="Terror"
+                            data-description="Resident Evil é uma série clássica de jogos de terror e sobrevivência."
+                        >
+
+                            <div class="game-image">
+
+                                <img
+                                    src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80"
+                                    alt="Resident Evil"
+                                >
+
+                                <span class="game-platform">
+                                    PS1
+                                </span>
+
+                            </div>
+
+
+                            <div class="game-info">
+
+                                <h3>
+                                    Resident Evil
+                                </h3>
+
+                                <p>
+                                    PlayStation 1 • Terror
+                                </p>
+
+                                <button class="details-btn">
+                                    VER JOGO
+                                </button>
+
+                            </div>
+
+                        </article>
+
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- SETA DIREITA -->
+
+                <button
+                    id="carouselNext"
+                    class="carousel-arrow carousel-next"
+                    type="button"
+                    aria-label="Próximo jogo"
+                >
+                    ›
+                </button>
+
+
+            </div>
+
+
+
+            <!-- =========================
+                 INDICADORES
+            ========================== -->
+
+            <div
+                id="carouselDots"
+                class="carousel-dots"
+            ></div>
+
+
+
+            <!-- =========================
+                 SEM RESULTADOS
+            ========================== -->
+
+            <div
+                id="noResults"
+                class="no-results"
+            >
+
+                <div>
+                    🎮
+                </div>
+
+                <h3>
+                    NENHUM JOGO ENCONTRADO
+                </h3>
+
+                <p>
+                    Não existem jogos nessa categoria ou letra.
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+
+    <!-- =========================
+         MODAL DO JOGO
+    ========================== -->
+
+    <div
+        id="gameModal"
+        class="game-modal"
+    >
+
+        <div class="game-modal-content">
+
+            <button
+                id="closeModal"
+                class="close-modal"
+            >
+                ×
+            </button>
+
+
+            <img
+                id="modalImage"
+                src=""
+                alt=""
+            >
+
+
+            <div class="modal-body">
+
+                <span
+                    id="modalPlatform"
+                    class="modal-platform"
+                ></span>
+
+
+                <h2 id="modalTitle"></h2>
+
+
+                <p
+                    id="modalGenre"
+                    class="modal-genre"
+                ></p>
+
+
+                <h3>
+                    DESCRIÇÃO
+                </h3>
+
+
+                <p
+                    id="modalDescription"
+                    class="modal-description"
+                ></p>
+
+
+                <h3>
+                    PARTES
+                </h3>
+
+
+                <div
+                    id="modalParts"
+                    class="modal-parts"
+                ></div>
+
+            </div>
+
+        </div>
 
     </div>
 
-</div>
 
 
-<!-- =========================
-     CONFIRMAÇÃO DE ENVIO
-========================== -->
+    <!-- =========================
+         FOOTER
+    ========================== -->
 
-<div
-    id="messageConfirmModal"
-    class="message-confirm-modal"
->
+    <footer class="footer">
 
-    <div class="message-confirm-content">
-
-        <div class="confirm-icon">
-            ⚠️
+        <div class="logo">
+            <span>BOOT</span>PLAY
         </div>
-
-        <h2>
-            CONFIRMAR ENVIO
-        </h2>
 
         <p>
-            Tem certeza que deseja enviar esta mensagem?
+            © 2026 Bootplay — Portal Gamer
         </p>
 
-        <div class="message-confirm-actions">
+    </footer>
 
-            <button
-                type="button"
-                id="cancelMessageConfirm"
-                class="message-cancel-btn"
-            >
-                CANCELAR
-            </button>
 
-            <button
-                type="button"
-                id="confirmMessageSend"
-                class="message-submit-btn"
-            >
-                SIM, ENVIAR
-            </button>
 
-        </div>
+    <!-- =========================
+         SUPABASE
+    ========================== -->
 
-    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-</div>
+    <script src="supabase.js"></script>
+
+    <script src="script.js"></script>
+
+
+</body>
+
+</html>
