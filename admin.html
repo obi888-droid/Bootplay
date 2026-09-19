@@ -126,7 +126,10 @@
                     ➕ ADICIONAR JOGO
                 </h2>
 
-                <p class="admin-description" id="gameFormDescription">
+                <p
+                    class="admin-description"
+                    id="gameFormDescription"
+                >
                     Cadastre as informações do jogo.
                 </p>
 
@@ -210,6 +213,56 @@
                         placeholder="Ex: Ação"
                         required
                     >
+
+
+                    <!-- TAMANHO DO JOGO -->
+
+                    <label>
+                        Tamanho do jogo
+                    </label>
+
+                    <div class="game-size-row">
+
+                        <input
+                            type="number"
+                            id="gameSize"
+                            placeholder="Ex: 10"
+                            min="0"
+                            step="any"
+                            required
+                        >
+
+                        <select
+                            id="gameSizeUnit"
+                            required
+                        >
+
+                            <option value="KB">
+                                KB
+                            </option>
+
+                            <option value="MB">
+                                MB
+                            </option>
+
+                            <option
+                                value="GB"
+                                selected
+                            >
+                                GB
+                            </option>
+
+                            <option value="TB">
+                                TB
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <small class="field-help">
+                        Informe o tamanho aproximado do jogo.
+                    </small>
 
 
                     <!-- IMAGEM -->
