@@ -118,15 +118,15 @@
             </div>
 
 
-            <!-- ADICIONAR JOGO -->
+            <!-- ADICIONAR / EDITAR JOGO -->
 
             <div class="admin-card">
 
-                <h2>
+                <h2 id="gameFormTitle">
                     ➕ ADICIONAR JOGO
                 </h2>
 
-                <p class="admin-description">
+                <p class="admin-description" id="gameFormDescription">
                     Cadastre as informações do jogo.
                 </p>
 
@@ -308,12 +308,30 @@
                     </button>
 
 
-                    <button
-                        type="submit"
-                        class="save-game-button"
-                    >
-                        💾 ADICIONAR JOGO
-                    </button>
+                    <!-- BOTÕES DO FORMULÁRIO -->
+
+                    <div class="form-actions">
+
+                        <button
+                            type="submit"
+                            id="saveGameBtn"
+                            class="save-game-button"
+                        >
+                            💾 ADICIONAR JOGO
+                        </button>
+
+
+                        <button
+                            type="button"
+                            id="cancelEditBtn"
+                            class="cancel-edit-button"
+                            style="display: none;"
+                        >
+                            ❌ CANCELAR EDIÇÃO
+                        </button>
+
+                    </div>
+
 
                 </form>
 
