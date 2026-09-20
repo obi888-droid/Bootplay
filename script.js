@@ -248,10 +248,30 @@ function showError(message) {
 
 function formatGameSize(game) {
 
+    /*
+        Aceita os dois formatos:
+
+        Novo:
+        size
+        size_unit
+
+        Antigo:
+        game_size
+        game_size_unit
+
+        Assim não quebra os jogos
+        que já estejam cadastrados.
+    */
+
+    const rawSize =
+        game.size ??
+        game.game_size;
+
+
     if (
-        game.game_size === null ||
-        game.game_size === undefined ||
-        game.game_size === ""
+        rawSize === null ||
+        rawSize === undefined ||
+        rawSize === ""
     ) {
 
         return "";
@@ -260,7 +280,7 @@ function formatGameSize(game) {
 
 
     const size =
-        Number(game.game_size);
+        Number(rawSize);
 
 
     if (!Number.isFinite(size)) {
@@ -272,7 +292,9 @@ function formatGameSize(game) {
 
     const unit =
         String(
-            game.game_size_unit || "GB"
+            game.size_unit ??
+            game.game_size_unit ??
+            "GB"
         ).toUpperCase();
 
 
@@ -294,14 +316,15 @@ function formatGameSize(game) {
 
 
     /*
-       Evita mostrar números como:
-       10.0000000001
+        Evita mostrar números como:
 
-       Se for inteiro:
-       10 GB
+        10.0000000001
 
-       Se tiver decimal:
-       1.5 GB
+        Se for inteiro:
+        10 GB
+
+        Se tiver decimal:
+        1.5 GB
     */
 
     const formattedSize =
@@ -420,29 +443,35 @@ function renderGames() {
             "game-card";
 
 
+        /*
+            Pega o tamanho do jogo.
+
+            Exemplo:
+            10 GB
+            750 MB
+            4.5 GB
+        */
+
         const gameSize =
             formatGameSize(game);
 
 
         /*
-           Se o jogo tiver tamanho,
-           mostra "PS3 • 10 GB".
+            CARD DO JOGO
 
-           Se não tiver tamanho,
-           mantém o formato antigo.
+            Agora o tamanho aparece
+            separado da plataforma.
+
+            Exemplo:
+
+            God of War III
+
+            PS3 • Ação
+
+            💾 10 GB
+
+            VER JOGO
         */
-
-        const platformInfo =
-            gameSize
-                ? `
-                    ${escapeHtml(game.platform)}
-                    •
-                    ${escapeHtml(gameSize)}
-                  `
-                : `
-                    ${escapeHtml(game.platform)}
-                  `;
-
 
         card.innerHTML = `
 
@@ -467,11 +496,24 @@ function renderGames() {
                     ${escapeHtml(game.name)}
                 </h3>
 
+
                 <p>
-                    ${platformInfo}
+                    ${escapeHtml(game.platform)}
                     •
                     ${escapeHtml(game.genre)}
                 </p>
+
+
+                ${
+                    gameSize
+                        ? `
+                            <div class="game-size">
+                                💾 ${escapeHtml(gameSize)}
+                            </div>
+                          `
+                        : ""
+                }
+
 
                 <button
                     type="button"
@@ -1037,9 +1079,9 @@ if (lettersSection) {
 }
 
 
-/* =========================================================
-   BOOTPLAY — CARROSSEL AUTOMÁTICO
-   ========================================================= */
+// =========================================================
+// BOOTPLAY — CARROSSEL AUTOMÁTICO
+// =========================================================
 
 let carouselIndex = 0;
 let carouselTimer = null;
@@ -1063,6 +1105,7 @@ function getCarouselCards() {
     if (!carouselGrid) {
         return [];
     }
+
 
     return Array.from(
         carouselGrid.querySelectorAll(".game-card")
