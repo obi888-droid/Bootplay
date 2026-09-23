@@ -14,6 +14,155 @@
 
     <link rel="stylesheet" href="style.css">
 
+
+<style>
+/* =========================
+   FORMULÁRIO DE MENSAGENS
+========================= */
+.message-section {
+    padding: 70px 20px;
+}
+
+.message-container {
+    width: min(760px, 100%);
+    margin: 0 auto;
+    padding: 32px;
+    border: 1px solid rgba(139, 92, 246, 0.20);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.025);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+}
+
+.message-header {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.message-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    margin-bottom: 12px;
+    border-radius: 14px;
+    background: rgba(139, 92, 246, 0.12);
+    font-size: 24px;
+}
+
+.message-header h2 {
+    margin: 0 0 10px;
+}
+
+.message-header p {
+    margin: 0 auto;
+    max-width: 620px;
+    color: var(--text-muted, #aaa);
+    line-height: 1.6;
+}
+
+.message-form {
+    display: grid;
+    gap: 18px;
+}
+
+.message-form .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.message-form label {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.7px;
+}
+
+.message-form label span {
+    opacity: 0.5;
+    font-weight: 500;
+}
+
+.message-form input,
+.message-form select,
+.message-form textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 13px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 10px;
+    outline: none;
+    background: rgba(0, 0, 0, 0.20);
+    color: inherit;
+    font: inherit;
+    transition: 0.2s ease;
+}
+
+.message-form select option {
+    background: #151515;
+}
+
+.message-form textarea {
+    resize: vertical;
+    min-height: 140px;
+}
+
+.message-form input:focus,
+.message-form select:focus,
+.message-form textarea:focus {
+    border-color: rgba(139, 92, 246, 0.65);
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.10);
+}
+
+.send-message-btn {
+    border: 0;
+    border-radius: 10px;
+    padding: 14px 18px;
+    cursor: pointer;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+    color: #fff;
+    background: linear-gradient(135deg, #7c3aed, #4f46e5);
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.send-message-btn:hover {
+    transform: translateY(-2px);
+}
+
+.send-message-btn:disabled {
+    opacity: 0.6;
+    cursor: wait;
+    transform: none;
+}
+
+.message-status {
+    min-height: 20px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.message-status.success {
+    color: #4ade80;
+}
+
+.message-status.error {
+    color: #f87171;
+}
+
+@media (max-width: 700px) {
+    .message-section {
+        padding: 45px 15px;
+    }
+
+    .message-container {
+        padding: 22px 18px;
+        border-radius: 14px;
+    }
+}
+</style>
+
 </head>
 
 <body>
@@ -631,6 +780,123 @@
 
 
 
+
+
+        <!-- =========================
+             ENVIAR MENSAGEM
+        ========================== -->
+
+        <section class="message-section">
+
+            <div class="message-container">
+
+                <div class="message-header">
+
+                    <span class="message-icon">
+                        📩
+                    </span>
+
+                    <h2>
+                        FALE COM O BOOTPLAY
+                    </h2>
+
+                    <p>
+                        Encontrou algum problema, link quebrado ou
+                        quer pedir um jogo? Mande uma mensagem para nós.
+                    </p>
+
+                </div>
+
+
+                <form id="messageForm" class="message-form">
+
+                    <div class="form-group">
+
+                        <label for="messageType">
+                            TIPO DA MENSAGEM
+                        </label>
+
+                        <select id="messageType" required>
+                            <option value="error">🐛 Relatar erro</option>
+                            <option value="link">🔗 Link faltando / quebrado</option>
+                            <option value="request">🎮 Pedido de jogo</option>
+                            <option value="other">💬 Outro</option>
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="messageName">
+                            NOME <span>(opcional)</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            id="messageName"
+                            placeholder="Como podemos te chamar?"
+                            maxlength="100"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="messageGame">
+                            JOGO RELACIONADO <span>(opcional)</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            id="messageGame"
+                            placeholder="Ex: God of War III"
+                            maxlength="150"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="messageText">
+                            MENSAGEM
+                        </label>
+
+                        <textarea
+                            id="messageText"
+                            rows="6"
+                            placeholder="Escreva sua mensagem..."
+                            maxlength="2000"
+                            required
+                        ></textarea>
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        id="sendMessageBtn"
+                        class="send-message-btn"
+                    >
+                        📩 ENVIAR MENSAGEM
+                    </button>
+
+
+                    <div
+                        id="messageStatus"
+                        class="message-status"
+                        aria-live="polite"
+                    ></div>
+
+                </form>
+
+            </div>
+
+        </section>
+
+
     <!-- =========================
          FOOTER
     ========================== -->
@@ -659,6 +925,83 @@
 
     <script src="script.js"></script>
 
+
+
+
+    <!-- =========================
+         SISTEMA DE MENSAGENS
+    ========================== -->
+
+    <script>
+    (function () {
+
+        const messageForm = document.getElementById("messageForm");
+        const messageType = document.getElementById("messageType");
+        const messageName = document.getElementById("messageName");
+        const messageGame = document.getElementById("messageGame");
+        const messageText = document.getElementById("messageText");
+        const sendMessageBtn = document.getElementById("sendMessageBtn");
+        const messageStatus = document.getElementById("messageStatus");
+
+        if (!messageForm) return;
+
+        messageForm.addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const type = messageType.value;
+            const name = messageName.value.trim();
+            const game = messageGame.value.trim();
+            const message = messageText.value.trim();
+
+            if (!message) {
+                messageStatus.textContent = "Escreva uma mensagem antes de enviar.";
+                messageStatus.className = "message-status error";
+                messageText.focus();
+                return;
+            }
+
+            if (typeof supabaseClient === "undefined") {
+                console.error("supabaseClient não encontrado.");
+                messageStatus.textContent = "Não foi possível conectar ao sistema. Tente novamente.";
+                messageStatus.className = "message-status error";
+                return;
+            }
+
+            sendMessageBtn.disabled = true;
+            sendMessageBtn.textContent = "ENVIANDO...";
+            messageStatus.textContent = "";
+            messageStatus.className = "message-status";
+
+            try {
+                const { error } = await supabaseClient
+                    .from("messages")
+                    .insert({
+                        type: type,
+                        name: name || null,
+                        game: game || null,
+                        message: message
+                    });
+
+                if (error) {
+                    throw error;
+                }
+
+                messageForm.reset();
+                messageStatus.textContent = "Mensagem enviada com sucesso! Obrigado por avisar. 🎮";
+                messageStatus.className = "message-status success";
+
+            } catch (error) {
+                console.error("Erro ao enviar mensagem:", error);
+                messageStatus.textContent = "Não foi possível enviar a mensagem. Tente novamente.";
+                messageStatus.className = "message-status error";
+            } finally {
+                sendMessageBtn.disabled = false;
+                sendMessageBtn.textContent = "📩 ENVIAR MENSAGEM";
+            }
+        });
+
+    })();
+    </script>
 
 </body>
 
