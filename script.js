@@ -1,128 +1,44 @@
-// =========================================================
+// ===============================
 // BOOTPLAY - SCRIPT PRINCIPAL
-// =========================================================
+// ===============================
 
 let games = [];
 let selectedCategory = "Todos";
 let selectedLetter = "";
 
-// =========================================================
+
+// ===============================
 // ELEMENTOS
-// =========================================================
+// ===============================
 
 const gamesGrid = document.getElementById("gamesGrid");
 const searchInput = document.getElementById("searchInput");
-const lettersSection = document.getElementById("lettersSection");
-const lettersContainer = document.querySelector(".letters");
-const clearFiltersBtn = document.getElementById("clearBtn");
 
-const menuBtn = document.getElementById("menuBtn");
-const sidebar = document.getElementById("sidebar");
-const overlay = document.getElementById("overlay");
-const exploreBtn = document.getElementById("exploreBtn");
+const lettersSection =
+    document.getElementById("lettersSection");
 
-// =========================================================
-// URL / SLUG
-// =========================================================
+const lettersContainer =
+    document.querySelector(".letters");
 
-function slugify(value) {
-    return String(value || "")
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .toLowerCase()
-        .trim()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "");
-}
+const clearFiltersBtn =
+    document.getElementById("clearBtn");
 
+const menuBtn =
+    document.getElementById("menuBtn");
 
-// URL DA PLATAFORMA
-function getPlatformUrl(platform) {
+const sidebar =
+    document.getElementById("sidebar");
 
-    const url = new URL(window.location.href);
+const overlay =
+    document.getElementById("overlay");
 
-    url.search = "";
-    url.hash = "";
-
-    if (platform && platform !== "Todos") {
-        url.searchParams.set("plataforma", platform);
-    }
-
-    return url.toString();
-}
+const exploreBtn =
+    document.getElementById("exploreBtn");
 
 
-// URL DO JOGO
-function getGameUrl(game) {
-
-    const slug = slugify(game && game.name);
-
-    if (!slug) {
-        return window.location.href;
-    }
-
-    const url = new URL(window.location.href);
-
-    url.search = "";
-    url.hash = "";
-
-    url.searchParams.set("jogo", slug);
-
-    return url.toString();
-}
-
-
-// ATUALIZAR URL DA PLATAFORMA
-function updateUrlForPlatform(platform) {
-
-    const url = new URL(window.location.href);
-
-    url.search = "";
-    url.hash = "";
-
-    if (platform && platform !== "Todos") {
-        url.searchParams.set("plataforma", platform);
-    }
-
-    history.pushState(
-        {
-            plataforma: platform || "Todos"
-        },
-        "",
-        url
-    );
-}
-
-
-// ATUALIZAR URL DO JOGO
-function updateUrlForGame(game) {
-
-    const slug = slugify(game && game.name);
-
-    if (!slug) {
-        return;
-    }
-
-    const url = new URL(window.location.href);
-
-    url.search = "";
-    url.hash = "";
-
-    url.searchParams.set("jogo", slug);
-
-    history.pushState(
-        {
-            jogo: slug
-        },
-        "",
-        url
-    );
-}
-
-
-// =========================================================
+// ===============================
 // MENU LATERAL
-// =========================================================
+// ===============================
 
 if (menuBtn && sidebar && overlay) {
 
@@ -132,7 +48,6 @@ if (menuBtn && sidebar && overlay) {
         overlay.classList.toggle("active");
 
     });
-
 
     overlay.addEventListener("click", function () {
 
@@ -144,7 +59,9 @@ if (menuBtn && sidebar && overlay) {
 }
 
 
-// Fechar menu ao escolher categoria
+// ===============================
+// FECHAR MENU AO ESCOLHER CATEGORIA
+// ===============================
 
 document
     .querySelectorAll(".category-btn")
@@ -165,9 +82,9 @@ document
     });
 
 
-// =========================================================
+// ===============================
 // BOTÃO EXPLORAR
-// =========================================================
+// ===============================
 
 if (exploreBtn) {
 
@@ -189,9 +106,9 @@ if (exploreBtn) {
 }
 
 
-// =========================================================
-// CARREGAR JOGOS
-// =========================================================
+// ===============================
+// CARREGAR JOGOS DO SUPABASE
+// ===============================
 
 async function loadGames() {
 
@@ -282,8 +199,6 @@ async function loadGames() {
 
         renderGames();
 
-        return true;
-
     } catch (error) {
 
         console.error(
@@ -295,23 +210,18 @@ async function loadGames() {
             "Não foi possível carregar os jogos."
         );
 
-        return false;
-
     }
 
 }
 
 
-// =========================================================
-// ERRO
-// =========================================================
+// ===============================
+// MOSTRAR ERRO
+// ===============================
 
 function showError(message) {
 
-    if (!gamesGrid) {
-        return;
-    }
-
+    if (!gamesGrid) return;
 
     gamesGrid.innerHTML = `
 
@@ -332,11 +242,26 @@ function showError(message) {
 }
 
 
-// =========================================================
+// ===============================
 // FORMATAR TAMANHO
-// =========================================================
+// ===============================
 
 function formatGameSize(game) {
+
+    /*
+        Aceita os dois formatos:
+
+        Novo:
+        size
+        size_unit
+
+        Antigo:
+        game_size
+        game_size_unit
+
+        Assim não quebra os jogos
+        que já estejam cadastrados.
+    */
 
     const rawSize =
         game.size ??
@@ -359,7 +284,9 @@ function formatGameSize(game) {
 
 
     if (!Number.isFinite(size)) {
+
         return "";
+
     }
 
 
@@ -379,10 +306,26 @@ function formatGameSize(game) {
     ];
 
 
-    if (!allowedUnits.includes(unit)) {
+    if (
+        !allowedUnits.includes(unit)
+    ) {
+
         return "";
+
     }
 
+
+    /*
+        Evita mostrar números como:
+
+        10.0000000001
+
+        Se for inteiro:
+        10 GB
+
+        Se tiver decimal:
+        1.5 GB
+    */
 
     const formattedSize =
         Number.isInteger(size)
@@ -399,15 +342,13 @@ function formatGameSize(game) {
 }
 
 
-// =========================================================
+// ===============================
 // MOSTRAR JOGOS
-// =========================================================
+// ===============================
 
 function renderGames() {
 
-    if (!gamesGrid) {
-        return;
-    }
+    if (!gamesGrid) return;
 
 
     const searchTerm =
@@ -440,7 +381,9 @@ function renderGames() {
                 selectedLetter === "" ||
                 name
                     .toUpperCase()
-                    .startsWith(selectedLetter);
+                    .startsWith(
+                        selectedLetter
+                    );
 
 
             const matchesSearch =
@@ -500,9 +443,35 @@ function renderGames() {
             "game-card";
 
 
+        /*
+            Pega o tamanho do jogo.
+
+            Exemplo:
+            10 GB
+            750 MB
+            4.5 GB
+        */
+
         const gameSize =
             formatGameSize(game);
 
+
+        /*
+            CARD DO JOGO
+
+            Agora o tamanho aparece
+            separado da plataforma.
+
+            Exemplo:
+
+            God of War III
+
+            PS3 • Ação
+
+            💾 10 GB
+
+            VER JOGO
+        */
 
         card.innerHTML = `
 
@@ -575,14 +544,11 @@ function renderGames() {
 }
 
 
-// =========================================================
+// ===============================
 // MODAL
-// =========================================================
+// ===============================
 
-function openGameModal(
-    game,
-    updateUrl = true
-) {
+function openGameModal(game) {
 
     const modal =
         document.getElementById("gameModal");
@@ -616,12 +582,6 @@ function openGameModal(
 
     const modalParts =
         document.getElementById("modalParts");
-
-
-    // Atualiza URL quando abrir normalmente
-    if (updateUrl) {
-        updateUrlForGame(game);
-    }
 
 
     if (modalImage) {
@@ -673,9 +633,9 @@ function openGameModal(
     }
 
 
-    // =====================================================
+    // ===============================
     // PARTES
-    // =====================================================
+    // ===============================
 
     if (modalParts) {
 
@@ -751,39 +711,9 @@ function openGameModal(
 }
 
 
-// =========================================================
+// ===============================
 // FECHAR MODAL
-// =========================================================
-
-function closeGameModal(
-    updateUrl = true
-) {
-
-    const modal =
-        document.getElementById("gameModal");
-
-
-    if (modal) {
-
-        modal.classList.remove("show");
-
-    }
-
-
-    if (updateUrl) {
-
-        history.replaceState(
-            {},
-            "",
-            getPlatformUrl(
-                selectedCategory
-            )
-        );
-
-    }
-
-}
-
+// ===============================
 
 const closeModal =
     document.getElementById("closeModal");
@@ -795,7 +725,19 @@ if (closeModal) {
         "click",
         function () {
 
-            closeGameModal();
+            const modal =
+                document.getElementById(
+                    "gameModal"
+                );
+
+
+            if (modal) {
+
+                modal.classList.remove(
+                    "show"
+                );
+
+            }
 
         }
     );
@@ -817,7 +759,9 @@ if (gameModal) {
                 event.target === gameModal
             ) {
 
-                closeGameModal();
+                gameModal.classList.remove(
+                    "show"
+                );
 
             }
 
@@ -827,19 +771,23 @@ if (gameModal) {
 }
 
 
-// =========================================================
+// ===============================
 // ESC FECHA MODAL
-// =========================================================
+// ===============================
 
 document.addEventListener(
     "keydown",
     function (event) {
 
-        if (
-            event.key === "Escape"
-        ) {
+        if (event.key === "Escape") {
 
-            closeGameModal();
+            if (gameModal) {
+
+                gameModal.classList.remove(
+                    "show"
+                );
+
+            }
 
         }
 
@@ -847,9 +795,9 @@ document.addEventListener(
 );
 
 
-// =========================================================
+// ===============================
 // FILTRO POR PLATAFORMA
-// =========================================================
+// ===============================
 
 document
     .querySelectorAll(
@@ -866,14 +814,7 @@ document
                     "Todos";
 
 
-                selectedLetter =
-                    "";
-
-
-                // URL DA PLATAFORMA
-                updateUrlForPlatform(
-                    selectedCategory
-                );
+                selectedLetter = "";
 
 
                 document
@@ -903,9 +844,7 @@ document
                         "active"
                     );
 
-                } else if (
-                    lettersSection
-                ) {
+                } else if (lettersSection) {
 
                     lettersSection.classList.remove(
                         "active"
@@ -923,15 +862,13 @@ document
     });
 
 
-// =========================================================
+// ===============================
 // LETRAS A-Z
-// =========================================================
+// ===============================
 
 function renderLetters() {
 
-    if (!lettersContainer) {
-        return;
-    }
+    if (!lettersContainer) return;
 
 
     lettersContainer.innerHTML = "";
@@ -994,9 +931,9 @@ function renderLetters() {
 }
 
 
-// =========================================================
+// ===============================
 // PESQUISA
-// =========================================================
+// ===============================
 
 if (searchInput) {
 
@@ -1012,9 +949,9 @@ if (searchInput) {
 }
 
 
-// =========================================================
+// ===============================
 // LIMPAR FILTROS
-// =========================================================
+// ===============================
 
 if (clearFiltersBtn) {
 
@@ -1073,13 +1010,6 @@ if (clearFiltersBtn) {
                 });
 
 
-            history.pushState(
-                {},
-                "",
-                getPlatformUrl("Todos")
-            );
-
-
             renderLetters();
             renderGames();
 
@@ -1089,9 +1019,9 @@ if (clearFiltersBtn) {
 }
 
 
-// =========================================================
+// ===============================
 // SEGURANÇA
-// =========================================================
+// ===============================
 
 function escapeHtml(value) {
 
@@ -1135,241 +1065,40 @@ function escapeHtml(value) {
 }
 
 
-// =========================================================
-// ABRIR PLATAFORMA/JOGO PELA URL
-// =========================================================
-
-function openGameFromUrl() {
-
-    const params =
-        new URLSearchParams(
-            window.location.search
-        );
-
-
-    const platformParam =
-        params.get("plataforma");
-
-
-    const gameParam =
-        params.get("jogo");
-
-
-    // =====================================================
-    // JOGO
-    // =====================================================
-
-    if (gameParam) {
-
-        const game =
-            games.find(function (item) {
-
-                return (
-                    slugify(item.name) ===
-                    gameParam
-                );
-
-            });
-
-
-        if (game) {
-
-            selectedCategory =
-                game.platform ||
-                "Todos";
-
-
-            selectedLetter =
-                game.name
-                    ? game.name
-                        .charAt(0)
-                        .toUpperCase()
-                    : "";
-
-
-            document
-                .querySelectorAll(
-                    ".category-btn, .platform"
-                )
-                .forEach(function (button) {
-
-                    button.classList.remove(
-                        "active"
-                    );
-
-
-                    if (
-                        button.dataset.category ===
-                        selectedCategory
-                    ) {
-
-                        button.classList.add(
-                            "active"
-                        );
-
-                    }
-
-                });
-
-
-            if (
-                lettersSection &&
-                selectedCategory !== "Todos"
-            ) {
-
-                lettersSection.classList.add(
-                    "active"
-                );
-
-            }
-
-
-            renderLetters();
-            renderGames();
-
-
-            // false = não altera novamente a URL
-            openGameModal(
-                game,
-                false
-            );
-
-
-            return;
-
-        }
-
-    }
-
-
-    // =====================================================
-    // PLATAFORMA
-    // =====================================================
-
-    if (platformParam) {
-
-        const validPlatform =
-            Array.from(
-                document.querySelectorAll(
-                    ".category-btn, .platform"
-                )
-            ).some(function (button) {
-
-                return (
-                    button.dataset.category ===
-                    platformParam
-                );
-
-            });
-
-
-        if (validPlatform) {
-
-            selectedCategory =
-                platformParam;
-
-
-            selectedLetter =
-                "";
-
-
-            document
-                .querySelectorAll(
-                    ".category-btn, .platform"
-                )
-                .forEach(function (button) {
-
-                    button.classList.toggle(
-                        "active",
-                        button.dataset.category ===
-                        selectedCategory
-                    );
-
-                });
-
-
-            if (lettersSection) {
-
-                lettersSection.classList.add(
-                    "active"
-                );
-
-            }
-
-
-            renderLetters();
-            renderGames();
-
-
-            return;
-
-        }
-
-    }
-
-
-    // =====================================================
-    // SEM URL
-    // =====================================================
-
-    selectedCategory =
-        "Todos";
-
-
-    selectedLetter =
-        "";
-
-
-    renderLetters();
-    renderGames();
+// ===============================
+// INICIALIZAÇÃO
+// ===============================
+
+// Esconder A-Z inicialmente
+if (lettersSection) {
+
+    lettersSection.classList.remove(
+        "active"
+    );
 
 }
 
 
 // =========================================================
-// BOTÃO VOLTAR / AVANÇAR DO NAVEGADOR
-// =========================================================
-
-window.addEventListener(
-    "popstate",
-    function () {
-
-        closeGameModal(false);
-
-        openGameFromUrl();
-
-    }
-);
-
-
-// =========================================================
-// CARROSSEL
+// BOOTPLAY — CARROSSEL AUTOMÁTICO
 // =========================================================
 
 let carouselIndex = 0;
 let carouselTimer = null;
 let carouselCards = [];
 
-
 const carouselGrid =
     document.getElementById("gamesGrid");
-
 
 const carouselPrev =
     document.getElementById("carouselPrev");
 
-
 const carouselNext =
     document.getElementById("carouselNext");
-
 
 const carouselDots =
     document.getElementById("carouselDots");
 
-
-// =========================================================
-// PEGAR CARDS
-// =========================================================
 
 function getCarouselCards() {
 
@@ -1379,42 +1108,28 @@ function getCarouselCards() {
 
 
     return Array.from(
-        carouselGrid.querySelectorAll(
-            ".game-card"
-        )
+        carouselGrid.querySelectorAll(".game-card")
     );
 
 }
 
 
-// =========================================================
-// CARDS POR TELA
-// =========================================================
-
 function getCardsPerView() {
 
-    const width =
-        window.innerWidth;
-
+    const width = window.innerWidth;
 
     if (width <= 600) {
         return 1;
     }
 
-
     if (width <= 900) {
         return 3;
     }
-
 
     return 5;
 
 }
 
-
-// =========================================================
-// ATUALIZAR CARROSSEL
-// =========================================================
 
 function updateCarousel() {
 
@@ -1478,7 +1193,7 @@ function updateCarousel() {
         `translateX(-${carouselIndex * step}px)`;
 
 
-    carouselCards.forEach(function (card) {
+    carouselCards.forEach(card => {
 
         card.classList.remove(
             "carousel-active"
@@ -1507,9 +1222,7 @@ function updateCarousel() {
 
         carouselCards[activeIndex]
             .classList
-            .add(
-                "carousel-active"
-            );
+            .add("carousel-active");
 
     }
 
@@ -1518,10 +1231,6 @@ function updateCarousel() {
 
 }
 
-
-// =========================================================
-// DOTS
-// =========================================================
 
 function updateCarouselDots() {
 
@@ -1579,12 +1288,13 @@ function updateCarouselDots() {
 
         dot.addEventListener(
             "click",
-            function () {
+            () => {
 
                 carouselIndex =
                     i;
 
                 updateCarousel();
+
                 restartCarousel();
 
             }
@@ -1599,10 +1309,6 @@ function updateCarouselDots() {
 
 }
 
-
-// =========================================================
-// PRÓXIMO
-// =========================================================
 
 function nextCarousel() {
 
@@ -1646,10 +1352,6 @@ function nextCarousel() {
 }
 
 
-// =========================================================
-// ANTERIOR
-// =========================================================
-
 function previousCarousel() {
 
     carouselCards =
@@ -1692,10 +1394,6 @@ function previousCarousel() {
 }
 
 
-// =========================================================
-// TIMER
-// =========================================================
-
 function startCarousel() {
 
     stopCarousel();
@@ -1703,7 +1401,7 @@ function startCarousel() {
 
     carouselTimer =
         setInterval(
-            function () {
+            () => {
 
                 nextCarousel();
 
@@ -1736,15 +1434,15 @@ function restartCarousel() {
 }
 
 
-// =========================================================
-// BOTÃO ANTERIOR
-// =========================================================
+/*
+ * Botão anterior
+ */
 
 if (carouselPrev) {
 
     carouselPrev.addEventListener(
         "click",
-        function () {
+        () => {
 
             previousCarousel();
 
@@ -1756,15 +1454,15 @@ if (carouselPrev) {
 }
 
 
-// =========================================================
-// BOTÃO PRÓXIMO
-// =========================================================
+/*
+ * Botão próximo
+ */
 
 if (carouselNext) {
 
     carouselNext.addEventListener(
         "click",
-        function () {
+        () => {
 
             nextCarousel();
 
@@ -1776,9 +1474,9 @@ if (carouselNext) {
 }
 
 
-// =========================================================
-// PAUSAR COM MOUSE
-// =========================================================
+/*
+ * Pausar quando o mouse estiver em cima
+ */
 
 if (carouselGrid) {
 
@@ -1796,13 +1494,13 @@ if (carouselGrid) {
 }
 
 
-// =========================================================
-// RESIZE
-// =========================================================
+/*
+ * Atualizar quando mudar o tamanho da tela
+ */
 
 window.addEventListener(
     "resize",
-    function () {
+    () => {
 
         updateCarousel();
 
@@ -1810,24 +1508,24 @@ window.addEventListener(
 );
 
 
-// =========================================================
-// OBSERVAR MUDANÇAS DOS CARDS
-// =========================================================
+/*
+ * Detecta quando o script.js adiciona/remove
+ * jogos do Supabase.
+ */
 
 if (carouselGrid) {
 
     const carouselObserver =
         new MutationObserver(
-            function () {
+            () => {
 
                 setTimeout(
-                    function () {
+                    () => {
 
                         carouselCards =
                             getCarouselCards();
 
-                        carouselIndex =
-                            0;
+                        carouselIndex = 0;
 
                         updateCarousel();
 
@@ -1851,44 +1549,12 @@ if (carouselGrid) {
 }
 
 
-// =========================================================
-// ESCONDER A-Z INICIALMENTE
-// =========================================================
-
-if (lettersSection) {
-
-    lettersSection.classList.remove(
-        "active"
-    );
-
-}
-
-
-// =========================================================
-// INICIAR
-// =========================================================
-
-renderLetters();
-
-
-// Primeiro carrega os jogos.
-// Depois verifica se existe ?plataforma= ou ?jogo=
-
-loadGames().then(
-    function () {
-
-        openGameFromUrl();
-
-    }
-);
-
-
-// =========================================================
-// INICIAR CARROSSEL
-// =========================================================
+/*
+ * Inicialização
+ */
 
 setTimeout(
-    function () {
+    () => {
 
         updateCarousel();
 
@@ -1897,3 +1563,12 @@ setTimeout(
     },
     500
 );
+
+
+// ===============================
+// INICIALIZAR
+// ===============================
+
+renderLetters();
+
+loadGames();
