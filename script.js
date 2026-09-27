@@ -1,1574 +1,1140 @@
-// ===============================
-// BOOTPLAY - SCRIPT PRINCIPAL
-// ===============================
+quarta-feira 3:12
+Texto colado(20260923-100942).txt
+Documento
+Texto colado (2).txt
+Documento
 
-let games = [];
-let selectedCategory = "Todos";
-let selectedLetter = "";
+Mano, dá pra deixar a home MUITO mais com cara de portal gamer de verdade. 🔥
 
+Pelo que já montamos no Bootplay, eu mudaria principalmente a primeira impressão. Hoje ela funciona, mas provavelmente está com cara de “site que lista jogos”. A ideia seria fazer parecer uma plataforma gamer moderna, com movimento e destaque visual.
 
-// ===============================
-// ELEMENTOS
-// ===============================
+🎮 Eu faria a home assim
 
-const gamesGrid = document.getElementById("gamesGrid");
-const searchInput = document.getElementById("searchInput");
+1. Um HERO muito mais forte
+Em vez de simplesmente:
 
-const lettersSection =
-    document.getElementById("lettersSection");
+BOOTPLAY
+Seu portal gamer para encontrar seus jogos favoritos.
 
-const lettersContainer =
-    document.querySelector(".letters");
+Faria algo mais visual:
 
-const clearFiltersBtn =
-    document.getElementById("clearBtn");
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-const menuBtn =
-    document.getElementById("menuBtn");
+       [ CAPA GRANDE DE JOGO ]
 
-const sidebar =
-    document.getElementById("sidebar");
+       BOOTPLAY
+       SEU UNIVERSO GAMER
 
-const overlay =
-    document.getElementById("overlay");
+       Encontre seus jogos favoritos,
+       explore plataformas e descubra
+       novos títulos.
 
-const exploreBtn =
-    document.getElementById("exploreBtn");
+       [ EXPLORAR JOGOS ]  [ VER PLATAFORMAS ]
 
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-// ===============================
-// MENU LATERAL
-// ===============================
+Com uma imagem/collage de jogos no fundo, iluminação roxa/azul e efeito de partículas.
 
-if (menuBtn && sidebar && overlay) {
+🔥 2. Criar uma seção "DESTAQUES"
 
-    menuBtn.addEventListener("click", function () {
+Logo abaixo do banner:
 
-        sidebar.classList.toggle("active");
-        overlay.classList.toggle("active");
+🔥 JOGOS EM DESTAQUE
 
-    });
+┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐
+│  CAPA   │ │  CAPA   │ │  CAPA   │ │  CAPA   │
+│         │ │         │ │         │ │         │
+│ GOW III │ │ RDR 2   │ │ SPIDER  │ │ BATMAN  │
+│ PS3     │ │ PS4     │ │ PS5     │ │ PS4     │
+└─────────┘ └─────────┘ └─────────┘ └─────────┘
 
-    overlay.addEventListener("click", function () {
+E os cards poderiam ter:
 
-        sidebar.classList.remove("active");
-        overlay.classList.remove("active");
+capa grande
+plataforma
+gênero
+tamanho
+efeito quando passar o mouse
+botão VER JOGO
 
-    });
+Isso já daria outra cara.
 
-}
+🎮 3. Plataformas com cards gigantes
 
+Em vez de simplesmente mostrar uma grade básica:
 
-// ===============================
-// FECHAR MENU AO ESCOLHER CATEGORIA
-// ===============================
+ESCOLHA UMA PLATAFORMA
 
-document
-    .querySelectorAll(".category-btn")
-    .forEach(function (button) {
+PS1 PS2 PS3 PS4 PS5 PSP PC MOBILE
 
-        button.addEventListener("click", function () {
+Eu faria cards visuais:
 
-            if (sidebar) {
-                sidebar.classList.remove("active");
-            }
+┌─────────────────┐
+│                 │
+│      PS5        │
+│                 │
+│   PLAYSTATION 5 │
+│                 │
+│  EXPLORAR →     │
+└─────────────────┘
 
-            if (overlay) {
-                overlay.classList.remove("active");
-            }
+Cada plataforma teria uma identidade visual própria.
 
-        });
+⚡ 4. Uma seção "RECÉM-ADICIONADOS"
 
-    });
+Isso combina perfeitamente com o Supabase.
 
+Quando você adicionar um jogo pelo Admin:
 
-// ===============================
-// BOTÃO EXPLORAR
-// ===============================
+🎮 RECÉM-ADICIONADOS
 
-if (exploreBtn) {
+automaticamente mostra os últimos jogos cadastrados.
 
-    exploreBtn.addEventListener("click", function () {
+Exemplo:
 
-        const gamesSection =
-            document.getElementById("gamesSection");
+🆕 RECÉM-ADICIONADOS
 
-        if (gamesSection) {
+God of War III       PS3       10 GB
+Red Dead Redemption  PS3       8 GB
+Spider-Man 2         PS5       90 GB
+Batman Arkham City   PS3       7 GB
 
-            gamesSection.scrollIntoView({
-                behavior: "smooth"
-            });
+Isso faz a home parecer viva, porque ela muda conforme você alimenta o site.
 
-        }
+🔥 5. "EXPLORE POR GÊNERO"
 
-    });
+Outra seção:
 
-}
+EXPLORE POR GÊNERO
 
+⚔️ AÇÃO       🏎️ CORRIDA       👻 TERROR
 
-// ===============================
-// CARREGAR JOGOS DO SUPABASE
-// ===============================
+🌎 AVENTURA   ⚽ ESPORTES       🧙 RPG
 
-async function loadGames() {
+🎯 TIRO       🥷 LUTA          🧩 ESTRATÉGIA
 
-    try {
+Clicou em RPG, por exemplo → mostra os jogos daquele gênero.
 
-        const resultGames =
-            await supabaseClient
-                .from("games")
-                .select("*")
-                .order("name", {
-                    ascending: true
-                });
+💜 6. Melhorar o fundo
 
+Essa é uma das coisas que mais mudaria a aparência.
 
-        if (resultGames.error) {
+Eu colocaria:
 
-            console.error(
-                "Erro ao carregar jogos:",
-                resultGames.error
-            );
+fundo preto/azul muito escuro
+gradientes roxos
+brilho atrás dos cards
+linhas/partículas discretas
+efeitos de luz
+pequenos elementos futuristas
+animações suaves
 
-            showError(
-                "Erro ao carregar os jogos."
-            );
+Sem exagerar para não ficar parecendo um site de 2012. 😂
 
-            return;
+🕹️ 7. Uma barra de navegação mais profissional
 
-        }
+Algo nessa pegada:
 
+BOOTPLAY       JOGOS       PLATAFORMAS       DESTAQUES       🔎
 
-        const gamesData =
-            resultGames.data || [];
+E o ☰ continuaria no celular.
 
+📊 8. Pequena área de estatísticas
 
-        const resultParts =
-            await supabaseClient
-                .from("game_parts")
-                .select("*")
-                .order("sort_order", {
-                    ascending: true
-                });
+Isso também pode vir do banco:
 
+           BOOTPLAY
 
-        if (resultParts.error) {
+      127          8          24
+     JOGOS    PLATAFORMAS   GÊNEROS
 
-            console.error(
-                "Erro ao carregar partes:",
-                resultParts.error
-            );
+E esses números seriam atualizados automaticamente.
 
-        }
+🚀 E eu faria uma coisa especialmente legal
 
+Na primeira tela colocaria um banner/carrossel de jogos, parecido com portais de streaming:
 
-        const partsData =
-            resultParts.data || [];
+4
 
+Com:
 
-        games =
-            gamesData.map(function (game) {
+────────────────────────────────────────
 
-                return {
+       GOD OF WAR
 
-                    ...game,
+       Uma aventura épica...
 
-                    parts:
-                        partsData
-                            .filter(function (part) {
+       PS4 • AÇÃO • 45 GB
 
-                                return (
-                                    part.game_id ===
-                                    game.id
-                                );
+       [ VER JOGO ]
 
-                            })
-                            .sort(function (a, b) {
+                         ● ○ ○ ○
 
-                                return (
-                                    a.sort_order -
-                                    b.sort_order
-                                );
+────────────────────────────────────────
 
-                            })
+E ele troca automaticamente de jogo.
 
-                };
+🧠 A estrutura que eu recomendo para a nova Home
+┌─────────────────────────────────────────────┐
+│ BOOTPLAY     JOGOS   PLATAFORMAS   🔎       │
+├─────────────────────────────────────────────┤
+│                                             │
+│             🎮 HERO / BANNER                │
+│                                             │
+│             BOOTPLAY                        │
+│             SEU UNIVERSO GAMER              │
+│                                             │
+│        [ EXPLORAR JOGOS ]                   │
+│                                             │
+├─────────────────────────────────────────────┤
+│                                             │
+│ 🔥 JOGOS EM DESTAQUE                        │
+│                                             │
+│ [CARD] [CARD] [CARD] [CARD]                 │
+│                                             │
+├─────────────────────────────────────────────┤
+│                                             │
+│ 🆕 RECÉM-ADICIONADOS                        │
+│                                             │
+│ [CARD] [CARD] [CARD] [CARD]                 │
+│                                             │
+├─────────────────────────────────────────────┤
+│                                             │
+│ 🎮 ESCOLHA UMA PLATAFORMA                   │
+│                                             │
+│ [PS1] [PS2] [PS3] [PS4]                     │
+│ [PS5] [PSP] [PC]  [MOBILE]                  │
+│                                             │
+├─────────────────────────────────────────────┤
+│                                             │
+│ ⚔️ EXPLORE POR GÊNERO                       │
+│                                             │
+│ [AÇÃO] [RPG] [TERROR] [CORRIDA] ...        │
+│                                             │
+├─────────────────────────────────────────────┤
+│                                             │
+│       📊 BOOTPLAY                           │
+│       127 JOGOS • 8 PLATAFORMAS             │
+│                                             │
+└─────────────────────────────────────────────┘
 
-            });
+Eu acho que esse é o caminho certo para o Bootplay: não precisa jogar fora o sistema que já fizemos. Podemos manter Supabase, Admin, filtros, URLs, mensagens, tamanho, partes etc. e transformar principalmente o visual e a organização da index.html.
 
+Se você quiser, eu posso 
+pegar a sua index.html + style.css atuais e montar uma Home Bootplay 2.0 completa, já pronta para você substituir, mantendo as funções que você já tem.
 
-        renderGames();
+hoje 9:11
+mano preciso que agora no carrossel da tela prinpal so aparece jogos da categoria pc 
+Não foi possível carregar esta resposta.
+Texto colado(20260927-161159).txt
+Documento
+Não foi possível carregar esta resposta.
+Texto colado(20260927-161438).txt
+Documento
+Não foi possível carregar esta resposta.
+sim mas manda os codigos completos  aqui no chat
+Não foi possível carregar esta resposta.
 
-    } catch (error) {
+Cloudflare
 
-        console.error(
-            "Erro inesperado:",
-            error
-        );
+Deploy web applications for free
 
-        showError(
-            "Não foi possível carregar os jogos."
-        );
+Build full-stack apps with your framework of choice, including React, Vue, Svelte, Next & more.
 
-    }
+Anúncio
+Mais opções
+manda  completo no arquivo  txt entao
+Não foi possível carregar esta resposta.
 
-}
+Sonatype
 
+Intelligent Dependency Management
 
-// ===============================
-// MOSTRAR ERRO
-// ===============================
+Map components, vulnerabilities, and risks so you know what to fix, upgrade, or retire.
 
-function showError(message) {
+Anúncio
+Mais opções
+mande cada codigo no seu arquivo
+Não foi possível carregar esta resposta.
+nao consigo baixar o script.js mande o codigo completo aqui no chat
+Não foi possível carregar esta resposta.
 
-    if (!gamesGrid) return;
+CAST
 
-    gamesGrid.innerHTML = `
+AI Sees Code. Not Apps.
 
-        <div class="no-results">
+Give your agents the context they can't infer
 
-            <div>⚠️</div>
+Anúncio
+Mais opções
 
-            <h3>ERRO</h3>
+Sponsored options
+Ad
+Sponsored options
+Ad
+Sponsored options
+Ad
+
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Bootplay - Portal Gamer</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style> /* ========================= FORMULÁRIO DE MENSAGENS ========================= */ .message-section { padding: 70px 20px; } .message-container { width: min(760px, 100%); margin: 0 auto; padding: 32px; border: 1px solid rgba(139, 92, 246, 0.20); border-radius: 18px; background: rgba(255, 255, 255, 0.025); box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25); } .message-header { text-align: center; margin-bottom: 28px; } .message-icon { display: inline-flex; align-items: center; justify-content: center; width: 52px; height: 52px; margin-bottom: 12px; border-radius: 14px; background: rgba(139, 92, 246, 0.12); font-size: 24px; } .message-header h2 { margin: 0 0 10px; } .message-header p { margin: 0 auto; max-width: 620px; color: var(--text-muted, #aaa); line-height: 1.6; } .message-form { display: grid; gap: 18px; } .message-form .form-group { display: flex; flex-direction: column; gap: 8px; } .message-form label { font-size: 12px; font-weight: 800; letter-spacing: 0.7px; } .message-form label span { opacity: 0.5; font-weight: 500; } .message-form input, .message-form select, .message-form textarea { width: 100%; box-sizing: border-box; padding: 13px 14px; border: 1px solid rgba(255, 255, 255, 0.10); border-radius: 10px; outline: none; background: rgba(0, 0, 0, 0.20); color: inherit; font: inherit; transition: 0.2s ease; } .message-form select option { background: #151515; } .message-form textarea { resize: vertical; min-height: 140px; } .message-form input:focus, .message-form select:focus, .message-form textarea:focus { border-color: rgba(139, 92, 246, 0.65); box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.10); } .send-message-btn { border: 0; border-radius: 10px; padding: 14px 18px; cursor: pointer; font-weight: 900; letter-spacing: 0.5px; color: #fff; background: linear-gradient(135deg, #7c3aed, #4f46e5); transition: transform 0.2s ease, opacity 0.2s ease; } .send-message-btn:hover { transform: translateY(-2px); } .send-message-btn:disabled { opacity: 0.6; cursor: wait; transform: none; } .message-status { min-height: 20px; text-align: center; font-size: 14px; font-weight: 700; } .message-status.success { color: #4ade80; } .message-status.error { color: #f87171; } @media (max-width: 700px) { .message-section { padding: 45px 15px; } .message-container { padding: 22px 18px; border-radius: 14px; } } </style>
+
+</head>
+
+<body>
+
+<!-- =========================
+     HEADER
+========================== -->
+
+<header class="header">
+
+    <button id="menuBtn" class="menu-btn">
+        ☰
+    </button>
+
+    <div class="logo">
+        <span>BOOT</span>PLAY
+    </div>
+
+    <div class="search-box">
+
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Pesquisar jogo..."
+        >
+
+    </div>
+
+</header>
+
+
+
+<!-- =========================
+     MENU LATERAL
+========================== -->
+
+<aside id="sidebar" class="sidebar">
+
+    <div class="sidebar-title">
+
+        <h2>PLATAFORMAS</h2>
+
+    </div>
+
+
+    <button
+        class="category-btn active"
+        data-category="Todos"
+    >
+        🎮 Todos
+    </button>
+
+
+    <button
+        class="category-btn"
+        data-category="PS1"
+    >
+        🎮 PS1
+    </button>
+
+
+    <button
+        class="category-btn"
+        data-category="PS2"
+    >
+        🎮 PS2
+    </button>
+
+
+    <button
+        class="category-btn"
+        data-category="PS3"
+    >
+        🎮 PS3
+    </button>
+
+
+    <button
+        class="category-btn"
+        data-category="PS4"
+    >
+        🎮 PS4
+    </button>
+
+
+    <button
+        class="category-btn"
+        data-category="PS5"
+    >
+        🎮 PS5
+    </button>
+
+
+    <button
+        class="category-btn"
+        data-category="PSP"
+    >
+        🎮 PSP
+    </button>
+
+
+    <button
+        class="category-btn"
+        data-category="PC"
+    >
+        💻 PC
+    </button>
+
+
+    <button
+        class="category-btn"
+        data-category="Mobile"
+    >
+        📱 Mobile
+    </button>
+
+
+    <div class="sidebar-divider"></div>
+
+
+    <a
+        href="admin.html"
+        class="admin-link"
+    >
+        🔐 Área Admin
+    </a>
+
+</aside>
+
+
+<div id="overlay" class="overlay"></div>
+
+
+
+<!-- =========================
+     HERO / BANNER
+========================== -->
+
+<main>
+
+    <section class="hero">
+
+        <div class="hero-content">
+
+            <p class="hero-small">
+                BEM-VINDO AO
+            </p>
+
+
+            <h1>
+                BOOT<span>PLAY</span>
+            </h1>
+
 
             <p>
-                ${escapeHtml(message)}
+                Seu portal gamer para encontrar seus jogos favoritos.
+            </p>
+
+
+            <button
+                id="exploreBtn"
+                class="explore-btn"
+            >
+                EXPLORAR JOGOS
+            </button>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =========================
+         LETRAS
+    ========================== -->
+
+    <section
+        id="lettersSection"
+        class="section letters-section"
+    >
+
+        <div class="letters-title">
+
+            <h2 id="lettersTitle">
+                JOGOS POR LETRA
+            </h2>
+
+            <p id="lettersDescription">
+                Escolha uma letra para encontrar os jogos.
             </p>
 
         </div>
 
-    `;
 
-}
-
-
-// ===============================
-// FORMATAR TAMANHO
-// ===============================
-
-function formatGameSize(game) {
-
-    /*
-        Aceita os dois formatos:
-
-        Novo:
-        size
-        size_unit
-
-        Antigo:
-        game_size
-        game_size_unit
-
-        Assim não quebra os jogos
-        que já estejam cadastrados.
-    */
-
-    const rawSize =
-        game.size ??
-        game.game_size;
-
-
-    if (
-        rawSize === null ||
-        rawSize === undefined ||
-        rawSize === ""
-    ) {
-
-        return "";
-
-    }
-
-
-    const size =
-        Number(rawSize);
-
-
-    if (!Number.isFinite(size)) {
-
-        return "";
-
-    }
-
-
-    const unit =
-        String(
-            game.size_unit ??
-            game.game_size_unit ??
-            "GB"
-        ).toUpperCase();
-
-
-    const allowedUnits = [
-        "KB",
-        "MB",
-        "GB",
-        "TB"
-    ];
-
-
-    if (
-        !allowedUnits.includes(unit)
-    ) {
-
-        return "";
-
-    }
-
-
-    /*
-        Evita mostrar números como:
-
-        10.0000000001
-
-        Se for inteiro:
-        10 GB
-
-        Se tiver decimal:
-        1.5 GB
-    */
-
-    const formattedSize =
-        Number.isInteger(size)
-            ? String(size)
-            : String(
-                Number(
-                    size.toFixed(2)
-                )
-            );
-
-
-    return `${formattedSize} ${unit}`;
-
-}
-
-
-// ===============================
-// MOSTRAR JOGOS
-// ===============================
-
-function renderGames() {
-
-    if (!gamesGrid) return;
-
-
-    const searchTerm =
-        searchInput
-            ? searchInput.value
-                .toLowerCase()
-                .trim()
-            : "";
-
-
-    const filteredGames =
-        games.filter(function (game) {
-
-            const name =
-                String(game.name || "");
-
-            const genre =
-                String(game.genre || "");
-
-            const platform =
-                String(game.platform || "");
-
-
-            const matchesCategory =
-                selectedCategory === "Todos" ||
-                platform === selectedCategory;
-
-
-            const matchesLetter =
-                selectedLetter === "" ||
-                name
-                    .toUpperCase()
-                    .startsWith(
-                        selectedLetter
-                    );
-
-
-            const matchesSearch =
-                name
-                    .toLowerCase()
-                    .includes(searchTerm) ||
-
-                genre
-                    .toLowerCase()
-                    .includes(searchTerm);
-
-
-            return (
-                matchesCategory &&
-                matchesLetter &&
-                matchesSearch
-            );
-
-        });
-
-
-    gamesGrid.innerHTML = "";
-
-
-    if (filteredGames.length === 0) {
-
-        gamesGrid.innerHTML = `
-
-            <div class="no-results">
-
-                <div>🎮</div>
-
-                <h3>
-                    NENHUM JOGO ENCONTRADO
-                </h3>
-
-                <p>
-                    Não existem jogos nessa categoria ou letra.
-                </p>
-
-            </div>
-
-        `;
-
-        return;
-
-    }
-
-
-    filteredGames.forEach(function (game) {
-
-        const card =
-            document.createElement("article");
-
-
-        card.className =
-            "game-card";
-
-
-        /*
-            Pega o tamanho do jogo.
-
-            Exemplo:
-            10 GB
-            750 MB
-            4.5 GB
-        */
-
-        const gameSize =
-            formatGameSize(game);
-
-
-        /*
-            CARD DO JOGO
-
-            Agora o tamanho aparece
-            separado da plataforma.
-
-            Exemplo:
-
-            God of War III
-
-            PS3 • Ação
-
-            💾 10 GB
-
-            VER JOGO
-        */
-
-        card.innerHTML = `
-
-            <div class="game-image">
-
-                <img
-                    src="${escapeHtml(game.image)}"
-                    alt="${escapeHtml(game.name)}"
-                    loading="lazy"
-                >
-
-                <span class="game-platform">
-                    ${escapeHtml(game.platform)}
+        <div class="letters">
+
+            <button data-letter="A">A</button>
+            <button data-letter="B">B</button>
+            <button data-letter="C">C</button>
+            <button data-letter="D">D</button>
+            <button data-letter="E">E</button>
+            <button data-letter="F">F</button>
+            <button data-letter="G">G</button>
+            <button data-letter="H">H</button>
+            <button data-letter="I">I</button>
+            <button data-letter="J">J</button>
+            <button data-letter="K">K</button>
+            <button data-letter="L">L</button>
+            <button data-letter="M">M</button>
+            <button data-letter="N">N</button>
+            <button data-letter="O">O</button>
+            <button data-letter="P">P</button>
+            <button data-letter="Q">Q</button>
+            <button data-letter="R">R</button>
+            <button data-letter="S">S</button>
+            <button data-letter="T">T</button>
+            <button data-letter="U">U</button>
+            <button data-letter="V">V</button>
+            <button data-letter="W">W</button>
+            <button data-letter="X">X</button>
+            <button data-letter="Y">Y</button>
+            <button data-letter="Z">Z</button>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =========================
+         JOGOS EM DESTAQUE
+         CARROSSEL
+    ========================== -->
+
+    <section
+        id="gamesSection"
+        class="section featured-section"
+    >
+
+        <div class="games-header">
+
+            <div>
+
+                <span class="section-kicker">
+                    COLEÇÃO BOOTPLAY
                 </span>
 
+                <h2 id="gamesTitle">
+                    JOGOS EM DESTAQUE
+                </h2>
+
+                <p id="gamesSubtitle">
+                    Confira alguns jogos disponíveis.
+                </p>
+
             </div>
 
 
-            <div class="game-info">
+            <button
+                id="clearBtn"
+                class="clear-btn"
+            >
+                LIMPAR FILTROS
+            </button>
 
-                <h3>
-                    ${escapeHtml(game.name)}
-                </h3>
+        </div>
 
+
+
+        <!-- =========================
+             CARROSSEL
+        ========================== -->
+
+        <div class="featured-carousel">
+
+
+            <!-- SETA ESQUERDA -->
+
+            <button
+                id="carouselPrev"
+                class="carousel-arrow carousel-prev"
+                type="button"
+                aria-label="Jogo anterior"
+            >
+                ‹
+            </button>
+
+
+
+            <!-- ÁREA VISÍVEL -->
+
+            <div class="carousel-window">
+
+                <div
+                    id="gamesGrid"
+                    class="games-grid"
+                >
+
+
+                    <!-- =========================
+                         JOGO DEMONSTRAÇÃO
+                    ========================== -->
+
+                    <article
+                        class="game-card"
+                        data-name="God of War"
+                        data-category="PS2"
+                        data-genre="Ação"
+                        data-description="God of War é uma aventura de ação protagonizada por Kratos."
+                    >
+
+                        <div class="game-image">
+
+                            <img
+                                src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80"
+                                alt="God of War"
+                            >
+
+                            <span class="game-platform">
+                                PS2
+                            </span>
+
+                        </div>
+
+
+                        <div class="game-info">
+
+                            <h3>
+                                God of War
+                            </h3>
+
+                            <p>
+                                PlayStation 2 • Ação
+                            </p>
+
+                            <button class="details-btn">
+                                VER JOGO
+                            </button>
+
+                        </div>
+
+                    </article>
+
+
+
+                    <!-- =========================
+                         JOGO DEMONSTRAÇÃO
+                    ========================== -->
+
+                    <article
+                        class="game-card"
+                        data-name="Minecraft"
+                        data-category="PC"
+                        data-genre="Sandbox"
+                        data-description="Minecraft é um jogo de construção e exploração em um mundo aberto."
+                    >
+
+                        <div class="game-image">
+
+                            <img
+                                src="https://images.unsplash.com/photo-1605897597464-06b14f2f7e39?auto=format&fit=crop&w=800&q=80"
+                                alt="Minecraft"
+                            >
+
+                            <span class="game-platform">
+                                PC
+                            </span>
+
+                        </div>
+
+
+                        <div class="game-info">
+
+                            <h3>
+                                Minecraft
+                            </h3>
+
+                            <p>
+                                PC • Sandbox
+                            </p>
+
+                            <button class="details-btn">
+                                VER JOGO
+                            </button>
+
+                        </div>
+
+                    </article>
+
+
+
+                    <!-- =========================
+                         JOGO DEMONSTRAÇÃO
+                    ========================== -->
+
+                    <article
+                        class="game-card"
+                        data-name="Grand Theft Auto V"
+                        data-category="PS4"
+                        data-genre="Ação"
+                        data-description="Grand Theft Auto V é um jogo de ação e mundo aberto."
+                    >
+
+                        <div class="game-image">
+
+                            <img
+                                src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80"
+                                alt="Grand Theft Auto V"
+                            >
+
+                            <span class="game-platform">
+                                PS4
+                            </span>
+
+                        </div>
+
+
+                        <div class="game-info">
+
+                            <h3>
+                                Grand Theft Auto V
+                            </h3>
+
+                            <p>
+                                PlayStation 4 • Ação
+                            </p>
+
+                            <button class="details-btn">
+                                VER JOGO
+                            </button>
+
+                        </div>
+
+                    </article>
+
+
+
+                    <!-- =========================
+                         JOGO DEMONSTRAÇÃO
+                    ========================== -->
+
+                    <article
+                        class="game-card"
+                        data-name="Resident Evil"
+                        data-category="PS1"
+                        data-genre="Terror"
+                        data-description="Resident Evil é uma série clássica de jogos de terror e sobrevivência."
+                    >
+
+                        <div class="game-image">
+
+                            <img
+                                src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80"
+                                alt="Resident Evil"
+                            >
+
+                            <span class="game-platform">
+                                PS1
+                            </span>
+
+                        </div>
+
+
+                        <div class="game-info">
+
+                            <h3>
+                                Resident Evil
+                            </h3>
+
+                            <p>
+                                PlayStation 1 • Terror
+                            </p>
+
+                            <button class="details-btn">
+                                VER JOGO
+                            </button>
+
+                        </div>
+
+                    </article>
+
+
+                </div>
+
+            </div>
+
+
+
+            <!-- SETA DIREITA -->
+
+            <button
+                id="carouselNext"
+                class="carousel-arrow carousel-next"
+                type="button"
+                aria-label="Próximo jogo"
+            >
+                ›
+            </button>
+
+
+        </div>
+
+
+
+        <!-- =========================
+             INDICADORES
+        ========================== -->
+
+        <div
+            id="carouselDots"
+            class="carousel-dots"
+        ></div>
+
+
+
+        <!-- =========================
+             SEM RESULTADOS
+        ========================== -->
+
+        <div
+            id="noResults"
+            class="no-results"
+        >
+
+            <div>
+                🎮
+            </div>
+
+            <h3>
+                NENHUM JOGO ENCONTRADO
+            </h3>
+
+            <p>
+                Não existem jogos nessa categoria ou letra.
+            </p>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+
+<!-- =========================
+     MODAL DO JOGO
+========================== -->
+
+<div
+    id="gameModal"
+    class="game-modal"
+>
+
+    <div class="game-modal-content">
+
+        <button
+            id="closeModal"
+            class="close-modal"
+        >
+            ×
+        </button>
+
+
+        <img
+            id="modalImage"
+            src=""
+            alt=""
+        >
+
+
+        <div class="modal-body">
+
+            <span
+                id="modalPlatform"
+                class="modal-platform"
+            ></span>
+
+
+            <h2 id="modalTitle"></h2>
+
+
+            <p
+                id="modalGenre"
+                class="modal-genre"
+            ></p>
+
+
+            <h3>
+                DESCRIÇÃO
+            </h3>
+
+
+            <p
+                id="modalDescription"
+                class="modal-description"
+            ></p>
+
+
+            <h3>
+                PARTES
+            </h3>
+
+
+            <div
+                id="modalParts"
+                class="modal-parts"
+            ></div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+    <!-- =========================
+         ENVIAR MENSAGEM
+    ========================== -->
+
+    <section class="message-section">
+
+        <div class="message-container">
+
+            <div class="message-header">
+
+                <span class="message-icon">
+                    📩
+                </span>
+
+                <h2>
+                    FALE COM O BOOTPLAY
+                </h2>
 
                 <p>
-                    ${escapeHtml(game.platform)}
-                    •
-                    ${escapeHtml(game.genre)}
+                    Encontrou algum problema, link quebrado ou
+                    quer pedir um jogo? Mande uma mensagem para nós.
                 </p>
 
+            </div>
 
-                ${
-                    gameSize
-                        ? `
-                            <div class="game-size">
-                                💾 ${escapeHtml(gameSize)}
-                            </div>
-                          `
-                        : ""
-                }
+
+            <form id="messageForm" class="message-form">
+
+                <div class="form-group">
+
+                    <label for="messageType">
+                        TIPO DA MENSAGEM
+                    </label>
+
+                    <select id="messageType" required>
+                        <option value="error">🐛 Relatar erro</option>
+                        <option value="link">🔗 Link faltando / quebrado</option>
+                        <option value="request">🎮 Pedido de jogo</option>
+                        <option value="other">💬 Outro</option>
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="messageName">
+                        NOME <span>(opcional)</span>
+                    </label>
+
+                    <input
+                        type="text"
+                        id="messageName"
+                        placeholder="Como podemos te chamar?"
+                        maxlength="100"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="messageGame">
+                        JOGO RELACIONADO <span>(opcional)</span>
+                    </label>
+
+                    <input
+                        type="text"
+                        id="messageGame"
+                        placeholder="Ex: God of War III"
+                        maxlength="150"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="messageText">
+                        MENSAGEM
+                    </label>
+
+                    <textarea
+                        id="messageText"
+                        rows="6"
+                        placeholder="Escreva sua mensagem..."
+                        maxlength="2000"
+                        required
+                    ></textarea>
+
+                </div>
 
 
                 <button
-                    type="button"
-                    class="details-btn"
+                    type="submit"
+                    id="sendMessageBtn"
+                    class="send-message-btn"
                 >
-                    VER JOGO
+                    📩 ENVIAR MENSAGEM
                 </button>
 
-            </div>
 
-        `;
+                <div
+                    id="messageStatus"
+                    class="message-status"
+                    aria-live="polite"
+                ></div>
 
+            </form>
 
-        card.addEventListener(
-            "click",
-            function () {
+        </div>
 
-                openGameModal(game);
+    </section>
 
-            }
-        );
 
+<!-- =========================
+     FOOTER
+========================== -->
 
-        gamesGrid.appendChild(card);
+<footer class="footer">
 
-    });
+    <div class="logo">
+        <span>BOOT</span>PLAY
+    </div>
 
-}
+    <p>
+        © 2026 Bootplay — Portal Gamer
+    </p>
 
+</footer>
 
-// ===============================
-// MODAL
-// ===============================
 
-function openGameModal(game) {
 
-    const modal =
-        document.getElementById("gameModal");
+<!-- =========================
+     SUPABASE
+========================== -->
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    if (!modal) {
+<script src="supabase.js"></script>
 
-        console.error(
-            "gameModal não encontrado."
-        );
+<script src="script.js"></script>
 
-        return;
 
-    }
 
 
-    const modalImage =
-        document.getElementById("modalImage");
+<!-- =========================
+     SISTEMA DE MENSAGENS
+========================== -->
 
-    const modalTitle =
-        document.getElementById("modalTitle");
+<script>
+(function () {
 
-    const modalPlatform =
-        document.getElementById("modalPlatform");
+    const messageForm = document.getElementById("messageForm");
+    const messageType = document.getElementById("messageType");
+    const messageName = document.getElementById("messageName");
+    const messageGame = document.getElementById("messageGame");
+    const messageText = document.getElementById("messageText");
+    const sendMessageBtn = document.getElementById("sendMessageBtn");
+    const messageStatus = document.getElementById("messageStatus");
 
-    const modalGenre =
-        document.getElementById("modalGenre");
+    if (!messageForm) return;
 
-    const modalDescription =
-        document.getElementById("modalDescription");
+    messageForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
 
-    const modalParts =
-        document.getElementById("modalParts");
+        const type = messageType.value;
+        const name = messageName.value.trim();
+        const game = messageGame.value.trim();
+        const message = messageText.value.trim();
 
-
-    if (modalImage) {
-
-        modalImage.src =
-            game.image || "";
-
-        modalImage.alt =
-            game.name || "";
-
-    }
-
-
-    if (modalTitle) {
-
-        modalTitle.textContent =
-            game.name || "";
-
-    }
-
-
-    if (modalPlatform) {
-
-        const gameSize =
-            formatGameSize(game);
-
-
-        modalPlatform.textContent =
-            gameSize
-                ? `${game.platform} • ${gameSize}`
-                : game.platform || "";
-
-    }
-
-
-    if (modalGenre) {
-
-        modalGenre.textContent =
-            game.genre || "";
-
-    }
-
-
-    if (modalDescription) {
-
-        modalDescription.textContent =
-            game.description || "";
-
-    }
-
-
-    // ===============================
-    // PARTES
-    // ===============================
-
-    if (modalParts) {
-
-        modalParts.innerHTML = "";
-
-
-        if (
-            !game.parts ||
-            game.parts.length === 0
-        ) {
-
-            modalParts.innerHTML = `
-
-                <p>
-                    Nenhuma parte cadastrada.
-                </p>
-
-            `;
-
-        } else {
-
-            game.parts.forEach(
-                function (part) {
-
-                    const link =
-                        document.createElement("a");
-
-
-                    link.className =
-                        "part-link";
-
-
-                    link.textContent =
-                        part.name;
-
-
-                    link.href =
-                        part.link;
-
-
-                    link.target =
-                        "_blank";
-
-
-                    link.rel =
-                        "noopener noreferrer";
-
-
-                    link.addEventListener(
-                        "click",
-                        function (event) {
-
-                            event.stopPropagation();
-
-                        }
-                    );
-
-
-                    modalParts.appendChild(
-                        link
-                    );
-
-                }
-            );
-
+        if (!message) {
+            messageStatus.textContent = "Escreva uma mensagem antes de enviar.";
+            messageStatus.className = "message-status error";
+            messageText.focus();
+            return;
         }
 
-    }
-
-
-    modal.classList.add("show");
-
-}
-
-
-// ===============================
-// FECHAR MODAL
-// ===============================
-
-const closeModal =
-    document.getElementById("closeModal");
-
-
-if (closeModal) {
-
-    closeModal.addEventListener(
-        "click",
-        function () {
-
-            const modal =
-                document.getElementById(
-                    "gameModal"
-                );
-
-
-            if (modal) {
-
-                modal.classList.remove(
-                    "show"
-                );
-
-            }
-
-        }
-    );
-
-}
-
-
-const gameModal =
-    document.getElementById("gameModal");
-
-
-if (gameModal) {
-
-    gameModal.addEventListener(
-        "click",
-        function (event) {
-
-            if (
-                event.target === gameModal
-            ) {
-
-                gameModal.classList.remove(
-                    "show"
-                );
-
-            }
-
-        }
-    );
-
-}
-
-
-// ===============================
-// ESC FECHA MODAL
-// ===============================
-
-document.addEventListener(
-    "keydown",
-    function (event) {
-
-        if (event.key === "Escape") {
-
-            if (gameModal) {
-
-                gameModal.classList.remove(
-                    "show"
-                );
-
-            }
-
+        if (typeof supabaseClient === "undefined") {
+            console.error("supabaseClient não encontrado.");
+            messageStatus.textContent = "Não foi possível conectar ao sistema. Tente novamente.";
+            messageStatus.className = "message-status error";
+            return;
         }
 
-    }
-);
-
-
-// ===============================
-// FILTRO POR PLATAFORMA
-// ===============================
-
-document
-    .querySelectorAll(
-        ".category-btn, .platform"
-    )
-    .forEach(function (button) {
-
-        button.addEventListener(
-            "click",
-            function () {
-
-                selectedCategory =
-                    button.dataset.category ||
-                    "Todos";
-
-
-                selectedLetter = "";
-
-
-                document
-                    .querySelectorAll(
-                        ".category-btn, .platform"
-                    )
-                    .forEach(function (btn) {
-
-                        btn.classList.remove(
-                            "active"
-                        );
-
-                    });
-
-
-                button.classList.add(
-                    "active"
-                );
-
-
-                if (
-                    lettersSection &&
-                    selectedCategory !== "Todos"
-                ) {
-
-                    lettersSection.classList.add(
-                        "active"
-                    );
-
-                } else if (lettersSection) {
-
-                    lettersSection.classList.remove(
-                        "active"
-                    );
-
-                }
-
-
-                renderLetters();
-                renderGames();
-
-            }
-        );
-
-    });
-
-
-// ===============================
-// LETRAS A-Z
-// ===============================
-
-function renderLetters() {
-
-    if (!lettersContainer) return;
-
-
-    lettersContainer.innerHTML = "";
-
-
-    const alphabet =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-
-
-    alphabet.forEach(function (letter) {
-
-        const button =
-            document.createElement("button");
-
-
-        button.type =
-            "button";
-
-
-        button.textContent =
-            letter;
-
-
-        button.dataset.letter =
-            letter;
-
-
-        if (
-            letter === selectedLetter
-        ) {
-
-            button.classList.add(
-                "active"
-            );
-
-        }
-
-
-        button.addEventListener(
-            "click",
-            function () {
-
-                selectedLetter =
-                    letter;
-
-
-                renderLetters();
-                renderGames();
-
-            }
-        );
-
-
-        lettersContainer.appendChild(
-            button
-        );
-
-    });
-
-}
-
-
-// ===============================
-// PESQUISA
-// ===============================
-
-if (searchInput) {
-
-    searchInput.addEventListener(
-        "input",
-        function () {
-
-            renderGames();
-
-        }
-    );
-
-}
-
-
-// ===============================
-// LIMPAR FILTROS
-// ===============================
-
-if (clearFiltersBtn) {
-
-    clearFiltersBtn.addEventListener(
-        "click",
-        function () {
-
-            selectedCategory =
-                "Todos";
-
-
-            selectedLetter =
-                "";
-
-
-            if (searchInput) {
-
-                searchInput.value =
-                    "";
-
-            }
-
-
-            if (lettersSection) {
-
-                lettersSection.classList.remove(
-                    "active"
-                );
-
-            }
-
-
-            document
-                .querySelectorAll(
-                    ".category-btn, .platform"
-                )
-                .forEach(function (btn) {
-
-                    btn.classList.remove(
-                        "active"
-                    );
-
+        sendMessageBtn.disabled = true;
+        sendMessageBtn.textContent = "ENVIANDO...";
+        messageStatus.textContent = "";
+        messageStatus.className = "message-status";
+
+        try {
+            const { error } = await supabaseClient
+                .from("messages")
+                .insert({
+                    type: type,
+                    name: name || null,
+                    game: game || null,
+                    message: message
                 });
 
+            if (error) {
+                throw error;
+            }
 
-            document
-                .querySelectorAll(
-                    '[data-category="Todos"]'
-                )
-                .forEach(function (button) {
+            messageForm.reset();
+            messageStatus.textContent = "Mensagem enviada com sucesso! Obrigado por avisar. 🎮";
+            messageStatus.className = "message-status success";
 
-                    button.classList.add(
-                        "active"
-                    );
-
-                });
-
-
-            renderLetters();
-            renderGames();
-
+        } catch (error) {
+            console.error("Erro ao enviar mensagem:", error);
+            messageStatus.textContent = "Não foi possível enviar a mensagem. Tente novamente.";
+            messageStatus.className = "message-status error";
+        } finally {
+            sendMessageBtn.disabled = false;
+            sendMessageBtn.textContent = "📩 ENVIAR MENSAGEM";
         }
-    );
-
-}
-
-
-// ===============================
-// SEGURANÇA
-// ===============================
-
-function escapeHtml(value) {
-
-    if (
-        value === null ||
-        value === undefined
-    ) {
-
-        return "";
-
-    }
-
-
-    return String(value)
-
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-
-        .replace(
-            /</g,
-            "&lt;"
-        )
-
-        .replace(
-            />/g,
-            "&gt;"
-        )
-
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-
-        .replace(
-            /'/g,
-            "&#039;"
-        );
-
-}
-
-
-// ===============================
-// INICIALIZAÇÃO
-// ===============================
-
-// Esconder A-Z inicialmente
-if (lettersSection) {
-
-    lettersSection.classList.remove(
-        "active"
-    );
-
-}
-
-
-// =========================================================
-// BOOTPLAY — CARROSSEL AUTOMÁTICO
-// =========================================================
-
-let carouselIndex = 0;
-let carouselTimer = null;
-let carouselCards = [];
-
-const carouselGrid =
-    document.getElementById("gamesGrid");
-
-const carouselPrev =
-    document.getElementById("carouselPrev");
-
-const carouselNext =
-    document.getElementById("carouselNext");
-
-const carouselDots =
-    document.getElementById("carouselDots");
-
-
-function getCarouselCards() {
-
-    if (!carouselGrid) {
-        return [];
-    }
-
-
-    return Array.from(
-        carouselGrid.querySelectorAll(".game-card")
-    );
-
-}
-
-
-function getCardsPerView() {
-
-    const width = window.innerWidth;
-
-    if (width <= 600) {
-        return 1;
-    }
-
-    if (width <= 900) {
-        return 3;
-    }
-
-    return 5;
-
-}
-
-
-function updateCarousel() {
-
-    carouselCards =
-        getCarouselCards();
-
-
-    if (!carouselCards.length) {
-        return;
-    }
-
-
-    const cardsPerView =
-        getCardsPerView();
-
-
-    const maxIndex =
-        Math.max(
-            0,
-            carouselCards.length -
-            cardsPerView
-        );
-
-
-    if (
-        carouselIndex >
-        maxIndex
-    ) {
-
-        carouselIndex = 0;
-
-    }
-
-
-    const firstCard =
-        carouselCards[0];
-
-
-    if (!firstCard) {
-        return;
-    }
-
-
-    const cardWidth =
-        firstCard.offsetWidth;
-
-
-    const gap =
-        parseFloat(
-            window.getComputedStyle(
-                carouselGrid
-            ).gap
-        ) || 0;
-
-
-    const step =
-        cardWidth + gap;
-
-
-    carouselGrid.style.transform =
-        `translateX(-${carouselIndex * step}px)`;
-
-
-    carouselCards.forEach(card => {
-
-        card.classList.remove(
-            "carousel-active"
-        );
-
     });
 
+})();
+</script>
 
-    const centerOffset =
-        Math.floor(
-            (cardsPerView - 1) / 2
-        );
+</body>
 
+</html>
 
-    const activeIndex =
-        Math.min(
-            carouselIndex +
-            centerOffset,
-            carouselCards.length - 1
-        );
-
-
-    if (
-        carouselCards[activeIndex]
-    ) {
-
-        carouselCards[activeIndex]
-            .classList
-            .add("carousel-active");
-
-    }
-
-
-    updateCarouselDots();
-
-}
-
-
-function updateCarouselDots() {
-
-    if (!carouselDots) {
-        return;
-    }
-
-
-    carouselDots.innerHTML = "";
-
-
-    const cardsPerView =
-        getCardsPerView();
-
-
-    const totalPositions =
-        Math.max(
-            1,
-            carouselCards.length -
-            cardsPerView +
-            1
-        );
-
-
-    for (
-        let i = 0;
-        i < totalPositions;
-        i++
-    ) {
-
-        const dot =
-            document.createElement(
-                "button"
-            );
-
-
-        dot.type =
-            "button";
-
-
-        dot.className =
-            "carousel-dot";
-
-
-        if (
-            i === carouselIndex
-        ) {
-
-            dot.classList.add(
-                "active"
-            );
-
-        }
-
-
-        dot.addEventListener(
-            "click",
-            () => {
-
-                carouselIndex =
-                    i;
-
-                updateCarousel();
-
-                restartCarousel();
-
-            }
-        );
-
-
-        carouselDots.appendChild(
-            dot
-        );
-
-    }
-
-}
-
-
-function nextCarousel() {
-
-    carouselCards =
-        getCarouselCards();
-
-
-    if (!carouselCards.length) {
-        return;
-    }
-
-
-    const cardsPerView =
-        getCardsPerView();
-
-
-    const maxIndex =
-        Math.max(
-            0,
-            carouselCards.length -
-            cardsPerView
-        );
-
-
-    if (
-        carouselIndex >=
-        maxIndex
-    ) {
-
-        carouselIndex = 0;
-
-    } else {
-
-        carouselIndex++;
-
-    }
-
-
-    updateCarousel();
-
-}
-
-
-function previousCarousel() {
-
-    carouselCards =
-        getCarouselCards();
-
-
-    if (!carouselCards.length) {
-        return;
-    }
-
-
-    const cardsPerView =
-        getCardsPerView();
-
-
-    const maxIndex =
-        Math.max(
-            0,
-            carouselCards.length -
-            cardsPerView
-        );
-
-
-    if (
-        carouselIndex <= 0
-    ) {
-
-        carouselIndex =
-            maxIndex;
-
-    } else {
-
-        carouselIndex--;
-
-    }
-
-
-    updateCarousel();
-
-}
-
-
-function startCarousel() {
-
-    stopCarousel();
-
-
-    carouselTimer =
-        setInterval(
-            () => {
-
-                nextCarousel();
-
-            },
-            3500
-        );
-
-}
-
-
-function stopCarousel() {
-
-    if (carouselTimer) {
-
-        clearInterval(
-            carouselTimer
-        );
-
-        carouselTimer = null;
-
-    }
-
-}
-
-
-function restartCarousel() {
-
-    startCarousel();
-
-}
-
-
-/*
- * Botão anterior
- */
-
-if (carouselPrev) {
-
-    carouselPrev.addEventListener(
-        "click",
-        () => {
-
-            previousCarousel();
-
-            restartCarousel();
-
-        }
-    );
-
-}
-
-
-/*
- * Botão próximo
- */
-
-if (carouselNext) {
-
-    carouselNext.addEventListener(
-        "click",
-        () => {
-
-            nextCarousel();
-
-            restartCarousel();
-
-        }
-    );
-
-}
-
-
-/*
- * Pausar quando o mouse estiver em cima
- */
-
-if (carouselGrid) {
-
-    carouselGrid.addEventListener(
-        "mouseenter",
-        stopCarousel
-    );
-
-
-    carouselGrid.addEventListener(
-        "mouseleave",
-        startCarousel
-    );
-
-}
-
-
-/*
- * Atualizar quando mudar o tamanho da tela
- */
-
-window.addEventListener(
-    "resize",
-    () => {
-
-        updateCarousel();
-
-    }
-);
-
-
-/*
- * Detecta quando o script.js adiciona/remove
- * jogos do Supabase.
- */
-
-if (carouselGrid) {
-
-    const carouselObserver =
-        new MutationObserver(
-            () => {
-
-                setTimeout(
-                    () => {
-
-                        carouselCards =
-                            getCarouselCards();
-
-                        carouselIndex = 0;
-
-                        updateCarousel();
-
-                        startCarousel();
-
-                    },
-                    50
-                );
-
-            }
-        );
-
-
-    carouselObserver.observe(
-        carouselGrid,
-        {
-            childList: true
-        }
-    );
-
-}
-
-
-/*
- * Inicialização
- */
-
-setTimeout(
-    () => {
-
-        updateCarousel();
-
-        startCarousel();
-
-    },
-    500
-);
-
-
-// ===============================
-// INICIALIZAR
-// ===============================
-
-renderLetters();
-
-loadGames();
+Fechar
