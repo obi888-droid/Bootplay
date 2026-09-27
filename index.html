@@ -1,3 +1,14 @@
+BOOTPLAY — ARQUIVOS ATUALIZADOS
+
+INSTRUÇÕES:
+1) Copie a primeira seção para index.html.
+2) Copie a segunda seção para script.js.
+3) Não altere supabase.js nem admin.html.
+
+================================================================================
+ARQUIVO: index.html
+================================================================================
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -162,6 +173,21 @@
     }
 }
 </style>
+
+
+    <style>
+      .catalog-games-grid {
+        display: grid !important;
+        grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+        gap: 22px;
+        width: 100%;
+        transform: none !important;
+      }
+      .catalog-games-grid .game-card { width: 100%; min-width: 0; }
+      @media (max-width: 520px) {
+        .catalog-games-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+      }
+    </style>
 
 </head>
 
@@ -394,7 +420,7 @@
 
 
         <!-- =========================
-             JOGOS EM DESTAQUE
+             JOGOS DE PC EM DESTAQUE
              CARROSSEL
         ========================== -->
 
@@ -416,7 +442,7 @@
                     </h2>
 
                     <p id="gamesSubtitle">
-                        Confira alguns jogos disponíveis.
+                        Jogos cadastrados na plataforma PC aparecem aqui automaticamente.
                     </p>
 
                 </div>
@@ -458,7 +484,7 @@
                 <div class="carousel-window">
 
                     <div
-                        id="gamesGrid"
+                        id="pcCarouselGrid"
                         class="games-grid"
                     >
 
@@ -702,6 +728,18 @@
 
             </div>
 
+        </section>
+
+        <!-- CATÁLOGO COMPLETO: todas as plataformas e filtros -->
+        <section id="catalogSection" class="section catalog-section">
+            <div class="games-header">
+                <div>
+                    <span class="section-kicker">BIBLIOTECA BOOTPLAY</span>
+                    <h2>EXPLORAR TODOS OS JOGOS</h2>
+                    <p>Encontre jogos de todas as plataformas.</p>
+                </div>
+            </div>
+            <div id="gamesGrid" class="games-grid catalog-games-grid"></div>
         </section>
 
     </main>
@@ -1006,3 +1044,4 @@
 </body>
 
 </html>
+
