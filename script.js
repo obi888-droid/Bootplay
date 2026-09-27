@@ -1,3 +1,7 @@
+================================================================================
+ARQUIVO: script.js
+================================================================================
+
 // ===============================
 // BOOTPLAY - SCRIPT PRINCIPAL
 // ===============================
@@ -346,6 +350,41 @@ function formatGameSize(game) {
 // MOSTRAR JOGOS
 // ===============================
 
+function renderPcCarousel() {
+    if (!carouselGrid) return;
+
+    const pcGames = games.filter(game =>
+        String(game.platform || "").trim().toLowerCase() === "pc"
+    );
+
+    carouselGrid.innerHTML = "";
+
+    pcGames.forEach(function (game) {
+        const card = document.createElement("article");
+        card.className = "game-card";
+        const gameSize = formatGameSize(game);
+
+        card.innerHTML = `
+            <div class="game-image">
+                <img src="${escapeHtml(game.image || "")}" alt="${escapeHtml(game.name || "")}" loading="lazy">
+                <span class="game-platform">${escapeHtml(game.platform || "PC")}</span>
+            </div>
+            <div class="game-info">
+                <h3>${escapeHtml(game.name || "")}</h3>
+                <p>${escapeHtml(game.platform || "PC")} • ${escapeHtml(game.genre || "")}</p>
+                ${gameSize ? `<div class="game-size">💾 ${escapeHtml(gameSize)}</div>` : ""}
+                <button type="button" class="details-btn">VER JOGO</button>
+            </div>
+        `;
+        card.addEventListener("click", function () { openGameModal(game); });
+        carouselGrid.appendChild(card);
+    });
+
+    if (pcGames.length === 0) {
+        carouselGrid.innerHTML = `<div class="no-results"><div>🖥️</div><h3>NENHUM JOGO DE PC</h3><p>Cadastre um jogo com a plataforma “PC” para ele aparecer aqui.</p></div>`;
+    }
+}
+
 function renderGames() {
 
     if (!gamesGrid) return;
@@ -427,7 +466,7 @@ function renderGames() {
             </div>
 
         `;
-
+        renderPcCarousel();
         return;
 
     }
@@ -541,6 +580,7 @@ function renderGames() {
 
     });
 
+    renderPcCarousel();
 }
 
 
@@ -1088,7 +1128,7 @@ let carouselTimer = null;
 let carouselCards = [];
 
 const carouselGrid =
-    document.getElementById("gamesGrid");
+    document.getElementById("pcCarouselGrid");
 
 const carouselPrev =
     document.getElementById("carouselPrev");
